@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    @apply bg-zinc-950 text-zinc-300 antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'cv11' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: rgba(249,115,22,0.15); color: #EA580C; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #C4D5E4; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9BABC0; }
+}
+
+@layer components {
+  .input-base {
+    @apply w-full bg-zinc-900 border border-zinc-700 rounded-lg
+      px-3.5 py-2.5 text-[13px] text-zinc-200
+      placeholder:text-zinc-600
+      focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
+      transition-all duration-150;
+  }
+  .select-base {
+    @apply w-full bg-zinc-900 border border-zinc-700 rounded-lg
+      px-3.5 py-2.5 text-[13px] text-zinc-200
+      focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
+      transition-all duration-150 cursor-pointer;
+  }
+  .label-base {
+    @apply block text-[11px] font-semibold text-zinc-500
+      mb-1.5 tracking-[0.06em] uppercase;
+  }
+  .th {
+    @apply text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.07em];
+  }
+  .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+}
+
+/* Light-theme transparent overlay overrides */
+.border-white\/\[0\.04\], .border-white\/\[0\.05\], .border-white\/\[0\.06\],
+.border-white\/\[0\.07\], .border-white\/\[0\.08\], .border-white\/\[0\.10\] {
+  border-color: #E3EBF6 !important;
+}
+.bg-white\/\[0\.01\], .bg-white\/\[0\.015\], .bg-white\/\[0\.02\],
+.bg-white\/\[0\.025\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\],
+.bg-white\/\[0\.05\], .bg-white\/\[0\.06\], .bg-white\/\[0\.07\],
+.bg-white\/\[0\.08\], .bg-white\/\[0\.09\], .bg-white\/\[0\.10\] {
+  background-color: #F6F9FC !important;
+}
+.divide-white\/\[0\.04\] > :not([hidden]) ~ :not([hidden]),
+.divide-white\/\[0\.05\] > :not([hidden]) ~ :not([hidden]),
+.divide-white\/\[0\.06\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E3EBF6 !important;
+}
+.hover\:bg-white\/\[0\.02\]:hover, .hover\:bg-white\/\[0\.03\]:hover,
+.hover\:bg-white\/\[0\.04\]:hover, .hover\:bg-white\/\[0\.05\]:hover,
+.hover\:bg-white\/\[0\.06\]:hover, .hover\:bg-white\/\[0\.09\]:hover {
+  background-color: #F0F4F8 !important;
+}

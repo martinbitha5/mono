@@ -1,0 +1,24 @@
+{
+  "name": "ats-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "African Transport Systems - Ecosystem Monorepo",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "dev:it": "turbo dev --filter=@ats/it-control",
+    "dev:tech": "turbo dev --filter=@ats/technical-control",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@11.3.0"
+}
