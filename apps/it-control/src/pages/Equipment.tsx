@@ -273,34 +273,61 @@ export function EquipmentPage() {
     },
   });
 
-  // ── Download Excel (xlsx) ──────────────────────────────────────────────
+  // ── Download Excel (ExcelJS) ────────────────────────────────────────────
   const downloadInventory = async () => {
-    const { default: XLSX } = await import('xlsx');
-    const data = (filtered ?? []).map((item) => ({
-      'Désignation': item.name,
-      'Marque': item.marque ?? '',
-      'Type': typeLabels[item.type] ?? item.type,
-      'N° de Série': item.serial_number ?? '',
-      'Site': item.site,
-      'Statut': statusLabels[item.status as keyof typeof statusLabels] ?? item.status,
-      'Disponibilité': availLabels[item.availability as keyof typeof availLabels] ?? item.availability,
-      'Attribué À': (item.assignee as { full_name: string } | null)?.full_name ?? '',
-      'Adresse MAC': item.adresse_mac ?? '',
-      'Propriétaire': item.proprietaire ?? '',
-      'Affectation': item.affectation ?? '',
-      'Description': item.description ?? '',
-      'Notes': item.notes ?? '',
-      'Date de création': new Date(item.created_at).toLocaleDateString('fr-FR'),
-    }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    ws['!cols'] = [
-      { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 15 },
-      { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 20 },
-      { wch: 20 }, { wch: 30 }, { wch: 30 }, { wch: 15 },
+    const [{ default: ExcelJS }, { saveAs }] = await Promise.all([
+      import('exceljs'),
+      import('file-saver'),
+    ]);
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Inventaire', {
+      views: [{ state: 'frozen', xSplit: 0, ySplit: 1 }],
+    });
+    ws.columns = [
+      { header: 'Désignation',    key: 'name',    width: 26 },
+      { header: 'Marque',         key: 'marque',  width: 15 },
+      { header: 'Type',           key: 'type',    width: 16 },
+      { header: 'N° de Série',   key: 'serial',  width: 20 },
+      { header: 'Site',           key: 'site',    width: 14 },
+      { header: 'Statut',        key: 'status',  width: 16 },
+      { header: 'Disponibilité', key: 'avail',   width: 16 },
+      { header: 'Attribué à',    key: 'assign',  width: 26 },
+      { header: 'Adresse MAC',   key: 'mac',     width: 20 },
+      { header: 'Propriétaire',  key: 'owner',   width: 20 },
+      { header: 'Affectation',   key: 'affect',  width: 20 },
+      { header: 'Notes',          key: 'notes',   width: 30 },
+      { header: 'Date création',  key: 'date',    width: 15 },
     ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Inventaire');
-    XLSX.writeFile(wb, `inventaire_equipements_${new Date().toISOString().split('T')[0]}.xlsx`);
+    // Header row style
+    const hdr = ws.getRow(1);
+    hdr.font      = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+    hdr.fill      = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF3B82F6' } };
+    hdr.alignment = { vertical: 'middle', horizontal: 'center' };
+    hdr.height    = 24;
+
+    (filtered ?? []).forEach((item) => {
+      ws.addRow({
+        name:   item.name,
+        marque: item.marque ?? '',
+        type:   typeLabels[item.type] ?? item.type,
+        serial: item.serial_number ?? '',
+        site:   item.site,
+        status: statusLabels[item.status as keyof typeof statusLabels] ?? item.status,
+        avail:  availLabels[item.availability as keyof typeof availLabels] ?? item.availability,
+        assign: (item.assignee as { full_name: string } | null)?.full_name ?? '',
+        mac:    item.adresse_mac ?? '',
+        owner:  item.proprietaire ?? '',
+        affect: item.affectation ?? '',
+        notes:  item.notes ?? '',
+        date:   new Date(item.created_at).toLocaleDateString('fr-FR'),
+      });
+    });
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob   = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(blob, `inventaire_equipements_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   // ── Render ─────────────────────────────────────────────────────────────

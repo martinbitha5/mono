@@ -194,11 +194,11 @@ export function AgentsPage() {
   const [addError,   setAddError  ] = useState('');
 
   const [editForm, setEditForm] = useState<{
-    full_name: string; phone: string; role: ProfileRole;
+    full_name: string; phone: string; role: ProfileRole; service: ProfileService;
     site: string; fonction: string; start_date: string;
     status: ProfileStatus; photo_url: string | null;
   }>({
-    full_name: '', phone: '', role: 'tech_agent',
+    full_name: '', phone: '', role: 'tech_agent', service: 'tech',
     site: SITES[0] as string, fonction: '', start_date: '', status: 'active',
     photo_url: null,
   });
@@ -223,9 +223,9 @@ export function AgentsPage() {
   const openEdit = (user: UserRow) => {
     setEditForm({
       full_name: user.full_name, phone: user.phone ?? '',
-      role: user.role, site: user.site, fonction: user.fonction ?? '',
-      start_date: user.start_date ?? '', status: user.status,
-      photo_url: user.photo_url,
+      role: user.role, service: user.service ?? 'tech', site: user.site,
+      fonction: user.fonction ?? '', start_date: user.start_date ?? '',
+      status: user.status, photo_url: user.photo_url,
     });
     setEditPhoto(null); setEditPreview('');
     setPwNew(''); setPwConfirm('');
@@ -298,6 +298,7 @@ export function AgentsPage() {
         phone:      editForm.phone      || undefined,
         photo_url:  photoUrl,
         role:       editForm.role,
+        service:    editForm.service,
         site:       editForm.site,
         start_date: editForm.start_date || undefined,
         status:     editForm.status,
@@ -641,10 +642,20 @@ export function AgentsPage() {
                   className="select-base" disabled={!isAdmin}>
                   <option value="tech_agent">Agent Technique</option>
                   <option value="supervisor">Superviseur</option>
-                  <option value="it_agent">Agent IT</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
+              {isAdmin && (
+                <div>
+                  <label className="label-base">Accès service</label>
+                  <select value={editForm.service}
+                    onChange={(e) => setEditForm((f) => ({ ...f, service: e.target.value as ProfileService }))}
+                    className="select-base">
+                    <option value="tech">Technique uniquement</option>
+                    <option value="both">Technique + IT (cross-service)</option>
+                  </select>
+                </div>
+              )}
               <div>
                 <label className="label-base">Site</label>
                 <select value={editForm.site}

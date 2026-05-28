@@ -5,6 +5,7 @@ import { Button } from '@ats/ui';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Users, AlertTriangle, MonitorCheck, Package, Download } from 'lucide-react';
+import { generateItControlReport } from '../utils/exportExcel';
 
 function useReportData(dateFrom: string, dateTo: string, site: string) {
   return useQuery({
@@ -45,130 +46,6 @@ function useReportData(dateFrom: string, dateTo: string, site: string) {
   });
 }
 
-async function generateReport(dateFrom: string, dateTo: string, site: string) {
-  const dateTo23 = dateTo + 'T23:59:59';
-
-  const [
-    { data: agents },
-    { data: attendance },
-    { data: incidents },
-    { data: equipment },
-    { data: installations },
-  ] = await Promise.all([
-    supabase.from('profiles').select('id, full_name, site, role, status'),
-    supabase
-      .from('attendance')
-      .select('*, agent:profiles!user_id(full_name)')
-      .gte('check_in_time', dateFrom)
-      .lte('check_in_time', dateTo23),
-    supabase
-      .from('incidents')
-      .select('*, reporter:profiles!reported_by(full_name), assignee:profiles!assigned_to(full_name)')
-      .gte('created_at', dateFrom)
-      .lte('created_at', dateTo23),
-    supabase.from('equipment').select('*'),
-    supabase
-      .from('installations')
-      .select('*')
-      .gte('created_at', dateFrom)
-      .lte('created_at', dateTo23),
-  ]);
-
-  const filteredAtt = site === 'all' ? (attendance ?? []) : (attendance ?? []).filter((a: any) => a.site === site);
-  const filteredInc = site === 'all' ? (incidents ?? []) : (incidents ?? []).filter((i: any) => i.site === site);
-  const filteredInst = site === 'all' ? (installations ?? []) : (installations ?? []).filter((i: any) => i.site === site);
-
-  const openInc = filteredInc.filter((i: any) => i.status !== 'resolved');
-  const resolvedInc = filteredInc.filter((i: any) => i.status === 'resolved');
-  const faultyEq = (equipment ?? []).filter((e: any) => e.status === 'faulty');
-  const validatedSites = filteredInst.filter((i: any) => i.status === 'validated');
-
-  const totalAgents = agents?.length ?? 0;
-  const presentCount = filteredAtt.filter((a: any) => a.status === 'present').length;
-
-  const { default: XLSX } = await import('xlsx');
-  const wb = XLSX.utils.book_new();
-
-  // ── Feuille 1 : Résumé ────────────────────────────────────────────────────
-  const siteLabel = site === 'all' ? 'Tous les sites' : site;
-  const summaryRows = [
-    ['ATS IT CONTROL — RAPPORT OPÉRATIONNEL'],
-    [`Généré le : ${new Date().toLocaleString('fr-FR')}`],
-    [`Période : ${dateFrom} au ${dateTo}`],
-    [`Site : ${siteLabel}`],
-    [''],
-    ['STATISTIQUES GÉNÉRALES'],
-    ['Agents IT total', totalAgents],
-    ['Présences sur la période', filteredAtt.length],
-    ['Taux de présence', totalAgents > 0 ? Math.round((presentCount / totalAgents) * 100) + '%' : '—'],
-    [''],
-    ['INCIDENTS'],
-    ['Incidents ouverts', openInc.length],
-    ['Incidents résolus', resolvedInc.length],
-    ['Total incidents', filteredInc.length],
-    [''],
-    ['ÉQUIPEMENTS'],
-    ['Équipements total', equipment?.length ?? 0],
-    ['Équipements défectueux', faultyEq.length],
-    ['Taux fonctionnel', (equipment?.length ?? 0) > 0
-      ? Math.round(((equipment!.length - faultyEq.length) / equipment!.length) * 100) + '%'
-      : '—'],
-    [''],
-    ['INSTALLATIONS / VALIDATIONS'],
-    ['Sites validés', validatedSites.length],
-    ['Total validations', filteredInst.length],
-  ];
-  const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
-  wsSummary['!cols'] = [{ wch: 35 }, { wch: 20 }];
-  XLSX.utils.book_append_sheet(wb, wsSummary, 'Résumé');
-
-  // ── Feuille 2 : Présences ─────────────────────────────────────────────────
-  const attHeaders = ['Agent', 'Site', 'Date / Heure', 'Statut', 'Notes'];
-  const attData = filteredAtt.map((a: any) => [
-    (a.agent as { full_name: string } | null)?.full_name ?? 'Inconnu',
-    a.site ?? '',
-    a.check_in_time ? new Date(a.check_in_time).toLocaleString('fr-FR') : '',
-    a.status ?? '',
-    a.notes ?? '',
-  ]);
-  const wsAtt = XLSX.utils.aoa_to_sheet([attHeaders, ...attData]);
-  wsAtt['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 22 }, { wch: 12 }, { wch: 30 }];
-  XLSX.utils.book_append_sheet(wb, wsAtt, 'Présences');
-
-  // ── Feuille 3 : Incidents ─────────────────────────────────────────────────
-  const incHeaders = ['Titre', 'Site', 'Priorité', 'Statut', 'Signalé par', 'Assigné à', 'Date'];
-  const incData = filteredInc.map((i: any) => [
-    i.title ?? '',
-    i.site ?? '',
-    i.priority ?? '',
-    i.status ?? '',
-    (i.reporter as { full_name: string } | null)?.full_name ?? '—',
-    (i.assignee as { full_name: string } | null)?.full_name ?? '—',
-    i.created_at ? new Date(i.created_at).toLocaleString('fr-FR') : '',
-  ]);
-  const wsInc = XLSX.utils.aoa_to_sheet([incHeaders, ...incData]);
-  wsInc['!cols'] = [{ wch: 35 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 22 }, { wch: 22 }, { wch: 22 }];
-  XLSX.utils.book_append_sheet(wb, wsInc, 'Incidents');
-
-  // ── Feuille 4 : Équipements ───────────────────────────────────────────────
-  const eqHeaders = ['Désignation', 'Type', 'Marque', 'Site', 'Statut', 'N° Série', 'Propriétaire', 'Affecté à'];
-  const eqData = (equipment ?? []).map((e: any) => [
-    e.name ?? '',
-    e.type ?? '',
-    e.brand ?? '',
-    e.site ?? '',
-    e.status ?? '',
-    e.serial_number ?? '',
-    e.owner ?? '',
-    e.assignment ?? '',
-  ]);
-  const wsEq = XLSX.utils.aoa_to_sheet([eqHeaders, ...eqData]);
-  wsEq['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 18 }, { wch: 20 }, { wch: 20 }];
-  XLSX.utils.book_append_sheet(wb, wsEq, 'Équipements');
-
-  const fileName = `Rapport_IT_Control_${dateFrom}_${dateTo}.xlsx`;
-  XLSX.writeFile(wb, fileName);
-}
 
 function BigMetric({ value, label, color }: { value: number; label: string; color: string }) {
   return (
@@ -226,7 +103,7 @@ export function ReportsPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      await generateReport(dateFrom, dateTo, site);
+      await generateItControlReport(dateFrom, dateTo, site);
     } catch (err) {
       console.error('Export failed', err);
     } finally {
