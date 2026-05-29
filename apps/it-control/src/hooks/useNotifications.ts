@@ -12,6 +12,52 @@ export type AppNotification = {
   read: boolean;
 };
 
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY ?? '';
+
+function urlBase64ToUint8Array(b64: string): Uint8Array {
+  const padding = '='.repeat((4 - (b64.length % 4)) % 4);
+  const base64 = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+function playNotifSound() {
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.35, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.45);
+  } catch { /* AudioContext bloqué (iOS nécessite un geste utilisateur préalable) */ }
+}
+
+async function subscribePush(uid: string) {
+  if (!VAPID_PUBLIC_KEY || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const existing = await reg.pushManager.getSubscription();
+    const sub = existing ?? await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+    const p256dh = sub.getKey('p256dh');
+    const auth = sub.getKey('auth');
+    if (!p256dh || !auth) return;
+    await supabase.from('push_subscriptions').upsert({
+      user_id: uid,
+      endpoint: sub.endpoint,
+      p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dh))),
+      auth: btoa(String.fromCharCode(...new Uint8Array(auth))),
+    }, { onConflict: 'endpoint' });
+  } catch { /* navigateur sans support push ou permission refusée */ }
+}
+
 export function useNotifications() {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const userId = useRef<string | null>(null);
@@ -25,9 +71,10 @@ export function useNotifications() {
       userId.current = session.user.id;
 
       if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission();
+        await Notification.requestPermission();
       }
 
+      await subscribePush(session.user.id);
       await load(session.user.id);
 
       channel = supabase
@@ -40,6 +87,9 @@ export function useNotifications() {
           const n = payload.new as AppNotification;
           if (n.service !== 'it' && n.service !== 'both') return;
           setNotifications(prev => [{ ...n, read: false }, ...prev]);
+
+          if ('vibrate' in navigator) navigator.vibrate([300, 100, 300]);
+          playNotifSound();
 
           if (Notification.permission === 'granted') {
             new Notification(n.title, {
