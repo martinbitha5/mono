@@ -69,16 +69,21 @@ export function useNotifications() {
     let channel: ReturnType<typeof supabase.channel> | null = null;
 
     async function init() {
+      try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
       userId.current = session.user.id;
 
+      // Fire-and-forget : requiert un geste utilisateur sur iOS/Android
       if ('Notification' in window && Notification.permission === 'default') {
-        await Notification.requestPermission();
+        Notification.requestPermission().catch(() => {});
       }
 
-      await subscribePush(session.user.id);
+      // Fire-and-forget : navigator.serviceWorker.ready peut bloquer sur mobile
+      subscribePush(session.user.id).catch(() => {});
+
       await load(session.user.id);
+      } catch { /* ne jamais crasher l'app pour les notifs */ }
 
       channel = supabase
         .channel('notifications-realtime')
