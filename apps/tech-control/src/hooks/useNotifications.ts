@@ -18,7 +18,9 @@ function urlBase64ToUint8Array(b64: string): Uint8Array {
   const padding = '='.repeat((4 - (b64.length % 4)) % 4);
   const base64 = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/');
   const raw = atob(base64);
-  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+  const output = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) output[i] = raw.charCodeAt(i);
+  return output;
 }
 
 function playNotifSound() {
@@ -44,12 +46,13 @@ async function subscribePush(uid: string) {
     const existing = await reg.pushManager.getSubscription();
     const sub = existing ?? await reg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as ArrayBuffer,
     });
     const p256dh = sub.getKey('p256dh');
     const auth = sub.getKey('auth');
     if (!p256dh || !auth) return;
-    await supabase.from('push_subscriptions').upsert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).from('push_subscriptions').upsert({
       user_id: uid,
       endpoint: sub.endpoint,
       p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dh))),
