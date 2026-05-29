@@ -12,10 +12,14 @@ function useTodayAttendance() {
       const today = new Date().toISOString().split('T')[0];
       const { data } = await supabase
         .from('attendance')
-        .select('*, profiles(full_name, role, site, photo_url)')
+        .select('*, profiles(full_name, role, site, photo_url, service)')
         .gte('check_in_time', today)
         .order('check_in_time', { ascending: false });
-      return data ?? [];
+      // Afficher uniquement les agents du service IT (service = 'it' ou 'both')
+      return (data ?? []).filter((r) => {
+        const p = r.profiles as { service?: string } | null;
+        return p?.service !== 'tech';
+      });
     },
     refetchInterval: 15_000,
   });
@@ -49,11 +53,14 @@ export function AttendancePage() {
   const [notes, setNotes] = useState('');
 
   const checkInMutation = useMutation({
-    mutationFn: async (status: 'present' | 'late') => {
+    mutationFn: async () => {
+      // Auto-détection du retard : après 9h30
+      const now = new Date();
+      const late = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() >= 30);
       const { error } = await supabase.from('attendance').insert({
         user_id: user!.id,
         site: profile!.site,
-        status,
+        status: late ? 'late' : 'present',
         notes: notes || null,
       });
       if (error) throw error;
@@ -66,9 +73,9 @@ export function AttendancePage() {
     },
   });
 
-  const hour = new Date().getHours();
-  const isLate = hour >= 9;
-  const now = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const nowDate = new Date();
+  const isLate = nowDate.getHours() > 9 || (nowDate.getHours() === 9 && nowDate.getMinutes() >= 30);
+  const now = nowDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="space-y-5">
@@ -131,24 +138,21 @@ export function AttendancePage() {
               />
 
               {/* Actions */}
-              <div className="flex gap-2">
+              <div className="space-y-2">
+                {isLate && (
+                  <p className="text-[11px] text-amber-500 font-medium flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    Après 09h30 — sera marqué <strong>En retard</strong> automatiquement
+                  </p>
+                )}
                 <Button
-                  onClick={() => checkInMutation.mutate('present')}
+                  onClick={() => checkInMutation.mutate()}
                   loading={checkInMutation.isPending}
-                  className="flex-1 justify-center"
+                  className="w-full justify-center"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
                   Je suis présent
                 </Button>
-                {isLate && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => checkInMutation.mutate('late')}
-                    loading={checkInMutation.isPending}
-                  >
-                    En retard
-                  </Button>
-                )}
               </div>
             </div>
           )}

@@ -29,6 +29,9 @@ export function useAuth() {
     queryKey: ['profile', session?.user.id],
     queryFn: () => fetchProfile(session!.user.id),
     enabled: !!session?.user.id,
+    // Le profil ne change pas pendant la session → jamais re-fetché automatiquement
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 
   const signOut = async () => {

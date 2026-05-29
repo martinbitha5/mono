@@ -142,7 +142,7 @@ function PhotoPicker({
   );
 }
 
-// ── Data hook — tous les agents, tous services (IT Control est le maître) ──
+// ── Data hook — agents IT et cross-service uniquement ──────────────────────
 function useUsers() {
   return useQuery({
     queryKey: ['users'],
@@ -150,9 +150,11 @@ function useUsers() {
       const { data } = await supabase
         .from('profiles')
         .select('*')
+        .in('service', ['it', 'both'])
         .order('full_name');
       return (data ?? []) as UserRow[];
     },
+    staleTime: 1000 * 60 * 5,
   });
 }
 
@@ -391,9 +393,8 @@ export function UsersPage() {
             placeholder="Nom, email..." className="input-base pl-9 py-2" />
         </div>
         <select value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)} className="select-base py-2 w-auto">
-          <option value="all">Tous les services</option>
+          <option value="all">Tous</option>
           <option value="it">Service IT</option>
-          <option value="tech">Service Technique</option>
           <option value="both">Cross-service</option>
         </select>
         <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="select-base py-2 w-auto">
@@ -401,7 +402,6 @@ export function UsersPage() {
           <option value="admin">Admin</option>
           <option value="supervisor">Superviseur</option>
           <option value="it_agent">Agent IT</option>
-          <option value="tech_agent">Agent Technique</option>
         </select>
         <select value={siteFilter} onChange={(e) => setSiteFilter(e.target.value)} className="select-base py-2 w-auto">
           <option value="all">Tous les sites</option>

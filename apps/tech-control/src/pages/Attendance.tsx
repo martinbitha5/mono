@@ -57,11 +57,14 @@ export function AttendancePage() {
   const [notes, setNotes]   = useState('');
 
   const checkInMutation = useMutation({
-    mutationFn: async (status: 'present' | 'late') => {
+    mutationFn: async () => {
+      // Auto-détection du retard : après 9h30
+      const now = new Date();
+      const late = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() >= 30);
       const { error } = await supabase.from('attendance').insert({
         user_id: user!.id,
         site: profile!.site,
-        status,
+        status: late ? 'late' : 'present',
         notes: notes || null,
       });
       if (error) throw error;
@@ -74,6 +77,8 @@ export function AttendancePage() {
     },
   });
 
+  const nowDate = new Date();
+  const isLate = nowDate.getHours() > 9 || (nowDate.getHours() === 9 && nowDate.getMinutes() >= 30);
   const alreadyCheckedIn = !!myRecord;
   const presentCount = attendance?.filter((a) => a.status === 'present' || a.status === 'late').length ?? 0;
 
@@ -119,14 +124,15 @@ export function AttendancePage() {
               rows={2} placeholder="Notes (optionnel)"
               className="input-base resize-none"
             />
-            <div className="flex gap-2">
-              <Button onClick={() => checkInMutation.mutate('present')} loading={checkInMutation.isPending} className="flex-1">
-                Présent
-              </Button>
-              <Button variant="secondary" onClick={() => checkInMutation.mutate('late')} loading={checkInMutation.isPending} className="flex-1">
-                En retard
-              </Button>
-            </div>
+            {isLate && (
+              <p className="text-[11px] text-amber-500 font-medium flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                Après 09h30 — sera marqué <strong>En retard</strong> automatiquement
+              </p>
+            )}
+            <Button onClick={() => checkInMutation.mutate()} loading={checkInMutation.isPending} className="w-full">
+              Je suis présent
+            </Button>
           </div>
         )}
       </div>

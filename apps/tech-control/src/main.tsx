@@ -8,7 +8,13 @@ import './index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 1000 * 30, retry: 1 },
+    queries: {
+      // Données fraîches 5 min → pas de re-fetch sur chaque navigation
+      staleTime: 1000 * 60 * 5,
+      // Garde en cache 10 min après démontage du composant
+      gcTime: 1000 * 60 * 10,
+      retry: 1,
+    },
   },
 });
 
