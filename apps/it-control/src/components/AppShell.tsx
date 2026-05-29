@@ -94,11 +94,12 @@ function notifIconBg(type: AppNotification['type']) {
 
 // ── Notification panel ────────────────────────────────────────────────────────
 function NotifPanel({
-  notifications, unreadCount, markAllRead,
+  notifications, unreadCount, markAllRead, onClose,
 }: {
   notifications: AppNotification[];
   unreadCount:   number;
   markAllRead:   () => void;
+  onClose:       () => void;
 }) {
   return (
     <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] sm:w-80 max-w-sm
@@ -128,11 +129,13 @@ function NotifPanel({
             <p className="text-[12px] text-zinc-600">Aucune notification</p>
           </div>
         ) : (
-          notifications.map(n => (
-            <div key={n.id} className={[
-              'px-4 py-3 border-b border-zinc-800/60 last:border-0 transition-colors',
+          notifications.map(n => {
+            const itemCls = [
+              'block px-4 py-3 border-b border-zinc-800/60 last:border-0 transition-colors',
               !n.read ? 'bg-zinc-800/40' : 'hover:bg-zinc-800/20',
-            ].join(' ')}>
+              n.link ? 'cursor-pointer' : '',
+            ].join(' ');
+            const inner = (
               <div className="flex items-start gap-2.5">
                 <div className={[
                   'mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center',
@@ -151,8 +154,17 @@ function NotifPanel({
                   <p className="text-[10px] text-zinc-700 mt-1">{relativeTime(n.created_at)}</p>
                 </div>
               </div>
-            </div>
-          ))
+            );
+            return n.link ? (
+              <Link key={n.id} to={n.link} className={itemCls} onClick={onClose}>
+                {inner}
+              </Link>
+            ) : (
+              <div key={n.id} className={itemCls}>
+                {inner}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
@@ -417,6 +429,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 notifications={notifications}
                 unreadCount={unreadCount}
                 markAllRead={markAllRead}
+                onClose={() => setNotifOpen(false)}
               />
             )}
           </div>

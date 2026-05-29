@@ -450,6 +450,7 @@ export type Database = {
           resolved_at: string | null
           created_at: string
           updated_at: string
+          photo_url: string | null
         }
         Insert: {
           id?: string
@@ -464,6 +465,7 @@ export type Database = {
           resolved_at?: string | null
           created_at?: string
           updated_at?: string
+          photo_url?: string | null
         }
         Update: {
           title?: string
@@ -474,6 +476,7 @@ export type Database = {
           assigned_to?: string | null
           resolved_at?: string | null
           updated_at?: string
+          photo_url?: string | null
         }
         Relationships: []
       }

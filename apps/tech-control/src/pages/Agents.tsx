@@ -6,7 +6,7 @@ import { SITES } from '@ats/types';
 import { useAuth } from '../hooks/useAuth';
 import {
   Search, Users, MapPin, Phone, Mail, Briefcase, Calendar,
-  Edit2, UserCheck, UserX, Plus, Camera, Trash2,
+  Edit2, UserCheck, UserX, Camera, Trash2, Info,
 } from 'lucide-react';
 
 function resizeImage(file: File): Promise<Blob> {
@@ -174,24 +174,7 @@ export function AgentsPage() {
   });
 
   const [detailUser, setDetailUser] = useState<UserRow | null>(null);
-  const [addOpen,    setAddOpen    ] = useState(false);
   const [editUser,   setEditUser   ] = useState<UserRow | null>(null);
-
-  const defaultAdd: {
-    full_name: string; email: string; password: string; phone: string;
-    role: ProfileRole; service: ProfileService; site: string; start_date: string; fonction: string;
-  } = {
-    full_name: '', email: '', password: '', phone: '',
-    role: 'tech_agent',
-    service: 'tech',
-    site: SITES[0] as string,
-    start_date: new Date().toISOString().split('T')[0],
-    fonction: '',
-  };
-  const [addForm,    setAddForm   ] = useState(defaultAdd);
-  const [addPhoto,   setAddPhoto  ] = useState<File | null>(null);
-  const [addPreview, setAddPreview] = useState('');
-  const [addError,   setAddError  ] = useState('');
 
   const [editForm, setEditForm] = useState<{
     full_name: string; phone: string; role: ProfileRole; service: ProfileService;
@@ -207,12 +190,6 @@ export function AgentsPage() {
   const [editError,   setEditError  ] = useState('');
   const [pwNew,       setPwNew      ] = useState('');
   const [pwConfirm,   setPwConfirm  ] = useState('');
-
-  const handleAddPhoto = async (f: File) => {
-    const blob = await resizeImage(f).catch(() => f);
-    setAddPhoto(f);
-    setAddPreview(URL.createObjectURL(blob instanceof Blob ? blob : f));
-  };
 
   const handleEditPhoto = async (f: File) => {
     const blob = await resizeImage(f).catch(() => f);
@@ -232,46 +209,6 @@ export function AgentsPage() {
     setEditError('');
     setEditUser(user);
   };
-
-  const addMutation = useMutation({
-    mutationFn: async () => {
-      setAddError('');
-      const { data, error } = await supabase.auth.signUp({
-        email: addForm.email,
-        password: addForm.password,
-        options: { data: { full_name: addForm.full_name, role: addForm.role } },
-      });
-      if (error) throw new Error(error.message);
-      if (!data.user) throw new Error("Impossible de créer l'utilisateur");
-
-      const userId = data.user.id;
-      let photoUrl: string | null = null;
-      if (addPhoto) {
-        const blob = await resizeImage(addPhoto).catch(() => addPhoto);
-        photoUrl = await uploadProfilePhoto(userId, blob);
-      }
-      await supabase.from('profiles').upsert({
-        id: userId,
-        full_name: addForm.full_name,
-        email: addForm.email,
-        phone: addForm.phone || undefined,
-        photo_url: photoUrl,
-        role: addForm.role,
-        service: addForm.service,
-        site: addForm.site,
-        start_date: addForm.start_date || undefined,
-        fonction: addForm.fonction || undefined,
-        status: 'active' as ProfileStatus,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tech-users'] });
-      setAddOpen(false);
-      setAddForm(defaultAdd);
-      setAddPhoto(null); setAddPreview('');
-    },
-    onError: (err: Error) => setAddError(err.message),
-  });
 
   const editMutation = useMutation({
     mutationFn: async () => {
@@ -351,12 +288,15 @@ export function AgentsPage() {
             {filtered?.length ?? 0} agent{(filtered?.length ?? 0) !== 1 ? 's' : ''}
           </p>
         </div>
-        {isAdmin && (
-          <Button size="sm" onClick={() => { setAddError(''); setAddForm(defaultAdd); setAddPhoto(null); setAddPreview(''); setAddOpen(true); }}>
-            <Plus className="w-3.5 h-3.5" />
-            Ajouter agent
-          </Button>
-        )}
+      </div>
+
+      {/* Info banner — agent creation is centralized in IT Control */}
+      <div className="flex items-start gap-3 bg-orange-500/[0.07] border border-orange-500/20 rounded-xl px-4 py-3">
+        <Info className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+        <p className="text-[12px] text-orange-300 leading-relaxed">
+          Les comptes agents sont créés et gérés depuis <strong className="text-orange-200">IT Control</strong>.
+          Les agents ayant un accès au service Technique apparaissent ici automatiquement.
+        </p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2">
@@ -523,87 +463,6 @@ export function AgentsPage() {
             )}
           </div>
         )}
-      </Modal>
-
-      {/* Add modal */}
-      <Modal open={addOpen} onClose={() => setAddOpen(false)} title="Ajouter un agent" size="lg">
-        <div className="space-y-4">
-          <PhotoPicker
-            preview={addPreview} currentUrl={null}
-            onFile={handleAddPhoto}
-            onRemove={() => { setAddPhoto(null); setAddPreview(''); }}
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <label className="label-base">Nom complet *</label>
-              <input type="text" value={addForm.full_name} onChange={(e) => setAddForm((f) => ({ ...f, full_name: e.target.value }))}
-                placeholder="Jean Dupont" className="input-base" />
-            </div>
-            <div>
-              <label className="label-base">Email *</label>
-              <input type="email" value={addForm.email} onChange={(e) => setAddForm((f) => ({ ...f, email: e.target.value }))}
-                placeholder="agent@ats.cd" className="input-base" />
-            </div>
-            <div>
-              <label className="label-base">Mot de passe *</label>
-              <input type="password" value={addForm.password} onChange={(e) => setAddForm((f) => ({ ...f, password: e.target.value }))}
-                placeholder="Min. 6 caractères" className="input-base" />
-            </div>
-            <div>
-              <label className="label-base">Téléphone</label>
-              <input type="tel" value={addForm.phone} onChange={(e) => setAddForm((f) => ({ ...f, phone: e.target.value }))}
-                placeholder="+243..." className="input-base" />
-            </div>
-            <div>
-              <label className="label-base">Rôle *</label>
-              <select value={addForm.role} onChange={(e) => setAddForm((f) => ({ ...f, role: e.target.value as ProfileRole }))}
-                className="select-base">
-                <option value="tech_agent">Agent Technique</option>
-                <option value="supervisor">Superviseur</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div>
-              <label className="label-base">Service *</label>
-              <select value={addForm.service} onChange={(e) => setAddForm((f) => ({ ...f, service: e.target.value as ProfileService }))}
-                className="select-base">
-                <option value="tech">Technique uniquement</option>
-                <option value="both">Technique + IT (admin)</option>
-              </select>
-            </div>
-            <div>
-              <label className="label-base">Site *</label>
-              <select value={addForm.site} onChange={(e) => setAddForm((f) => ({ ...f, site: e.target.value }))}
-                className="select-base">
-                {SITES.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="label-base">Date de début</label>
-              <input type="date" value={addForm.start_date} onChange={(e) => setAddForm((f) => ({ ...f, start_date: e.target.value }))}
-                className="input-base" />
-            </div>
-            <div className="col-span-2">
-              <label className="label-base">Fonction / Poste</label>
-              <input type="text" value={addForm.fonction} onChange={(e) => setAddForm((f) => ({ ...f, fonction: e.target.value }))}
-                placeholder="Ex : Technicien piste, Mécanicien GSE…" className="input-base" />
-            </div>
-          </div>
-
-          {addError && <p className="text-[12px] text-red-400">{addError}</p>}
-
-          <div className="flex justify-end gap-2 pt-1">
-            <Button variant="ghost" onClick={() => setAddOpen(false)}>Annuler</Button>
-            <Button
-              onClick={() => addMutation.mutate()}
-              loading={addMutation.isPending}
-              disabled={!addForm.full_name || !addForm.email || !addForm.password}
-            >
-              Créer l'agent
-            </Button>
-          </div>
-        </div>
       </Modal>
 
       {/* Edit modal */}

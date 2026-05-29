@@ -4,7 +4,7 @@ import { supabase } from '@ats/supabase/client';
 import { Button, Badge, Modal } from '@ats/ui';
 import { useAuth } from '../hooks/useAuth';
 import { SITES } from '@ats/types';
-import { Plus, CheckCircle, Wrench, Search, AlertTriangle, Clock, User } from 'lucide-react';
+import { Plus, CheckCircle, Wrench, Search, AlertTriangle, Clock, User, ImagePlus } from 'lucide-react';
 
 type StatusFilter   = 'ouvert' | 'en_cours' | 'resolu' | 'all';
 type PriorityFilter = 'faible' | 'moyen' | 'critique' | 'all';
@@ -15,6 +15,7 @@ type GseIncidentRow = {
   status: 'ouvert' | 'en_cours' | 'resolu';
   site: string; reporter_id: string; assigned_to: string | null;
   resolved_at: string | null; created_at: string; updated_at: string;
+  photo_url: string | null;
   reporter:  { full_name: string } | null;
   assignee:  { full_name: string } | null;
   equipment: { name: string; serie: string } | null;
@@ -104,6 +105,7 @@ export function InterventionsPage() {
     priority: 'moyen' as 'faible' | 'moyen' | 'critique',
     equipment_id: '', assigned_to: '',
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const filtered = (interventions ?? []).filter((item) => {
     if (!search) return true;
@@ -119,12 +121,27 @@ export function InterventionsPage() {
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      let photo_url: string | null = null;
+      if (photoFile) {
+        const ext = photoFile.name.split('.').pop() ?? 'jpg';
+        const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { data: uploaded, error: upErr } = await supabase.storage
+          .from('intervention-photos')
+          .upload(path, photoFile, { upsert: false, contentType: photoFile.type });
+        if (!upErr && uploaded) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('intervention-photos')
+            .getPublicUrl(uploaded.path);
+          photo_url = publicUrl;
+        }
+      }
       const { error } = await supabase.from('gse_incidents').insert({
         title: form.title, description: form.description, site: form.site,
         priority: form.priority, status: 'ouvert',
         reporter_id: user!.id,
         equipment_id: form.equipment_id || null,
         assigned_to: form.assigned_to || null,
+        photo_url,
       });
       if (error) throw error;
     },
@@ -132,6 +149,7 @@ export function InterventionsPage() {
       queryClient.invalidateQueries({ queryKey: ['gse-interventions'] });
       queryClient.invalidateQueries({ queryKey: ['tech-dashboard-stats'] });
       setModalOpen(false);
+      setPhotoFile(null);
       setForm({ title: '', description: '', site: profile?.site ?? SITES[0], priority: 'moyen', equipment_id: '', assigned_to: '' });
     },
   });
@@ -332,6 +350,17 @@ export function InterventionsPage() {
               </div>
             )}
 
+            {detailItem.photo_url && (
+              <div>
+                <p className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] mb-2">Photo</p>
+                <img
+                  src={detailItem.photo_url}
+                  alt="Photo de l'intervention"
+                  className="w-full rounded-xl border border-zinc-800 object-cover max-h-56"
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-2">
               {[
                 { label: 'Site',         value: detailItem.site },
@@ -415,6 +444,23 @@ export function InterventionsPage() {
             <label className="label-base">Description</label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3} className="input-base resize-none" placeholder="Décrivez le problème en détail…" />
+          </div>
+
+          <div>
+            <label className="label-base flex items-center gap-1.5">
+              <ImagePlus className="w-3.5 h-3.5" /> Photo (optionnelle)
+            </label>
+            <input
+              type="file" accept="image/*"
+              onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
+              className="input-base py-1.5 text-[12px] text-zinc-400
+                file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0
+                file:text-[11px] file:font-medium file:bg-zinc-800 file:text-zinc-300
+                hover:file:bg-zinc-700 file:cursor-pointer"
+            />
+            {photoFile && (
+              <p className="text-[11px] text-zinc-500 mt-1 truncate">{photoFile.name}</p>
+            )}
           </div>
 
           {canEdit && agents && agents.length > 0 && (

@@ -38,6 +38,7 @@ export function useNotifications() {
           table: 'notifications',
         }, (payload) => {
           const n = payload.new as AppNotification;
+          if (n.service !== 'tech' && n.service !== 'both') return;
           setNotifications(prev => [{ ...n, read: false }, ...prev]);
 
           if (Notification.permission === 'granted') {
@@ -55,6 +56,7 @@ export function useNotifications() {
       const { data: notifs } = await supabase
         .from('notifications')
         .select('*')
+        .in('service', ['tech', 'both'])
         .order('created_at', { ascending: false })
         .limit(30);
 

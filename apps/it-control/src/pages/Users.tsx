@@ -142,16 +142,14 @@ function PhotoPicker({
   );
 }
 
-// ── Data hook ──────────────────────────────────────────────────────────────
+// ── Data hook — tous les agents, tous services (IT Control est le maître) ──
 function useUsers() {
   return useQuery({
     queryKey: ['users'],
     queryFn: async () => {
-      // Filtrer par service : it ou both (exclut les agents purement tech)
       const { data } = await supabase
         .from('profiles')
         .select('*')
-        .in('service', ['it', 'both'])
         .order('full_name');
       return (data ?? []) as UserRow[];
     },
@@ -169,16 +167,18 @@ export function UsersPage() {
 
   // ── List & filter state
   const { data: users, isLoading } = useUsers();
-  const [search,     setSearch    ] = useState('');
-  const [siteFilter, setSiteFilter] = useState('all');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [search,         setSearch        ] = useState('');
+  const [siteFilter,     setSiteFilter    ] = useState('all');
+  const [roleFilter,     setRoleFilter    ] = useState('all');
+  const [serviceFilter,  setServiceFilter ] = useState('all');
 
   const filtered = users?.filter((u) => {
     const q = search.toLowerCase();
-    const matchSearch = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
-    const matchSite = siteFilter === 'all' || u.site === siteFilter;
-    const matchRole = roleFilter === 'all' || u.role === roleFilter;
-    return matchSearch && matchSite && matchRole;
+    const matchSearch  = !q || u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    const matchSite    = siteFilter    === 'all' || u.site    === siteFilter;
+    const matchRole    = roleFilter    === 'all' || u.role    === roleFilter;
+    const matchService = serviceFilter === 'all' || u.service === serviceFilter;
+    return matchSearch && matchSite && matchRole && matchService;
   });
 
   // ── Modal visibility
@@ -193,7 +193,7 @@ export function UsersPage() {
   } = {
     full_name: '', email: '', password: '', phone: '',
     role: 'it_agent',
-    service: 'it',
+    service: 'it',          // défaut = IT ; l'admin peut choisir tech ou both
     site: SITES[0] as string,
     start_date: new Date().toISOString().split('T')[0],
     fonction: '',
@@ -384,12 +384,18 @@ export function UsersPage() {
       </div>
 
       {/* ── Filters ── */}
-      <div className="flex flex-col sm:flex-row gap-2">
-        <div className="relative flex-1">
+      <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom, email..." className="input-base pl-9 py-2" />
         </div>
+        <select value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)} className="select-base py-2 w-auto">
+          <option value="all">Tous les services</option>
+          <option value="it">Service IT</option>
+          <option value="tech">Service Technique</option>
+          <option value="both">Cross-service</option>
+        </select>
         <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="select-base py-2 w-auto">
           <option value="all">Tous les rôles</option>
           <option value="admin">Admin</option>
@@ -446,7 +452,17 @@ export function UsersPage() {
                 <UserAvatar user={user} size="sm" />
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
+                    <span className={[
+                      'hidden sm:inline-block flex-shrink-0 px-1.5 py-px rounded text-[9px] font-semibold uppercase tracking-wide',
+                      user.service === 'tech' ? 'bg-orange-500/15 text-orange-400'
+                      : user.service === 'both' ? 'bg-purple-500/15 text-purple-400'
+                      : 'bg-blue-500/15 text-blue-400',
+                    ].join(' ')}>
+                      {user.service === 'tech' ? 'TECH' : user.service === 'both' ? 'BOTH' : 'IT'}
+                    </span>
+                  </div>
                   <p className="text-[12px] text-zinc-600 truncate">{user.email}</p>
                 </div>
 
@@ -577,20 +593,47 @@ export function UsersPage() {
                 placeholder="+243..." className="input-base" />
             </div>
             <div>
-              <label className="label-base">Rôle *</label>
-              <select value={addForm.role} onChange={(e) => setAddForm((f) => ({ ...f, role: e.target.value as ProfileRole }))}
+              <label className="label-base">Service *</label>
+              <select value={addForm.service} onChange={(e) => setAddForm((f) => ({
+                  ...f,
+                  service: e.target.value as ProfileService,
+                  // Ajuster le rôle par défaut selon le service choisi
+                  role: e.target.value === 'tech'
+                    ? (f.role === 'it_agent' ? 'tech_agent' : f.role)
+                    : e.target.value === 'it'
+                    ? (f.role === 'tech_agent' ? 'it_agent' : f.role)
+                    : f.role,
+                }))}
                 className="select-base">
-                <option value="it_agent">Agent IT</option>
-                <option value="supervisor">Superviseur</option>
-                <option value="admin">Admin</option>
+                <option value="it">Service Informatique (IT)</option>
+                <option value="tech">Service Technique</option>
+                <option value="both">Cross-service (accès aux deux)</option>
               </select>
             </div>
             <div>
-              <label className="label-base">Service *</label>
-              <select value={addForm.service} onChange={(e) => setAddForm((f) => ({ ...f, service: e.target.value as ProfileService }))}
+              <label className="label-base">Rôle *</label>
+              <select value={addForm.role} onChange={(e) => setAddForm((f) => ({ ...f, role: e.target.value as ProfileRole }))}
                 className="select-base">
-                <option value="it">Informatique uniquement</option>
-                <option value="both">IT + Technique (admin)</option>
+                {addForm.service === 'tech' ? (
+                  <>
+                    <option value="tech_agent">Agent Technique</option>
+                    <option value="supervisor">Superviseur Technique</option>
+                    <option value="admin">Admin</option>
+                  </>
+                ) : addForm.service === 'it' ? (
+                  <>
+                    <option value="it_agent">Agent IT</option>
+                    <option value="supervisor">Superviseur IT</option>
+                    <option value="admin">Admin</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="admin">Admin (cross-service)</option>
+                    <option value="supervisor">Superviseur (cross-service)</option>
+                    <option value="it_agent">Agent IT</option>
+                    <option value="tech_agent">Agent Technique</option>
+                  </>
+                )}
               </select>
             </div>
             <div>
@@ -663,18 +706,20 @@ export function UsersPage() {
                   onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value as ProfileRole }))}
                   className="select-base" disabled={!isAdmin}>
                   <option value="it_agent">Agent IT</option>
+                  <option value="tech_agent">Agent Technique</option>
                   <option value="supervisor">Superviseur</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
               {isAdmin && (
                 <div>
-                  <label className="label-base">Accès service</label>
+                  <label className="label-base">Service</label>
                   <select value={editForm.service}
                     onChange={(e) => setEditForm((f) => ({ ...f, service: e.target.value as ProfileService }))}
                     className="select-base">
-                    <option value="it">Informatique uniquement</option>
-                    <option value="both">IT + Technique (cross-service)</option>
+                    <option value="it">Service Informatique (IT)</option>
+                    <option value="tech">Service Technique</option>
+                    <option value="both">Cross-service (accès aux deux)</option>
                   </select>
                 </div>
               )}
