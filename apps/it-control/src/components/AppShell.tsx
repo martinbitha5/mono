@@ -272,20 +272,23 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* User */}
-        <div className="flex-shrink-0 px-3 py-3 border-t border-zinc-800">
-          <div className="group flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-zinc-950 transition-colors cursor-default">
-            <div className="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 select-none">
-              {initial}
+        <div className="flex-shrink-0 px-3 py-3 border-t border-zinc-800 space-y-1">
+          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-zinc-950/60">
+            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 select-none overflow-hidden">
+              {profile?.photo_url
+                ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
+                : initial}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-semibold text-zinc-200 truncate leading-tight">{profile?.full_name ?? '—'}</p>
+              <p className="text-[12px] font-semibold text-zinc-100 truncate leading-tight">{profile?.full_name ?? '—'}</p>
               <p className="text-[10px] text-zinc-500 leading-tight mt-px truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
             </div>
-            <button onClick={signOut} title="Se déconnecter"
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg text-zinc-500 hover:text-red-500 hover:bg-red-50">
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
           </div>
+          <button onClick={signOut}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+            <LogOut className="w-3.5 h-3.5" />
+            Se déconnecter
+          </button>
         </div>
       </aside>
 
@@ -340,22 +343,24 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Drawer user + logout */}
-        <div className="flex-shrink-0 border-t border-zinc-800 px-3 py-4">
-          <div className="flex items-center gap-3 px-3 py-2 mb-2">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-[14px] font-bold flex-shrink-0 select-none">
-              {initial}
+        <div className="flex-shrink-0 border-t border-zinc-800 px-3 py-4 space-y-2">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-zinc-950/60">
+            <div className="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white text-[15px] font-bold flex-shrink-0 select-none overflow-hidden">
+              {profile?.photo_url
+                ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
+                : initial}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-semibold text-zinc-200 truncate">{profile?.full_name ?? '—'}</p>
-              <p className="text-[11px] text-zinc-500 truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
+              <p className="text-[14px] font-semibold text-zinc-100 truncate">{profile?.full_name ?? '—'}</p>
+              <p className="text-[12px] text-zinc-400 truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
               {profile?.site && (
-                <p className="text-[11px] text-zinc-600 truncate">{profile.site} · {siteCode}</p>
+                <p className="text-[11px] text-zinc-600 truncate mt-px">{profile.site} · {siteCode}</p>
               )}
             </div>
           </div>
           <button onClick={signOut}
-            className="w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium text-red-400 hover:bg-red-500/10 transition-colors">
-            <LogOut className="w-5 h-5" />
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-red-400 hover:bg-red-500/10 transition-colors border border-red-500/20">
+            <LogOut className="w-4 h-4" />
             Se déconnecter
           </button>
         </div>

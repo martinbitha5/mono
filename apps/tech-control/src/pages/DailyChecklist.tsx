@@ -119,8 +119,13 @@ export function DailyChecklistPage() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['checklists-today'] });
+      // refetch immédiat (pas d'attente du staleTime) pour que la progression soit instantanée
+      queryClient.refetchQueries({ queryKey: ['checklists-today'] });
+      queryClient.refetchQueries({ queryKey: ['gse-for-checklist'] });
+      // invalidation différée des autres pages liées
       queryClient.invalidateQueries({ queryKey: ['gse'] });
+      queryClient.invalidateQueries({ queryKey: ['gse-for-fuel'] });
+      queryClient.invalidateQueries({ queryKey: ['maintenance'] });
       queryClient.invalidateQueries({ queryKey: ['tech-dashboard-stats'] });
       setSelectedEq(null);
       setChecks(defaultChecks);

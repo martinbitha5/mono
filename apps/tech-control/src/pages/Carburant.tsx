@@ -342,17 +342,27 @@ export function CarburantPage() {
         </div>
         <div className="flex items-center gap-2">
           {isAdmin && (
-            <Button size="sm" variant="secondary" onClick={() => { setStockModal(true); setErrorMsg(null); }}>
-              <PackagePlus className="w-3.5 h-3.5" />
-              Approvisionnement
-            </Button>
+            <>
+              <Button size="sm" variant="secondary" onClick={() => { setStockModal(true); setErrorMsg(null); }}>
+                <PackagePlus className="w-3.5 h-3.5" />
+                Approvisionnement
+              </Button>
+              <Button size="sm" onClick={() => { setLogModal(true); setErrorMsg(null); }}>
+                <Plus className="w-3.5 h-3.5" />
+                Saisie Carburant
+              </Button>
+            </>
           )}
-          <Button size="sm" onClick={() => { setLogModal(true); setErrorMsg(null); }}>
-            <Plus className="w-3.5 h-3.5" />
-            Saisie Carburant
-          </Button>
         </div>
       </div>
+
+      {/* Lecture seule pour les agents techniques */}
+      {!isAdmin && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-zinc-800/60 border border-zinc-700/50 rounded-xl text-[12px] text-zinc-500">
+          <Fuel className="w-4 h-4 flex-shrink-0" />
+          Lecture seule — la saisie carburant est réservée aux superviseurs et administrateurs.
+        </div>
+      )}
 
       {/* Error banner */}
       {errorMsg && (
