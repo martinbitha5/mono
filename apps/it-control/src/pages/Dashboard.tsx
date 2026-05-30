@@ -16,14 +16,21 @@ function useDashboardStats() {
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
       const [attendance, openInc, criticalInc, installations, equipment] = await Promise.all([
-        supabase.from('attendance').select('*', { count: 'exact', head: true }).gte('check_in_time', today),
+        // Fetch avec join profiles pour filtrer service !== 'tech'
+        supabase.from('attendance')
+          .select('id, profiles!user_id(service)')
+          .gte('check_in_time', today),
         supabase.from('incidents').select('*', { count: 'exact', head: true }).in('status', ['open', 'in_progress']),
         supabase.from('incidents').select('*', { count: 'exact', head: true }).eq('priority', 'critical').eq('status', 'open'),
         supabase.from('installations').select('status').gte('created_at', today),
         supabase.from('equipment').select('status').eq('status', 'faulty'),
       ]);
+      const itAtt = (attendance.data ?? []).filter((r) => {
+        const p = r.profiles as { service?: string } | null;
+        return p?.service !== 'tech';
+      });
       return {
-        presentCount: attendance.count ?? 0,
+        presentCount: itAtt.length,
         openIncidents: openInc.count ?? 0,
         criticalIncidents: criticalInc.count ?? 0,
         installations: installations.data ?? [],
@@ -58,11 +65,14 @@ function useRecentAttendance() {
       const today = new Date().toISOString().split('T')[0];
       const { data } = await supabase
         .from('attendance')
-        .select('id, site, status, check_in_time, profiles(full_name, role)')
+        .select('id, site, status, check_in_time, profiles(full_name, role, service)')
         .gte('check_in_time', today)
         .order('check_in_time', { ascending: false })
-        .limit(6);
-      return data ?? [];
+        .limit(20);
+      return (data ?? []).filter((r) => {
+        const p = r.profiles as { service?: string } | null;
+        return p?.service !== 'tech';
+      }).slice(0, 6);
     },
   });
 }
@@ -73,14 +83,20 @@ function useSiteStatuses() {
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
       const [att, inst, inc, eq] = await Promise.all([
-        supabase.from('attendance').select('site, status').gte('check_in_time', today),
+        supabase.from('attendance').select('site, status, profiles!user_id(service)').gte('check_in_time', today),
         supabase.from('installations').select('site, status').gte('created_at', today),
         supabase.from('incidents').select('site').in('status', ['open', 'in_progress']),
         supabase.from('equipment').select('site').eq('status', 'faulty'),
       ]);
 
+      // Ne garder que les agents IT (service !== 'tech')
+      const itAtt = (att.data ?? []).filter((a) => {
+        const p = a.profiles as { service?: string } | null;
+        return p?.service !== 'tech';
+      });
+
       return SITES.map((site) => {
-        const siteAtt = att.data?.filter((a) => a.site === site) ?? [];
+        const siteAtt = itAtt.filter((a) => a.site === site);
         const siteInst = inst.data?.filter((i) => i.site === site) ?? [];
         const siteInc = inc.data?.filter((i) => i.site === site) ?? [];
         const siteEq = eq.data?.filter((e) => e.site === site) ?? [];
