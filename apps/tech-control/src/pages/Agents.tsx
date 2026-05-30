@@ -6,7 +6,7 @@ import { SITES } from '@ats/types';
 import { useAuth } from '../hooks/useAuth';
 import {
   Search, Users, MapPin, Phone, Mail, Briefcase, Calendar,
-  Edit2, UserCheck, UserX, Camera, Trash2, Info, Clock,
+  Edit2, UserCheck, UserX, Camera, Trash2, Info, Clock, CalendarOff,
 } from 'lucide-react';
 
 function resizeImage(file: File): Promise<Blob> {
@@ -43,7 +43,7 @@ async function uploadProfilePhoto(userId: string, blob: Blob): Promise<string | 
 type ProfileRole   = 'admin' | 'supervisor' | 'it_agent' | 'tech_agent';
 type ProfileStatus = 'active' | 'inactive';
 type ProfileService = 'tech' | 'it' | 'both';
-type AttendanceStatus = 'present' | 'late' | 'absent';
+type AttendanceStatus = 'present' | 'late' | 'absent' | 'off';
 
 type UserRow = {
   id: string;
@@ -73,11 +73,11 @@ const roleGradients: Record<ProfileRole, string> = {
   it_agent: 'from-emerald-600 to-emerald-700',
   tech_agent: 'from-amber-600 to-amber-700',
 };
-const attendanceColors: Record<AttendanceStatus, 'green' | 'yellow' | 'red'> = {
-  present: 'green', late: 'yellow', absent: 'red',
+const attendanceColors: Record<AttendanceStatus, 'green' | 'yellow' | 'red' | 'gray'> = {
+  present: 'green', late: 'yellow', absent: 'red', off: 'gray',
 };
 const attendanceLabels: Record<AttendanceStatus, string> = {
-  present: 'Présent', late: 'En retard', absent: 'Absent',
+  present: 'Présent', late: 'En retard', absent: 'Absent', off: 'Off',
 };
 
 function getMarkStatus(): 'present' | 'late' {
@@ -204,10 +204,12 @@ export function AgentsPage() {
         .maybeSingle();
 
       if (existing) {
-        const { error } = await supabase.from('attendance').update({ status }).eq('id', existing.id);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await supabase.from('attendance').update({ status } as any).eq('id', existing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('attendance').insert({ user_id: userId, site, status });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await supabase.from('attendance').insert({ user_id: userId, site, status } as any);
         if (error) throw error;
       }
     },
@@ -343,63 +345,73 @@ export function AgentsPage() {
 
   /* ── Cellule présence ── */
   function PresenceCell({ user, stopProp = true }: { user: UserRow; stopProp?: boolean }) {
-    const rec = attendanceMap?.get(user.id);
+    const rec       = attendanceMap?.get(user.id);
     const isPending = markAttendance.isPending && markAttendance.variables?.userId === user.id;
+    const mark      = (status: AttendanceStatus) =>
+      markAttendance.mutate({ userId: user.id, site: user.site, status });
 
     return (
       <div
-        className="flex items-center gap-1.5 flex-wrap"
+        className="flex items-center gap-1 flex-wrap"
         onClick={stopProp ? (e) => e.stopPropagation() : undefined}
       >
         {rec ? (
-          /* Statut affiché + bouton bascule */
-          <div className="flex items-center gap-2">
+          /* Statut affiché + boutons de bascule */
+          <div className="flex items-center gap-1.5">
             <Badge color={attendanceColors[rec.status]} dot>
               {attendanceLabels[rec.status]}
             </Badge>
-            {/* Bascule rapide : présent↔absent */}
-            <button
-              disabled={isPending}
-              onClick={() => markAttendance.mutate({
-                userId: user.id,
-                site: user.site,
-                status: rec.status === 'absent' ? getMarkStatus() : 'absent',
-              })}
-              className={`p-1 rounded-md transition-colors disabled:opacity-40
-                ${rec.status === 'absent'
-                  ? 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'
-                  : 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'}`}
-              title={rec.status === 'absent' ? 'Marquer présent' : 'Marquer absent'}
-            >
-              {rec.status === 'absent'
-                ? <UserCheck className="w-3.5 h-3.5" />
-                : <UserX    className="w-3.5 h-3.5" />}
-            </button>
+            {/* Si off ou absent → bouton retour présent */}
+            {(rec.status === 'absent' || rec.status === 'off') && (
+              <button disabled={isPending} onClick={() => mark(getMarkStatus())}
+                className="p-1 rounded-md text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors disabled:opacity-40"
+                title="Marquer présent">
+                <UserCheck className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {/* Si présent/retard → bouton absent */}
+            {(rec.status === 'present' || rec.status === 'late') && (
+              <button disabled={isPending} onClick={() => mark('absent')}
+                className="p-1 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                title="Marquer absent">
+                <UserX className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {/* Si présent/retard/absent → bouton Off */}
+            {rec.status !== 'off' && (
+              <button disabled={isPending} onClick={() => mark('off')}
+                className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50 transition-colors disabled:opacity-40"
+                title="Marquer Off (hors vacation)">
+                <CalendarOff className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         ) : (
-          /* Pas encore pointé — boutons d'action */
+          /* Pas encore pointé — 3 boutons */
           <div className="flex items-center gap-1">
-            <button
-              disabled={isPending}
-              onClick={() => markAttendance.mutate({ userId: user.id, site: user.site, status: getMarkStatus() })}
+            <button disabled={isPending} onClick={() => mark(getMarkStatus())}
               className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
                 text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20
                 transition-colors disabled:opacity-40"
-              title="Marquer présent"
-            >
+              title="Marquer présent">
               <UserCheck className="w-3.5 h-3.5" />
               <span className="hidden lg:inline">Présent</span>
             </button>
-            <button
-              disabled={isPending}
-              onClick={() => markAttendance.mutate({ userId: user.id, site: user.site, status: 'absent' })}
+            <button disabled={isPending} onClick={() => mark('absent')}
               className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
                 text-red-400 hover:bg-red-500/10 border border-red-500/20
                 transition-colors disabled:opacity-40"
-              title="Marquer absent"
-            >
+              title="Marquer absent">
               <UserX className="w-3.5 h-3.5" />
               <span className="hidden lg:inline">Absent</span>
+            </button>
+            <button disabled={isPending} onClick={() => mark('off')}
+              className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
+                text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50 border border-zinc-700
+                transition-colors disabled:opacity-40"
+              title="Off — pas en vacation">
+              <CalendarOff className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Off</span>
             </button>
           </div>
         )}
@@ -593,7 +605,7 @@ export function AgentsPage() {
                       ) : (
                         <span className="text-[12px] text-zinc-600">Pas encore pointé</span>
                       )}
-                      <div className="flex items-center gap-2 ml-auto">
+                      <div className="flex items-center gap-2 ml-auto flex-wrap">
                         <button
                           disabled={markAttendance.isPending}
                           onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: getMarkStatus() })}
@@ -609,6 +621,14 @@ export function AgentsPage() {
                             text-red-400 hover:bg-red-500/10 border border-red-500/20 transition-colors disabled:opacity-40"
                         >
                           <UserX className="w-3.5 h-3.5" /> Absent
+                        </button>
+                        <button
+                          disabled={markAttendance.isPending}
+                          onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: 'off' })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
+                            text-zinc-400 hover:bg-zinc-700/50 border border-zinc-700 transition-colors disabled:opacity-40"
+                        >
+                          <CalendarOff className="w-3.5 h-3.5" /> Off
                         </button>
                       </div>
                     </div>
