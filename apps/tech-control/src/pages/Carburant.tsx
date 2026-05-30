@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { SITES } from '@ats/types';
 import {
   Droplets, Plus, TrendingDown, AlertTriangle, Fuel,
-  CalendarDays, PackagePlus, X, History,
+  CalendarDays, PackagePlus, X, History, Edit2, Trash2,
 } from 'lucide-react';
 
 type FuelType   = 'gasoil' | 'essence' | 'huile';
@@ -199,11 +199,21 @@ export function CarburantPage() {
   const queryClient       = useQueryClient();
   const isAdmin = profile?.role === 'admin' || profile?.role === 'supervisor';
 
-  const [site,         setSite        ] = useState(profile?.site ?? 'all');
-  const [logModal,     setLogModal    ] = useState(false);
-  const [stockModal,   setStockModal  ] = useState(false);
-  const [errorMsg,     setErrorMsg    ] = useState<string | null>(null);
-  const [approPeriod,  setApproPeriod ] = useState<ApproPeriod>('month');
+  const [site,           setSite          ] = useState(profile?.site ?? 'all');
+  const [logModal,       setLogModal      ] = useState(false);
+  const [stockModal,     setStockModal    ] = useState(false);
+  const [errorMsg,       setErrorMsg      ] = useState<string | null>(null);
+  const [approPeriod,    setApproPeriod   ] = useState<ApproPeriod>('month');
+  const [editApproModal, setEditApproModal] = useState(false);
+  const [editApproLog,   setEditApproLog  ] = useState<FuelApproLog | null>(null);
+  const [editApproForm,  setEditApproForm ] = useState({ quantity: '', notes: '' });
+
+  const openEditAppro = (log: FuelApproLog) => {
+    setEditApproLog(log);
+    setEditApproForm({ quantity: String(log.quantity), notes: log.notes || '' });
+    setEditApproModal(true);
+    setErrorMsg(null);
+  };
 
   const { data: logs,       isLoading } = useFuelLogs(site);
   const { data: approLogs              } = useFuelApproLogs(site);
@@ -328,6 +338,74 @@ export function CarburantPage() {
     onError: (err: Error) => {
       setErrorMsg(err.message ?? "Erreur lors de l'approvisionnement");
     },
+  });
+
+  /* ── Mutation: modifier un approvisionnement ── */
+  const editAppro = useMutation({
+    mutationFn: async () => {
+      if (!editApproLog) return;
+      const newQty = parseFloat(editApproForm.quantity);
+      if (isNaN(newQty) || newQty <= 0) throw new Error('La quantité doit être supérieure à 0');
+      const diff = newQty - Number(editApproLog.quantity);
+
+      // 1. Mettre à jour le log
+      const { error: logErr } = await supabase
+        .from('fuel_appro_logs')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .update({ quantity: newQty, notes: editApproForm.notes } as any)
+        .eq('id', editApproLog.id);
+      if (logErr) throw logErr;
+
+      // 2. Ajuster le stock (ajoute ou retire la différence)
+      if (diff !== 0) {
+        const { data: stockRow, error: fetchErr } = await supabase
+          .from('fuel_stock').select('*')
+          .eq('site', editApproLog.site).eq('fuel_type', editApproLog.fuel_type)
+          .maybeSingle();
+        if (fetchErr) throw fetchErr;
+        if (stockRow) {
+          const { error } = await supabase.from('fuel_stock')
+            .update({ quantity: Math.max(0, Number(stockRow.quantity) + diff), updated_at: new Date().toISOString() })
+            .eq('id', stockRow.id);
+          if (error) throw error;
+        }
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
+      queryClient.invalidateQueries({ queryKey: ['fuel-appro-logs'] });
+      setEditApproModal(false);
+      setEditApproLog(null);
+      setErrorMsg(null);
+    },
+    onError: (err: Error) => setErrorMsg(err.message ?? "Erreur lors de la modification"),
+  });
+
+  /* ── Mutation: supprimer un approvisionnement ── */
+  const deleteAppro = useMutation({
+    mutationFn: async (log: FuelApproLog) => {
+      // 1. Soustraire du stock
+      const { data: stockRow, error: fetchErr } = await supabase
+        .from('fuel_stock').select('*')
+        .eq('site', log.site).eq('fuel_type', log.fuel_type)
+        .maybeSingle();
+      if (fetchErr) throw fetchErr;
+      if (stockRow) {
+        const { error } = await supabase.from('fuel_stock')
+          .update({ quantity: Math.max(0, Number(stockRow.quantity) - Number(log.quantity)), updated_at: new Date().toISOString() })
+          .eq('id', stockRow.id);
+        if (error) throw error;
+      }
+
+      // 2. Supprimer le log
+      const { error: delErr } = await supabase.from('fuel_appro_logs').delete().eq('id', log.id);
+      if (delErr) throw delErr;
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
+      queryClient.invalidateQueries({ queryKey: ['fuel-appro-logs'] });
+    },
+    onError: (err: Error) => setErrorMsg(err.message ?? "Erreur lors de la suppression"),
   });
 
   /* ══════════════════════════════════════════════════════════════════ */
@@ -495,12 +573,15 @@ export function CarburantPage() {
             </span>
           </div>
 
-          <div className="hidden sm:grid sm:grid-cols-[110px_100px_110px_1fr_130px] gap-3 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950">
+          <div className={`hidden sm:grid gap-3 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950 ${
+            isAdmin ? 'sm:grid-cols-[110px_100px_110px_1fr_130px_56px]' : 'sm:grid-cols-[110px_100px_110px_1fr_130px]'
+          }`}>
             <span className="th">Date</span>
             <span className="th">Type</span>
             <span className="th text-right">Quantité</span>
             <span className="th">Notes</span>
             <span className="th">Agent</span>
+            {isAdmin && <span />}
           </div>
 
           {filteredAppro.length === 0 ? (
@@ -516,7 +597,9 @@ export function CarburantPage() {
                 const ag  = log.agent as { full_name: string } | null;
                 return (
                   <div key={log.id}
-                    className="flex sm:grid sm:grid-cols-[110px_100px_110px_1fr_130px] items-center gap-3 px-4 py-3 hover:bg-zinc-950 transition-colors">
+                    className={`group flex sm:grid items-center gap-3 px-4 py-3 hover:bg-zinc-950 transition-colors ${
+                      isAdmin ? 'sm:grid-cols-[110px_100px_110px_1fr_130px_56px]' : 'sm:grid-cols-[110px_100px_110px_1fr_130px]'
+                    }`}>
                     <span className="text-[12px] font-mono text-zinc-500 whitespace-nowrap">
                       {dt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}{' '}
                       <span className="text-zinc-700">
@@ -534,6 +617,28 @@ export function CarburantPage() {
                       {log.notes || <span className="text-zinc-700 italic">—</span>}
                     </span>
                     <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{ag?.full_name ?? '—'}</span>
+
+                    {/* Actions modifier / supprimer */}
+                    {isAdmin && (
+                      <span className="hidden sm:flex items-center gap-0.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => openEditAppro(log)}
+                          className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors"
+                          title="Modifier">
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          disabled={deleteAppro.isPending}
+                          onClick={() => {
+                            if (confirm(`Supprimer cet approvisionnement de ${Number(log.quantity).toLocaleString('fr-FR')} L (${FUEL_CFG[log.fuel_type].label}) ?\nLe stock sera ajusté automatiquement.`))
+                              deleteAppro.mutate(log);
+                          }}
+                          className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                          title="Supprimer">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -713,6 +818,86 @@ export function CarburantPage() {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      {/* ══════════════════════════════════════════════════ */}
+      {/* Modal modifier approvisionnement                 */}
+      {/* ══════════════════════════════════════════════════ */}
+      <Modal
+        open={editApproModal}
+        onClose={() => { setEditApproModal(false); setEditApproLog(null); }}
+        title="Modifier l'approvisionnement"
+        size="sm"
+      >
+        {editApproLog && (
+          <div className="space-y-4">
+            {/* Info read-only : type + date */}
+            <div className="flex items-center gap-3 px-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl">
+              <div className={['w-2 h-2 rounded-full flex-shrink-0', FUEL_CFG[editApproLog.fuel_type].dot].join(' ')} />
+              <span className={['text-[13px] font-semibold', FUEL_CFG[editApproLog.fuel_type].color].join(' ')}>
+                {FUEL_CFG[editApproLog.fuel_type].label}
+              </span>
+              <span className="text-[12px] text-zinc-600 ml-auto">
+                {new Date(editApproLog.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                {' · '}
+                {new Date(editApproLog.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+
+            {/* Quantité */}
+            <div>
+              <label className="label-base">Quantité (L) *</label>
+              <input
+                type="number" min="1" step="1"
+                value={editApproForm.quantity}
+                onChange={(e) => setEditApproForm((f) => ({ ...f, quantity: e.target.value }))}
+                className="input-base"
+              />
+              {editApproForm.quantity && parseFloat(editApproForm.quantity) > 0 &&
+                parseFloat(editApproForm.quantity) !== Number(editApproLog.quantity) && (
+                <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-amber-500/[0.06] border border-amber-500/20 rounded-lg text-[11px] text-amber-400">
+                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>
+                    Ancienne valeur : <strong>{Number(editApproLog.quantity).toLocaleString('fr-FR')} L</strong>
+                    {' '}→ <strong>{parseFloat(editApproForm.quantity).toLocaleString('fr-FR')} L</strong>
+                    {' '}
+                    ({parseFloat(editApproForm.quantity) > Number(editApproLog.quantity) ? '+' : ''}
+                    {(parseFloat(editApproForm.quantity) - Number(editApproLog.quantity)).toLocaleString('fr-FR')} L sur le stock)
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="label-base">N° bon / Fournisseur</label>
+              <input
+                type="text"
+                value={editApproForm.notes}
+                onChange={(e) => setEditApproForm((f) => ({ ...f, notes: e.target.value }))}
+                className="input-base"
+                placeholder="Ex: BON-2026-0042 · TRADEX"
+              />
+            </div>
+
+            {editAppro.isError && (
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/[0.07] border border-red-500/25 rounded-xl text-[12px] text-red-400">
+                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                {(editAppro.error as Error)?.message ?? 'Erreur lors de la modification'}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-1">
+              <Button variant="ghost" onClick={() => { setEditApproModal(false); setEditApproLog(null); }}>Annuler</Button>
+              <Button
+                onClick={() => editAppro.mutate()}
+                loading={editAppro.isPending}
+                disabled={!editApproForm.quantity || parseFloat(editApproForm.quantity) <= 0}>
+                <Edit2 className="w-3.5 h-3.5" /> Enregistrer
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/* ══════════════════════════════════════════════════ */}
