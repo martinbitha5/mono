@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@ats/supabase/client';
 import { Button, Badge } from '@ats/ui';
 import { useAuth } from '../hooks/useAuth';
-import { UserCheck, Clock, MapPin, CheckCircle2 } from 'lucide-react';
+import { UserCheck, Clock, MapPin, CheckCircle2, CalendarOff, UserX } from 'lucide-react';
 
 function useTodayAttendance() {
   return useQuery({
@@ -42,14 +42,52 @@ function useMyAttendanceToday(userId: string | undefined) {
   });
 }
 
-const statusColors = { present: 'green', late: 'yellow', absent: 'red' } as const;
-const statusLabels = { present: 'Présent', late: 'En retard', absent: 'Absent' };
+type AttStatus = 'present' | 'late' | 'absent' | 'off';
+
+const statusColors: Record<AttStatus, 'green' | 'yellow' | 'red' | 'gray'> = {
+  present: 'green', late: 'yellow', absent: 'red', off: 'gray',
+};
+const statusLabels: Record<AttStatus, string> = {
+  present: 'Présent', late: 'En retard', absent: 'Absent', off: 'Off',
+};
+
+// ── Hook admin : tous les agents IT avec leur pointage du jour ──────────────
+function useAllAgentsWithAttendance() {
+  return useQuery({
+    queryKey: ['all-it-agents-attendance'],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const [agentsRes, attRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, full_name, site, role, service')
+          .in('service', ['it', 'both'])
+          .eq('status', 'active')
+          .order('full_name'),
+        supabase
+          .from('attendance')
+          .select('*')
+          .gte('check_in_time', today),
+      ]);
+      const agents = agentsRes.data ?? [];
+      const attList = attRes.data ?? [];
+      return agents.map((agent) => ({
+        ...agent,
+        record: attList.find((a) => a.user_id === agent.id) ?? null,
+      }));
+    },
+    refetchInterval: 15_000,
+  });
+}
 
 export function AttendancePage() {
   const { user, profile } = useAuth();
   const queryClient = useQueryClient();
+  const isAdminOrSupervisor = profile?.role === 'admin' || profile?.role === 'supervisor';
+
   const { data: attendance, isLoading } = useTodayAttendance();
   const { data: myRecord } = useMyAttendanceToday(user?.id);
+  const { data: allAgents, isLoading: isLoadingAll } = useAllAgentsWithAttendance();
   const [notes, setNotes] = useState('');
 
   const checkInMutation = useMutation({
@@ -70,6 +108,38 @@ export function AttendancePage() {
       queryClient.invalidateQueries({ queryKey: ['my-attendance-today'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       setNotes('');
+    },
+  });
+
+  // Mutation admin : crée ou met à jour le pointage d'un agent
+  const markAttendance = useMutation({
+    mutationFn: async ({
+      userId, site, status, existingId,
+    }: { userId: string; site: string; status: AttStatus; existingId?: string }) => {
+      if (existingId) {
+        const { error } = await supabase
+          .from('attendance')
+          .update({ status } as any)
+          .eq('id', existingId);
+        if (error) throw error;
+      } else {
+        const now = new Date();
+        const late = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() >= 30);
+        const finalStatus: AttStatus = status === 'present' ? (late ? 'late' : 'present') : status;
+        const { error } = await supabase.from('attendance').insert({
+          user_id: userId,
+          site,
+          status: finalStatus,
+        } as any);
+        if (error) throw error;
+      }
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['attendance-today'] }),
+        queryClient.refetchQueries({ queryKey: ['all-it-agents-attendance'] }),
+        queryClient.refetchQueries({ queryKey: ['my-attendance-today'] }),
+      ]);
     },
   });
 
@@ -159,87 +229,184 @@ export function AttendancePage() {
         </div>
       </div>
 
-      {/* Attendance table */}
+      {/* ── Attendance table ─────────────────────────────────────────────── */}
       <div className="border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05] bg-white/[0.015]">
           <div className="flex items-center gap-2">
-            <h2 className="text-[13px] font-semibold text-zinc-200">
-              Présences du jour
-            </h2>
-            {!!attendance?.length && (
-              <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">
-                {attendance.length}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Table header */}
-        <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] gap-3 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
-          <span />
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Agent</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Site</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Statut</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Heure</span>
-        </div>
-
-        {isLoading ? (
-          <div className="divide-y divide-white/[0.04]">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-              </div>
-            ))}
-          </div>
-        ) : attendance?.length === 0 ? (
-          <div className="py-12 text-center">
-            <Clock className="w-7 h-7 text-zinc-700 mx-auto mb-3" />
-            <p className="text-[13px] text-zinc-500">Aucun pointage aujourd'hui</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-white/[0.04]">
-            {attendance?.map((record) => {
-              const name = (record.profiles as { full_name: string } | null)?.full_name ?? '—';
-              const initial = name.charAt(0).toUpperCase();
-              const color = statusColors[record.status as keyof typeof statusColors] ?? 'gray';
-              const label = statusLabels[record.status as keyof typeof statusLabels] ?? record.status;
-              const time = new Date(record.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
-              return (
-                <div
-                  key={record.id}
-                  className="flex sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
-                >
-                  {/* Avatar */}
-                  <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-300 flex-shrink-0">
-                    {initial}
-                  </div>
-
-                  {/* Name */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{name}</p>
-                    <p className="text-[12px] text-zinc-600 sm:hidden">
-                      {record.site} · {time}
-                    </p>
-                  </div>
-
-                  {/* Site */}
-                  <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{record.site}</span>
-
-                  {/* Status */}
-                  <span>
-                    <Badge color={color} dot>
-                      {label}
-                    </Badge>
+            <h2 className="text-[13px] font-semibold text-zinc-200">Présences du jour</h2>
+            {isAdminOrSupervisor
+              ? !!allAgents?.length && (
+                  <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">
+                    {allAgents.length}
                   </span>
-
-                  {/* Time */}
-                  <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
-                </div>
-              );
-            })}
+                )
+              : !!attendance?.length && (
+                  <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">
+                    {attendance.length}
+                  </span>
+                )}
           </div>
+        </div>
+
+        {/* ── Admin / Supervisor : tous les agents ─────────────────────────── */}
+        {isAdminOrSupervisor ? (
+          <>
+            {/* header */}
+            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] gap-3 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
+              <span />
+              {['Agent', 'Site', 'Statut', 'Heure', ''].map((h) => (
+                <span key={h} className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">{h}</span>
+              ))}
+            </div>
+
+            {isLoadingAll ? (
+              <div className="divide-y divide-white/[0.04]">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="px-4 py-3.5 flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
+                    <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="divide-y divide-white/[0.04]">
+                {allAgents?.map((agent) => {
+                  const initial = agent.full_name.charAt(0).toUpperCase();
+                  const rec = agent.record;
+                  const color = rec ? (statusColors[rec.status as AttStatus] ?? 'gray') : 'gray';
+                  const label = rec ? (statusLabels[rec.status as AttStatus] ?? rec.status) : '—';
+                  const time = rec
+                    ? new Date(rec.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                    : '—';
+
+                  return (
+                    <div
+                      key={agent.id}
+                      className="group flex sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
+                    >
+                      {/* Avatar */}
+                      <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-300 flex-shrink-0">
+                        {initial}
+                      </div>
+
+                      {/* Name */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-zinc-200 truncate">{agent.full_name}</p>
+                        <p className="text-[12px] text-zinc-600 sm:hidden">{agent.site} · {time}</p>
+                      </div>
+
+                      {/* Site */}
+                      <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{agent.site}</span>
+
+                      {/* Status badge */}
+                      <span>
+                        {rec ? (
+                          <Badge color={color} dot>{label}</Badge>
+                        ) : (
+                          <span className="text-[12px] text-zinc-600">Non pointé</span>
+                        )}
+                      </span>
+
+                      {/* Time */}
+                      <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+
+                      {/* Action buttons */}
+                      <span
+                        className="hidden sm:flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {/* Présent — hide if already present/late */}
+                        {(!rec || (rec.status as AttStatus) === 'absent' || (rec.status as AttStatus) === 'off') && (
+                          <button
+                            onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'present', existingId: rec?.id })}
+                            className="p-1 rounded-md hover:bg-emerald-500/10 text-zinc-600 hover:text-emerald-400 transition-colors"
+                            title="Marquer présent"
+                          >
+                            <UserCheck className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {/* Absent — hide if already absent */}
+                        {(!rec || (rec.status as AttStatus) !== 'absent') && (
+                          <button
+                            onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'absent', existingId: rec?.id })}
+                            className="p-1 rounded-md hover:bg-red-500/10 text-zinc-600 hover:text-red-400 transition-colors"
+                            title="Marquer absent"
+                          >
+                            <UserX className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {/* Off — hide if already off */}
+                        {(!rec || (rec.status as AttStatus) !== 'off') && (
+                          <button
+                            onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'off', existingId: rec?.id })}
+                            className="p-1 rounded-md hover:bg-zinc-500/10 text-zinc-600 hover:text-zinc-300 transition-colors"
+                            title="Marquer Off"
+                          >
+                            <CalendarOff className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        ) : (
+          /* ── Agent régulier : seulement ceux qui ont pointé ──────────────── */
+          <>
+            {/* header */}
+            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] gap-3 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
+              <span />
+              {['Agent', 'Site', 'Statut', 'Heure'].map((h) => (
+                <span key={h} className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">{h}</span>
+              ))}
+            </div>
+
+            {isLoading ? (
+              <div className="divide-y divide-white/[0.04]">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="px-4 py-3.5 flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
+                    <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            ) : attendance?.length === 0 ? (
+              <div className="py-12 text-center">
+                <Clock className="w-7 h-7 text-zinc-700 mx-auto mb-3" />
+                <p className="text-[13px] text-zinc-500">Aucun pointage aujourd'hui</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-white/[0.04]">
+                {attendance?.map((record) => {
+                  const name = (record.profiles as { full_name: string } | null)?.full_name ?? '—';
+                  const initial = name.charAt(0).toUpperCase();
+                  const color = statusColors[record.status as AttStatus] ?? 'gray';
+                  const label = statusLabels[record.status as AttStatus] ?? record.status;
+                  const time = new Date(record.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                  return (
+                    <div
+                      key={record.id}
+                      className="flex sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-300 flex-shrink-0">
+                        {initial}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-zinc-200 truncate">{name}</p>
+                        <p className="text-[12px] text-zinc-600 sm:hidden">{record.site} · {time}</p>
+                      </div>
+                      <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{record.site}</span>
+                      <span><Badge color={color} dot>{label}</Badge></span>
+                      <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
