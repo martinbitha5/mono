@@ -330,8 +330,10 @@ export function CarburantPage() {
       if (logErr) throw logErr;
     },
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
-      queryClient.invalidateQueries({ queryKey: ['fuel-appro-logs'] });
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['fuel-stock'] }),
+        queryClient.refetchQueries({ queryKey: ['fuel-appro-logs'] }),
+      ]);
       setStockModal(false);
       setStockForm(defaultStock);
       setErrorMsg(null);
