@@ -373,8 +373,10 @@ export function CarburantPage() {
       }
     },
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
-      queryClient.invalidateQueries({ queryKey: ['fuel-appro-logs'] });
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['fuel-stock'] }),
+        queryClient.refetchQueries({ queryKey: ['fuel-appro-logs'] }),
+      ]);
       setEditApproModal(false);
       setEditApproLog(null);
       setErrorMsg(null);
@@ -390,8 +392,10 @@ export function CarburantPage() {
       if (error) throw error;
     },
     onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
-      queryClient.invalidateQueries({ queryKey: ['fuel-appro-logs'] });
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['fuel-stock'] }),
+        queryClient.refetchQueries({ queryKey: ['fuel-appro-logs'] }),
+      ]);
     },
     onError: (err: Error) => setErrorMsg(err.message ?? "Erreur lors de la suppression"),
   });
