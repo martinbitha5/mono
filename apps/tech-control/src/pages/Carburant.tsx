@@ -204,9 +204,10 @@ export function CarburantPage() {
   const [stockModal,     setStockModal    ] = useState(false);
   const [errorMsg,       setErrorMsg      ] = useState<string | null>(null);
   const [approPeriod,    setApproPeriod   ] = useState<ApproPeriod>('month');
-  const [editApproModal, setEditApproModal] = useState(false);
-  const [editApproLog,   setEditApproLog  ] = useState<FuelApproLog | null>(null);
-  const [editApproForm,  setEditApproForm ] = useState({ quantity: '', notes: '' });
+  const [editApproModal,   setEditApproModal  ] = useState(false);
+  const [editApproLog,     setEditApproLog    ] = useState<FuelApproLog | null>(null);
+  const [editApproForm,    setEditApproForm   ] = useState({ quantity: '', notes: '' });
+  const [confirmDeleteId,  setConfirmDeleteId ] = useState<string | null>(null);
 
   const openEditAppro = (log: FuelApproLog) => {
     setEditApproLog(log);
@@ -620,23 +621,45 @@ export function CarburantPage() {
 
                     {/* Actions modifier / supprimer */}
                     {isAdmin && (
-                      <span className="hidden sm:flex items-center gap-0.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => openEditAppro(log)}
-                          className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors"
-                          title="Modifier">
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          disabled={deleteAppro.isPending}
-                          onClick={() => {
-                            if (confirm(`Supprimer cet approvisionnement de ${Number(log.quantity).toLocaleString('fr-FR')} L (${FUEL_CFG[log.fuel_type].label}) ?\nLe stock sera ajusté automatiquement.`))
-                              deleteAppro.mutate(log);
-                          }}
-                          className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-40"
-                          title="Supprimer">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                      <span className={`hidden sm:flex items-center gap-0.5 justify-end transition-opacity ${
+                        confirmDeleteId === log.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                      }`}>
+                        {confirmDeleteId === log.id ? (
+                          <>
+                            <button
+                              disabled={deleteAppro.isPending}
+                              onClick={() => {
+                                deleteAppro.mutate(log, {
+                                  onSuccess: () => setConfirmDeleteId(null),
+                                  onError: () => setConfirmDeleteId(null),
+                                });
+                              }}
+                              className="px-2 py-1 rounded-md text-[11px] font-semibold bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors disabled:opacity-40 whitespace-nowrap">
+                              {deleteAppro.isPending ? '…' : 'Confirmer'}
+                            </button>
+                            <button
+                              disabled={deleteAppro.isPending}
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="px-2 py-1 rounded-md text-[11px] font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors disabled:opacity-40">
+                              Annuler
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => openEditAppro(log)}
+                              className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors"
+                              title="Modifier">
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(log.id)}
+                              className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                              title="Supprimer">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
                       </span>
                     )}
                   </div>
