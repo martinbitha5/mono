@@ -383,24 +383,11 @@ export function CarburantPage() {
   });
 
   /* ── Mutation: supprimer un approvisionnement ── */
+  // Le trigger SQL trg_adjust_stock_on_appro_delete ajuste fuel_stock automatiquement
   const deleteAppro = useMutation({
     mutationFn: async (log: FuelApproLog) => {
-      // 1. Soustraire du stock
-      const { data: stockRow, error: fetchErr } = await supabase
-        .from('fuel_stock').select('*')
-        .eq('site', log.site).eq('fuel_type', log.fuel_type)
-        .maybeSingle();
-      if (fetchErr) throw fetchErr;
-      if (stockRow) {
-        const { error } = await supabase.from('fuel_stock')
-          .update({ quantity: Math.max(0, Number(stockRow.quantity) - Number(log.quantity)), updated_at: new Date().toISOString() })
-          .eq('id', stockRow.id);
-        if (error) throw error;
-      }
-
-      // 2. Supprimer le log
-      const { error: delErr } = await supabase.from('fuel_appro_logs').delete().eq('id', log.id);
-      if (delErr) throw delErr;
+      const { error } = await supabase.from('fuel_appro_logs').delete().eq('id', log.id);
+      if (error) throw error;
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ['fuel-stock'] });
