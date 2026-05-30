@@ -6,7 +6,7 @@ import { SITES } from '@ats/types';
 import { useAuth } from '../hooks/useAuth';
 import {
   Search, Users, MapPin, Phone, Mail, Briefcase, Calendar,
-  Edit2, UserCheck, UserX, Camera, Trash2, Info,
+  Edit2, UserCheck, UserX, Camera, Trash2, Info, Clock,
 } from 'lucide-react';
 
 function resizeImage(file: File): Promise<Blob> {
@@ -42,8 +42,8 @@ async function uploadProfilePhoto(userId: string, blob: Blob): Promise<string | 
 
 type ProfileRole   = 'admin' | 'supervisor' | 'it_agent' | 'tech_agent';
 type ProfileStatus = 'active' | 'inactive';
-
 type ProfileService = 'tech' | 'it' | 'both';
+type AttendanceStatus = 'present' | 'late' | 'absent';
 
 type UserRow = {
   id: string;
@@ -59,6 +59,8 @@ type UserRow = {
   status: ProfileStatus;
 };
 
+type AttendanceRec = { status: AttendanceStatus; time: string; id: string };
+
 const roleColors: Record<ProfileRole, 'purple' | 'blue' | 'green' | 'yellow'> = {
   admin: 'purple', supervisor: 'blue', it_agent: 'green', tech_agent: 'yellow',
 };
@@ -71,6 +73,17 @@ const roleGradients: Record<ProfileRole, string> = {
   it_agent: 'from-emerald-600 to-emerald-700',
   tech_agent: 'from-amber-600 to-amber-700',
 };
+const attendanceColors: Record<AttendanceStatus, 'green' | 'yellow' | 'red'> = {
+  present: 'green', late: 'yellow', absent: 'red',
+};
+const attendanceLabels: Record<AttendanceStatus, string> = {
+  present: 'Présent', late: 'En retard', absent: 'Absent',
+};
+
+function getMarkStatus(): 'present' | 'late' {
+  const n = new Date();
+  return n.getHours() > 9 || (n.getHours() === 9 && n.getMinutes() >= 30) ? 'late' : 'present';
+}
 
 function calculateSeniority(startDate: string | null): string {
   if (!startDate) return '—';
@@ -142,7 +155,6 @@ function useAgents() {
   return useQuery({
     queryKey: ['tech-users'],
     queryFn: async () => {
-      // Filtrer par service : tech ou both (exclut les agents purement IT)
       const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -161,6 +173,52 @@ export function AgentsPage() {
   const isAdminOrSupervisor = isAdmin || me?.role === 'supervisor';
 
   const { data: users, isLoading } = useAgents();
+
+  /* ── Pointage du jour (admin/superviseur seulement) ── */
+  const { data: attendanceMap } = useQuery({
+    queryKey: ['tech-agents-attendance-today'],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const { data } = await supabase
+        .from('attendance')
+        .select('id, user_id, status, check_in_time')
+        .gte('check_in_time', today);
+      const map = new Map<string, AttendanceRec>();
+      for (const r of (data ?? [])) {
+        map.set(r.user_id, { id: r.id, status: r.status as AttendanceStatus, time: r.check_in_time });
+      }
+      return map;
+    },
+    enabled: isAdminOrSupervisor,
+    refetchInterval: 30_000,
+  });
+
+  const markAttendance = useMutation({
+    mutationFn: async ({ userId, site, status }: { userId: string; site: string; status: AttendanceStatus }) => {
+      const today = new Date().toISOString().split('T')[0];
+      const { data: existing } = await supabase
+        .from('attendance')
+        .select('id')
+        .eq('user_id', userId)
+        .gte('check_in_time', today)
+        .maybeSingle();
+
+      if (existing) {
+        const { error } = await supabase.from('attendance').update({ status }).eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('attendance').insert({ user_id: userId, site, status });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tech-agents-attendance-today'] });
+      queryClient.invalidateQueries({ queryKey: ['tech-attendance-today'] });
+      queryClient.invalidateQueries({ queryKey: ['tech-my-attendance-today'] });
+      queryClient.invalidateQueries({ queryKey: ['tech-dashboard-stats'] });
+    },
+  });
+
   const [search,     setSearch    ] = useState('');
   const [siteFilter, setSiteFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -278,6 +336,77 @@ export function AgentsPage() {
     },
   });
 
+  /* ── Grilles CSS ── */
+  const gridCols = isAdminOrSupervisor
+    ? 'md:grid-cols-[36px_1fr_110px_100px_72px_100px_160px_80px]'
+    : 'md:grid-cols-[36px_1fr_110px_100px_72px_120px]';
+
+  /* ── Cellule présence ── */
+  function PresenceCell({ user, stopProp = true }: { user: UserRow; stopProp?: boolean }) {
+    const rec = attendanceMap?.get(user.id);
+    const isPending = markAttendance.isPending && markAttendance.variables?.userId === user.id;
+
+    return (
+      <div
+        className="flex items-center gap-1.5 flex-wrap"
+        onClick={stopProp ? (e) => e.stopPropagation() : undefined}
+      >
+        {rec ? (
+          /* Statut affiché + bouton bascule */
+          <div className="flex items-center gap-2">
+            <Badge color={attendanceColors[rec.status]} dot>
+              {attendanceLabels[rec.status]}
+            </Badge>
+            {/* Bascule rapide : présent↔absent */}
+            <button
+              disabled={isPending}
+              onClick={() => markAttendance.mutate({
+                userId: user.id,
+                site: user.site,
+                status: rec.status === 'absent' ? getMarkStatus() : 'absent',
+              })}
+              className={`p-1 rounded-md transition-colors disabled:opacity-40
+                ${rec.status === 'absent'
+                  ? 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'
+                  : 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'}`}
+              title={rec.status === 'absent' ? 'Marquer présent' : 'Marquer absent'}
+            >
+              {rec.status === 'absent'
+                ? <UserCheck className="w-3.5 h-3.5" />
+                : <UserX    className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+        ) : (
+          /* Pas encore pointé — boutons d'action */
+          <div className="flex items-center gap-1">
+            <button
+              disabled={isPending}
+              onClick={() => markAttendance.mutate({ userId: user.id, site: user.site, status: getMarkStatus() })}
+              className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
+                text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20
+                transition-colors disabled:opacity-40"
+              title="Marquer présent"
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Présent</span>
+            </button>
+            <button
+              disabled={isPending}
+              onClick={() => markAttendance.mutate({ userId: user.id, site: user.site, status: 'absent' })}
+              className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
+                text-red-400 hover:bg-red-500/10 border border-red-500/20
+                transition-colors disabled:opacity-40"
+              title="Marquer absent"
+            >
+              <UserX className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">Absent</span>
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
 
@@ -290,7 +419,7 @@ export function AgentsPage() {
         </div>
       </div>
 
-      {/* Info banner — agent creation is centralized in IT Control */}
+      {/* Info banner */}
       <div className="flex items-start gap-3 bg-orange-500/[0.07] border border-orange-500/20 rounded-xl px-4 py-3">
         <Info className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
         <p className="text-[12px] text-orange-300 leading-relaxed">
@@ -319,14 +448,13 @@ export function AgentsPage() {
       </div>
 
       <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950
-          ${isAdminOrSupervisor
-            ? 'md:grid-cols-[36px_1fr_110px_100px_72px_120px_80px]'
-            : 'md:grid-cols-[36px_1fr_110px_100px_72px_120px]'}`}>
+        {/* Header */}
+        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950 ${gridCols}`}>
           <span />
           {['Agent', 'Rôle', 'Site', 'Statut', 'Fonction'].map((h) => (
             <span key={h} className="th">{h}</span>
           ))}
+          {isAdminOrSupervisor && <span className="th">Présence</span>}
           {isAdminOrSupervisor && <span />}
         </div>
 
@@ -347,69 +475,85 @@ export function AgentsPage() {
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
-            {filtered?.map((user) => (
-              <div
-                key={user.id}
-                onClick={() => setDetailUser(user)}
-                className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-zinc-950 transition-colors cursor-pointer
-                  ${isAdminOrSupervisor
-                    ? 'md:grid-cols-[36px_1fr_110px_100px_72px_120px_80px]'
-                    : 'md:grid-cols-[36px_1fr_110px_100px_72px_120px]'}`}
-              >
-                <UserAvatar user={user} size="sm" />
+            {filtered?.map((user) => {
+              const rec = attendanceMap?.get(user.id);
+              return (
+                <div
+                  key={user.id}
+                  onClick={() => setDetailUser(user)}
+                  className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-zinc-950 transition-colors cursor-pointer ${gridCols}`}
+                >
+                  <UserAvatar user={user} size="sm" />
 
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
-                  <p className="text-[12px] text-zinc-600 truncate">{user.email}</p>
-                </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
+                      {/* Indicateur présence mobile */}
+                      {isAdminOrSupervisor && rec && (
+                        <span className="md:hidden flex-shrink-0">
+                          <Badge color={attendanceColors[rec.status]} dot>{attendanceLabels[rec.status]}</Badge>
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[12px] text-zinc-600 truncate">{user.email}</p>
+                  </div>
 
-                <span><Badge color={roleColors[user.role]}>{roleLabels[user.role]}</Badge></span>
+                  <span><Badge color={roleColors[user.role]}>{roleLabels[user.role]}</Badge></span>
 
-                <span className="hidden md:block text-[12px] text-zinc-500 truncate">{user.site}</span>
+                  <span className="hidden md:block text-[12px] text-zinc-500 truncate">{user.site}</span>
 
-                <span>
-                  <Badge color={user.status === 'active' ? 'green' : 'gray'} dot>
-                    {user.status === 'active' ? 'Actif' : 'Inactif'}
-                  </Badge>
-                </span>
-
-                <span className="hidden md:block text-[12px] text-zinc-600 truncate">{user.fonction ?? '—'}</span>
-
-                {isAdminOrSupervisor && (
-                  <span className="hidden md:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => e.stopPropagation()}>
-                    <button onClick={() => openEdit(user)}
-                      className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors" title="Modifier">
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => toggleStatus.mutate(user)}
-                      className={`p-1.5 rounded-md transition-colors ${user.status === 'active'
-                        ? 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'
-                        : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
-                      title={user.status === 'active' ? 'Désactiver' : 'Activer'}>
-                      {user.status === 'active'
-                        ? <UserX className="w-3.5 h-3.5" />
-                        : <UserCheck className="w-3.5 h-3.5" />}
-                    </button>
-                    {isAdmin && (
-                      <button
-                        onClick={() => {
-                          if (confirm(`Supprimer définitivement ${user.full_name} ?`))
-                            deleteUser.mutate(user);
-                        }}
-                        className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Supprimer">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
+                  <span>
+                    <Badge color={user.status === 'active' ? 'green' : 'gray'} dot>
+                      {user.status === 'active' ? 'Actif' : 'Inactif'}
+                    </Badge>
                   </span>
-                )}
-              </div>
-            ))}
+
+                  <span className="hidden md:block text-[12px] text-zinc-600 truncate">{user.fonction ?? '—'}</span>
+
+                  {/* Colonne présence (desktop) */}
+                  {isAdminOrSupervisor && (
+                    <span className="hidden md:flex">
+                      <PresenceCell user={user} />
+                    </span>
+                  )}
+
+                  {/* Actions (edit / toggle / delete) */}
+                  {isAdminOrSupervisor && (
+                    <span className="hidden md:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}>
+                      <button onClick={() => openEdit(user)}
+                        className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors" title="Modifier">
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => toggleStatus.mutate(user)}
+                        className={`p-1.5 rounded-md transition-colors ${user.status === 'active'
+                          ? 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'
+                          : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                        title={user.status === 'active' ? 'Désactiver' : 'Activer'}>
+                        {user.status === 'active'
+                          ? <UserX className="w-3.5 h-3.5" />
+                          : <UserCheck className="w-3.5 h-3.5" />}
+                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => {
+                            if (confirm(`Supprimer définitivement ${user.full_name} ?`))
+                              deleteUser.mutate(user);
+                          }}
+                          className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Supprimer">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Detail modal */}
+      {/* ── Detail modal ── */}
       <Modal open={!!detailUser} onClose={() => setDetailUser(null)} title="Fiche agent" size="lg">
         {detailUser && (
           <div className="space-y-5">
@@ -430,6 +574,48 @@ export function AgentsPage() {
                 </Button>
               )}
             </div>
+
+            {/* Présence du jour — admin/supervisor seulement */}
+            {isAdminOrSupervisor && (
+              <div className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3.5 space-y-2.5">
+                <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em] flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  Présence aujourd'hui — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </p>
+                {(() => {
+                  const rec = attendanceMap?.get(detailUser.id);
+                  return (
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {rec ? (
+                        <Badge color={attendanceColors[rec.status]} dot>
+                          {attendanceLabels[rec.status]} — {new Date(rec.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </Badge>
+                      ) : (
+                        <span className="text-[12px] text-zinc-600">Pas encore pointé</span>
+                      )}
+                      <div className="flex items-center gap-2 ml-auto">
+                        <button
+                          disabled={markAttendance.isPending}
+                          onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: getMarkStatus() })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
+                            text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20 transition-colors disabled:opacity-40"
+                        >
+                          <UserCheck className="w-3.5 h-3.5" /> Présent
+                        </button>
+                        <button
+                          disabled={markAttendance.isPending}
+                          onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: 'absent' })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
+                            text-red-400 hover:bg-red-500/10 border border-red-500/20 transition-colors disabled:opacity-40"
+                        >
+                          <UserX className="w-3.5 h-3.5" /> Absent
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-2.5">
               {[
@@ -465,7 +651,7 @@ export function AgentsPage() {
         )}
       </Modal>
 
-      {/* Edit modal */}
+      {/* ── Edit modal ── */}
       <Modal open={!!editUser} onClose={() => setEditUser(null)} title="Modifier le profil" size="lg">
         {editUser && (
           <div className="space-y-4">
