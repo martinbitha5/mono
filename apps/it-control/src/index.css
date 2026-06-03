@@ -4,119 +4,54 @@
 
 @layer base {
   * { box-sizing: border-box; }
-
   html { height: 100%; }
-
   body {
-    /* zinc-950 = #F6F9FC (Stripe page bg) */
-    @apply bg-zinc-950 text-zinc-300 antialiased;
+    @apply text-zinc-300 antialiased;
+    background: #09090b;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     font-feature-settings: 'rlig' 1, 'calt' 1, 'cv11' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
-  ::selection {
-    background: rgba(99, 91, 255, 0.15);
-    color: #4F46E5;
-  }
-
+  ::selection { background: rgba(99,102,241,0.18); color: #4F46E5; }
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background: #C4D5E4;
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover { background: #9BABC0; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.20); }
 }
 
 @layer components {
-  /* ── Form controls ───────────────────────────────────────────────── */
+  /* Form inputs — solid dark, no glass (readability) */
   .input-base {
-    /* bg-zinc-900 = white, border-zinc-700 = #C4D5E4 */
-    @apply w-full bg-zinc-900 border border-zinc-700 rounded-lg
-      px-3.5 py-2.5 text-[13px] text-zinc-200
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-200
+      border border-zinc-700
       placeholder:text-zinc-600
       focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
       transition-all duration-150;
+    background: rgba(9, 9, 11, 0.92);
   }
-
   .select-base {
-    @apply w-full bg-zinc-900 border border-zinc-700 rounded-lg
-      px-3.5 py-2.5 text-[13px] text-zinc-200
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-200
+      border border-zinc-700
       focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
       transition-all duration-150 cursor-pointer;
+    background: rgba(9, 9, 11, 0.92);
   }
-
   .label-base {
-    @apply block text-[11px] font-semibold text-zinc-500
-      mb-1.5 tracking-[0.06em] uppercase;
+    @apply block text-[11px] font-semibold text-zinc-500 mb-1.5 tracking-[0.06em] uppercase;
   }
-
-  /* ── Table header cell ──────────────────────────────────────────── */
   .th {
     @apply text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.07em];
   }
-
-  /* ── Numeric display ────────────────────────────────────────────── */
-  .tabular {
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum';
-  }
+  .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }
 
-/*
- * ── LIGHT-THEME TRANSPARENT OVERLAY OVERRIDES ───────────────────────────
- *
- * Pages were written with white/opacity patterns designed for dark bg.
- * Override them here so they render correctly on the Stripe light theme.
- * The selectors match Tailwind's generated class names (escaped).
- */
-
-/* Borders */
-.border-white\/\[0\.04\],
-.border-white\/\[0\.05\],
-.border-white\/\[0\.06\],
-.border-white\/\[0\.07\],
-.border-white\/\[0\.08\],
-.border-white\/\[0\.10\] {
-  border-color: #E3EBF6 !important;
-}
-
-/* Backgrounds */
-.bg-white\/\[0\.01\],
-.bg-white\/\[0\.015\],
-.bg-white\/\[0\.02\],
-.bg-white\/\[0\.025\],
-.bg-white\/\[0\.03\],
-.bg-white\/\[0\.04\],
-.bg-white\/\[0\.05\],
-.bg-white\/\[0\.06\],
-.bg-white\/\[0\.07\],
-.bg-white\/\[0\.08\],
-.bg-white\/\[0\.09\],
-.bg-white\/\[0\.10\] {
-  background-color: #F6F9FC !important;
-}
-
-/* Dividers */
-.divide-white\/\[0\.04\] > :not([hidden]) ~ :not([hidden]),
-.divide-white\/\[0\.05\] > :not([hidden]) ~ :not([hidden]),
-.divide-white\/\[0\.06\] > :not([hidden]) ~ :not([hidden]) {
-  border-color: #E3EBF6 !important;
-}
-
-/* Hover backgrounds */
-.hover\:bg-white\/\[0\.02\]:hover,
-.hover\:bg-white\/\[0\.03\]:hover,
-.hover\:bg-white\/\[0\.04\]:hover,
-.hover\:bg-white\/\[0\.05\]:hover,
-.hover\:bg-white\/\[0\.06\]:hover,
-.hover\:bg-white\/\[0\.09\]:hover {
-  background-color: #F0F4F8 !important;
-}
-
-/* Focus ring on dark overlays */
-.focus\:ring-blue-500\/20:focus {
-  --tw-ring-color: rgba(99, 91, 255, 0.15) !important;
+/* ── Glass theme ────────────────────────────────────────────────────────────
+   All bg-zinc-900 panels become semi-transparent with blur.
+   Form elements are excluded via the .input-base / .select-base overrides above.
+   ─────────────────────────────────────────────────────────────────────────── */
+.bg-zinc-900 {
+  background: rgba(24, 24, 27, 0.70) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
 }
