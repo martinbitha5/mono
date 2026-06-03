@@ -103,9 +103,9 @@ function NotifPanel({
 }) {
   return (
     <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] sm:w-80 max-w-sm
-      bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl z-50 overflow-hidden">
+      bg-zinc-900/90 backdrop-blur-xl border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
           <span className="text-[13px] font-semibold text-zinc-100">Notifications</span>
           {unreadCount > 0 && (
@@ -131,8 +131,8 @@ function NotifPanel({
         ) : (
           notifications.map(n => {
             const itemCls = [
-              'block px-4 py-3 border-b border-zinc-800/60 last:border-0 transition-colors',
-              !n.read ? 'bg-zinc-800/40' : 'hover:bg-zinc-800/20',
+              'block px-4 py-3 border-b border-white/[0.04] last:border-0 transition-colors',
+              !n.read ? 'bg-white/[0.03]' : 'hover:bg-white/[0.02]',
               n.link ? 'cursor-pointer' : '',
             ].join(' ');
             const inner = (
@@ -193,11 +193,11 @@ function SidebarSection({
                 'flex items-center gap-2.5 px-3 py-[7px] rounded-lg',
                 'text-[13px] font-medium transition-colors duration-100',
                 active
-                  ? 'bg-orange-50 text-orange-600'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-950',
+                  ? 'bg-orange-500/[0.15] text-orange-400'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05]',
               ].join(' ')}
             >
-              <Icon className={['w-[15px] h-[15px] flex-shrink-0', active ? 'text-orange-500' : 'text-zinc-600'].join(' ')} />
+              <Icon className={['w-[15px] h-[15px] flex-shrink-0', active ? 'text-orange-400' : 'text-zinc-600'].join(' ')} />
               <span className="flex-1 truncate">{item.label}</span>
             </Link>
           );
@@ -248,17 +248,22 @@ export function AppShell({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="flex h-[100dvh] bg-zinc-950 overflow-hidden">
+    <div
+      className="flex h-[100dvh] overflow-hidden"
+      style={{
+        backgroundImage: "url('/IMG_9478.jpeg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
 
       {/* ══════════════════════════════════════════════════
           DESKTOP SIDEBAR  (hidden on mobile / tablet)
       ══════════════════════════════════════════════════ */}
-      <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 bg-zinc-900 border-r border-zinc-800">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-4 h-14 border-b border-zinc-800 flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
-            <Wrench className="w-[15px] h-[15px] text-white" />
-          </div>
+      <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 bg-zinc-950/80 backdrop-blur-2xl border-r border-white/[0.08] relative z-10">
+        {/* Logo — texte uniquement, sans icône */}
+        <div className="flex items-center px-5 h-14 border-b border-white/[0.06] flex-shrink-0">
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-bold text-zinc-50 leading-tight truncate">ATS Tech Control</p>
             <p className="text-[10px] text-zinc-500 leading-tight mt-px">Service Technique</p>
@@ -272,8 +277,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* User */}
-        <div className="flex-shrink-0 px-3 py-3 border-t border-zinc-800 space-y-1">
-          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-zinc-950/60">
+        <div className="flex-shrink-0 px-3 py-3 border-t border-white/[0.06] space-y-1">
+          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-black/30">
             <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 select-none overflow-hidden">
               {profile?.photo_url
                 ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
@@ -296,23 +301,18 @@ export function AppShell({ children }: { children: ReactNode }) {
           MOBILE FULL-SCREEN DRAWER
       ══════════════════════════════════════════════════ */}
       <div className={[
-        'lg:hidden fixed inset-0 z-50 flex flex-col bg-zinc-900',
+        'lg:hidden fixed inset-0 z-50 flex flex-col bg-zinc-950/90 backdrop-blur-2xl',
         'transition-transform duration-300 ease-in-out',
         drawerOpen ? 'translate-x-0' : '-translate-x-full',
       ].join(' ')}>
-        {/* Drawer header */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-zinc-800 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
-              <Wrench className="w-[15px] h-[15px] text-white" />
-            </div>
-            <div>
-              <p className="text-[13px] font-bold text-zinc-50 leading-tight">ATS Tech Control</p>
-              <p className="text-[10px] text-zinc-500 leading-tight mt-px">Service Technique</p>
-            </div>
+        {/* Drawer header — texte uniquement */}
+        <div className="flex items-center justify-between px-4 h-14 border-b border-white/[0.06] flex-shrink-0">
+          <div>
+            <p className="text-[13px] font-bold text-zinc-50 leading-tight">ATS Tech Control</p>
+            <p className="text-[10px] text-zinc-500 leading-tight mt-px">Service Technique</p>
           </div>
           <button onClick={closeDrawer}
-            className="p-2 rounded-xl text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors">
+            className="p-2 rounded-xl text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-100 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -330,11 +330,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                     'flex items-center gap-3.5 px-3 py-3.5 rounded-xl',
                     'text-[15px] font-medium transition-colors',
                     active
-                      ? 'bg-orange-500/10 text-orange-400'
-                      : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100',
+                      ? 'bg-orange-500/15 text-orange-400'
+                      : 'text-zinc-400 hover:bg-white/[0.05] hover:text-zinc-100',
                   ].join(' ')}
                 >
-                  <Icon className={['w-5 h-5 flex-shrink-0', active ? 'text-orange-500' : 'text-zinc-600'].join(' ')} />
+                  <Icon className={['w-5 h-5 flex-shrink-0', active ? 'text-orange-400' : 'text-zinc-600'].join(' ')} />
                   <span className="flex-1">{item.label}</span>
                 </Link>
               );
@@ -343,8 +343,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Drawer user + logout */}
-        <div className="flex-shrink-0 border-t border-zinc-800 px-3 py-4 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-zinc-950/60">
+        <div className="flex-shrink-0 border-t border-white/[0.06] px-3 py-4 space-y-2">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-black/30">
             <div className="w-11 h-11 rounded-full bg-orange-500 flex items-center justify-center text-white text-[15px] font-bold flex-shrink-0 select-none overflow-hidden">
               {profile?.photo_url
                 ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
@@ -369,16 +369,20 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ══════════════════════════════════════════════════
           MAIN CONTENT AREA
       ══════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* ── Top header (responsive) ── */}
-        <header className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 bg-zinc-900 border-b border-zinc-800">
+        <header className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 bg-zinc-950/70 backdrop-blur-xl border-b border-white/[0.08]">
 
-          {/* Mobile: app branding */}
-          <div className="flex lg:hidden items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
-              <Wrench className="w-[14px] h-[14px] text-white" />
-            </div>
+          {/* Mobile: hamburger + app branding */}
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="lg:hidden p-2 mr-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
+          <div className="flex lg:hidden items-center flex-1 min-w-0">
             <div className="min-w-0">
               <p className="text-[12px] font-bold text-zinc-100 leading-tight">ATS Tech Control</p>
               {profile?.site && (
@@ -395,16 +399,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {time.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </span>
             </div>
-            <span className="text-zinc-800">·</span>
+            <span className="text-zinc-700">·</span>
             <span className="text-zinc-500">
               {time.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
             </span>
             {profile?.site && (
               <>
-                <span className="text-zinc-800">·</span>
+                <span className="text-zinc-700">·</span>
                 <div className="flex items-center gap-2">
                   <span className="text-zinc-500">{profile.site}</span>
-                  <span className="px-1.5 py-px bg-zinc-950 border border-zinc-800 rounded text-[10px] font-mono font-semibold text-zinc-400">
+                  <span className="px-1.5 py-px bg-black/30 border border-white/[0.08] rounded text-[10px] font-mono font-semibold text-zinc-400">
                     {siteCode}
                   </span>
                 </div>
@@ -416,7 +420,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="relative ml-2" ref={notifRef}>
             <button
               onClick={toggleNotif}
-              className="relative p-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+              className="relative p-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
               title="Notifications"
             >
               <Bell className="w-[18px] h-[18px]" />
@@ -451,7 +455,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ══════════════════════════════════════════════════
           MOBILE BOTTOM NAV  (hidden on desktop)
       ══════════════════════════════════════════════════ */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-zinc-900 border-t border-zinc-800">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-zinc-950/80 backdrop-blur-xl border-t border-white/[0.08]">
         <div className="flex items-stretch h-16">
           {BOTTOM_NAV.map(item => {
             const active = currentPath === item.to;
@@ -461,7 +465,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.to} to={item.to}
                 className={[
                   'flex-1 flex flex-col items-center justify-center gap-1 transition-colors',
-                  active ? 'text-orange-500' : 'text-zinc-600 hover:text-zinc-400',
+                  active ? 'text-orange-400' : 'text-zinc-600 hover:text-zinc-400',
                 ].join(' ')}
               >
                 <Icon className="w-[22px] h-[22px]" />
