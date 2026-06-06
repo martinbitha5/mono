@@ -88,7 +88,7 @@ export function TechLandingPage() {
         <div className="flex items-center gap-2.5">
           <div>
             <p className="text-[13px] font-bold text-zinc-50 leading-none tracking-tight">ATS Tech Control</p>
-            <p className="hidden sm:block text-[10px] text-zinc-500 leading-none mt-0.5">Service Technique · RDC</p>
+            <p className="hidden sm:block text-[10px] text-zinc-300 leading-none mt-0.5">Service Technique · RDC</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -161,8 +161,8 @@ export function TechLandingPage() {
                 { icon: FileSpreadsheet, label: 'Export Excel professionnel'  },
                 { icon: Activity,        label: '8 sites couverts · RDC'      },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-[11px] sm:text-[12px] text-zinc-500">
-                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-600 flex-shrink-0" />
+                <div key={label} className="flex items-center gap-2 text-[11px] sm:text-[12px] text-zinc-200">
+                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400 flex-shrink-0" />
                   <span>{label}</span>
                 </div>
               ))}
@@ -175,7 +175,7 @@ export function TechLandingPage() {
       <section id="features" className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="text-center mb-10 sm:mb-16">
-            <p className="text-[11px] text-zinc-500 font-semibold uppercase tracking-[0.14em] mb-3">Fonctionnalités</p>
+            <p className="text-[11px] text-zinc-300 font-semibold uppercase tracking-[0.14em] mb-3">Fonctionnalités</p>
             <h2 className="text-[28px] sm:text-[36px] lg:text-[40px] font-bold text-zinc-50 tracking-tight leading-tight">
               Tout ce dont votre équipe<br />technique a besoin
             </h2>
@@ -215,7 +215,7 @@ export function TechLandingPage() {
               <div key={s.title}>
                 <p className="text-[38px] sm:text-[48px] lg:text-[52px] font-black text-zinc-50 leading-none mb-2 tabular-nums">{s.value}</p>
                 <p className="text-[13px] sm:text-[14px] font-semibold text-zinc-200 mb-1">{s.title}</p>
-                <p className="text-[11px] sm:text-[12px] text-zinc-500 leading-snug">{s.sub}</p>
+                <p className="text-[11px] sm:text-[12px] text-zinc-300 leading-snug">{s.sub}</p>
               </div>
             ))}
           </div>
@@ -227,7 +227,7 @@ export function TechLandingPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-[11px] text-zinc-500 font-semibold uppercase tracking-[0.14em] mb-4">Fiabilité</p>
+              <p className="text-[11px] text-zinc-300 font-semibold uppercase tracking-[0.14em] mb-4">Fiabilité</p>
               <h2 className="text-[26px] sm:text-[32px] lg:text-[36px] font-bold text-zinc-50 tracking-tight leading-tight mb-5 sm:mb-6">
                 Sécurisé, rapide<br />et toujours disponible
               </h2>
@@ -259,9 +259,9 @@ export function TechLandingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-[13px] font-semibold text-zinc-100">Daily Checklist</p>
-                  <p className="text-[11px] text-zinc-500 mt-0.5">TRACTOR 01 · AT-122</p>
+                  <p className="text-[11px] text-zinc-300 mt-0.5">TRACTOR 01 · AT-122</p>
                 </div>
-                <span className="text-[10px] text-zinc-500 bg-white/[0.04] border border-white/[0.08] px-2 py-1 rounded-md">
+                <span className="text-[10px] text-zinc-200 bg-white/[0.08] border border-white/[0.14] px-2 py-1 rounded-md">
                   06:32 · Kinshasa
                 </span>
               </div>
@@ -288,13 +288,13 @@ export function TechLandingPage() {
               </div>
               <div className="pt-4 mt-1">
                 <div className="flex items-center justify-between text-[11px] mb-2">
-                  <span className="text-zinc-500">Progression</span>
+                  <span className="text-zinc-300">Progression</span>
                   <span className="text-zinc-200 font-semibold">4 / 6 items</span>
                 </div>
                 <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full" style={{ width: '67%' }} />
                 </div>
-                <p className="text-[10px] text-zinc-500 mt-1.5">67% — 2 points à vérifier avant mise en service</p>
+                <p className="text-[10px] text-zinc-300 mt-1.5">67% — 2 points à vérifier avant mise en service</p>
               </div>
             </div>
           </div>
@@ -326,8 +326,8 @@ export function TechLandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-white/[0.08] py-6 sm:py-8" style={{ background: 'rgba(7,9,14,0.68)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <p className="text-[12px] text-zinc-500 font-semibold">ATS Tech Control</p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-[12px] text-zinc-600">
+          <p className="text-[12px] text-zinc-200 font-semibold">ATS Tech Control</p>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-[12px] text-zinc-400">
             <span>ATS Handling RDC</span>
             <span>© {new Date().getFullYear()}</span>
             <span>Accès réservé au personnel autorisé</span>

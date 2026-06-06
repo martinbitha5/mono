@@ -6,51 +6,80 @@
   * { box-sizing: border-box; }
   html { height: 100%; }
   body {
-    @apply text-zinc-300 antialiased;
+    @apply text-zinc-200 antialiased;
     background: #09090b;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     font-feature-settings: 'rlig' 1, 'calt' 1, 'cv11' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  ::selection { background: rgba(99,102,241,0.18); color: #4F46E5; }
+  ::selection { background: rgba(59,130,246,0.25); color: #fff; }
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.20); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 }
 
 @layer components {
-  /* Form inputs — fond sombre solide pour lisibilité maximale */
+  /* ── Inputs — fond sombre semi-opaque, texte blanc forcé ── */
   .input-base {
-    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-100
-      border border-white/[0.12]
-      placeholder:text-zinc-600
-      focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px]
+      focus:outline-none focus:ring-2 focus:ring-blue-400/20
       transition-all duration-150;
-    background: rgba(9, 9, 11, 0.85);
+    background: rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
+  .input-base:focus {
+    border-color: rgba(96, 165, 250, 0.70) !important;
+  }
+  .input-base::placeholder {
+    color: rgba(255, 255, 255, 0.38) !important;
+  }
+  /* Fix autofill Chrome/Safari */
+  .input-base:-webkit-autofill,
+  .input-base:-webkit-autofill:hover,
+  .input-base:-webkit-autofill:focus {
+    -webkit-text-fill-color: rgba(255,255,255,0.95) !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(0,0,0,0.60) inset !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
   .select-base {
-    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-100
-      border border-white/[0.12]
-      focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px]
+      focus:outline-none focus:ring-2 focus:ring-blue-400/20
       transition-all duration-150 cursor-pointer;
-    background: rgba(9, 9, 11, 0.85);
+    background: rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
+  .select-base:focus {
+    border-color: rgba(96, 165, 250, 0.70) !important;
+  }
+  /* Options dans les selects */
+  .select-base option {
+    background: #1a1a1f;
+    color: #e4e4e7;
+  }
+
   .label-base {
-    @apply block text-[11px] font-semibold text-zinc-400 mb-1.5 tracking-[0.06em] uppercase;
+    @apply block text-[11px] font-semibold mb-1.5 tracking-[0.06em] uppercase;
+    color: rgba(255,255,255,0.70) !important;
   }
   .th {
-    @apply text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.07em];
+    @apply text-[11px] font-semibold uppercase tracking-[0.07em];
+    color: rgba(255,255,255,0.65) !important;
   }
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }
 
-/* ── Vrai glassmorphism ─────────────────────────────────────────────────────
-   Fond BLANC semi-transparent (white frost) + blur fort.
-   Sur un fond sombre (image + overlay), rgba(255,255,255,0.09) crée un
-   panneau légèrement plus clair = effet verre givré premium.
-   Les inputs (.input-base / .select-base) gardent leur fond sombre opaque.
+/* ── Vrai glassmorphism — white frost ────────────────────────────────────────
+   rgba(255,255,255,0.09) sur fond sombre = panneau légèrement plus clair
+   = effet verre givré premium. Les inputs ont leurs propres règles ci-dessus.
    ─────────────────────────────────────────────────────────────────────────── */
 .bg-zinc-900 {
   background: rgba(255, 255, 255, 0.09) !important;
@@ -58,9 +87,16 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-/* Panneaux imbriqués / secondaires */
+/* Panneaux secondaires imbriqués */
 .bg-zinc-800 {
   background: rgba(255, 255, 255, 0.06) !important;
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+/* Inputs dans l'app qui utilisent bg-zinc-* directement — toujours sombres */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  color-scheme: dark;
 }

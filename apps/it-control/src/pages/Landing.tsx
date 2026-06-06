@@ -89,7 +89,7 @@ export function ITLandingPage() {
         <div className="flex items-center gap-2.5">
           <div>
             <p className="text-[13px] font-bold text-zinc-50 leading-none tracking-tight">ATS IT Control</p>
-            <p className="hidden sm:block text-[10px] text-zinc-500 leading-none mt-0.5">Service Informatique · RDC</p>
+            <p className="hidden sm:block text-[10px] text-zinc-300 leading-none mt-0.5">Service Informatique · RDC</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -162,8 +162,8 @@ export function ITLandingPage() {
                 { icon: FileSpreadsheet, label: 'Rapports Excel avancés'  },
                 { icon: Activity,        label: '8 sites · Réseau RDC'    },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-[11px] sm:text-[12px] text-zinc-500">
-                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-600 flex-shrink-0" />
+                <div key={label} className="flex items-center gap-2 text-[11px] sm:text-[12px] text-zinc-200">
+                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400 flex-shrink-0" />
                   <span>{label}</span>
                 </div>
               ))}
@@ -176,7 +176,7 @@ export function ITLandingPage() {
       <section id="features" className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="text-center mb-10 sm:mb-16">
-            <p className="text-[11px] text-zinc-500 font-semibold uppercase tracking-[0.14em] mb-3">Fonctionnalités</p>
+            <p className="text-[11px] text-zinc-300 font-semibold uppercase tracking-[0.14em] mb-3">Fonctionnalités</p>
             <h2 className="text-[28px] sm:text-[36px] lg:text-[40px] font-bold text-zinc-50 tracking-tight leading-tight">
               Tout ce dont votre équipe<br />informatique a besoin
             </h2>
@@ -216,7 +216,7 @@ export function ITLandingPage() {
               <div key={s.title}>
                 <p className="text-[38px] sm:text-[48px] lg:text-[52px] font-black text-zinc-50 leading-none mb-2 tabular-nums">{s.value}</p>
                 <p className="text-[13px] sm:text-[14px] font-semibold text-zinc-200 mb-1">{s.title}</p>
-                <p className="text-[11px] sm:text-[12px] text-zinc-500 leading-snug">{s.sub}</p>
+                <p className="text-[11px] sm:text-[12px] text-zinc-300 leading-snug">{s.sub}</p>
               </div>
             ))}
           </div>
@@ -228,7 +228,7 @@ export function ITLandingPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-[11px] text-zinc-500 font-semibold uppercase tracking-[0.14em] mb-4">Sécurité & fiabilité</p>
+              <p className="text-[11px] text-zinc-300 font-semibold uppercase tracking-[0.14em] mb-4">Sécurité & fiabilité</p>
               <h2 className="text-[26px] sm:text-[32px] lg:text-[36px] font-bold text-zinc-50 tracking-tight leading-tight mb-5 sm:mb-6">
                 Construit pour les équipes<br />IT exigeantes
               </h2>
@@ -261,7 +261,7 @@ export function ITLandingPage() {
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div>
                     <p className="text-[13px] font-semibold text-zinc-100">Équipements IT</p>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Site · Kinshasa — 84 appareils</p>
+                    <p className="text-[11px] text-zinc-300 mt-0.5">Site · Kinshasa — 84 appareils</p>
                   </div>
                   <div className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-lg">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
@@ -281,7 +281,7 @@ export function ITLandingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[12px] font-semibold text-zinc-200 truncate">{eq.name}</p>
-                        <p className="text-[10px] text-zinc-500 truncate">{eq.serie} · {eq.type}</p>
+                        <p className="text-[10px] text-zinc-300 truncate">{eq.serie} · {eq.type}</p>
                       </div>
                       <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md flex-shrink-0 ${eq.sCls}`}>{eq.status}</span>
                     </div>
@@ -331,8 +331,8 @@ export function ITLandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-white/[0.08] py-6 sm:py-8" style={{ background: 'rgba(7,9,14,0.68)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <p className="text-[12px] text-zinc-500 font-semibold">ATS IT Control</p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-[12px] text-zinc-600">
+          <p className="text-[12px] text-zinc-200 font-semibold">ATS IT Control</p>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-[12px] text-zinc-400">
             <span>ATS Handling RDC</span>
             <span>© {new Date().getFullYear()}</span>
             <span>Accès réservé au personnel autorisé</span>
