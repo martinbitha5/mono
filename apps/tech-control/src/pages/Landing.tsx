@@ -54,12 +54,14 @@ const colorMap: Record<string, { icon: string; border: string; bg: string }> = {
   purple:  { icon: 'text-purple-400',  border: 'border-purple-500/20',  bg: 'bg-purple-500/10'  },
 };
 
-const GLASS_CARD = 'border border-white/[0.10] rounded-2xl p-5 sm:p-6 transition-all hover:border-white/[0.18]';
+/* Vrai glass : fond blanc semi-transparent + blur fort */
+const GLASS_CARD = 'rounded-2xl p-5 sm:p-6 transition-all';
 const GLASS_BG: React.CSSProperties = {
-  background: 'rgba(10, 13, 22, 0.50)',
-  backdropFilter: 'blur(24px) saturate(200%)',
-  WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-  boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.24)',
+  background: 'rgba(255, 255, 255, 0.10)',
+  backdropFilter: 'blur(24px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+  border: '1px solid rgba(255,255,255,0.16)',
+  boxShadow: '0 4px 32px rgba(0,0,0,0.25)',
 };
 
 export function TechLandingPage() {
@@ -71,8 +73,11 @@ export function TechLandingPage() {
       {/* ── Background image (fixed) ── */}
       <div className="fixed inset-0 -z-10">
         <img src="/IMG_9478.jpeg" alt="" className="w-full h-full object-cover" />
-        {/* Overlay réduit à 40% pour que l'image reste visible */}
-        <div className="absolute inset-0 bg-zinc-950/40" />
+        {/* Overlay 45% — image visible, texte lisible */}
+        <div className="absolute inset-0" style={{ background: 'rgba(5,6,10,0.45)' }} />
+        {/* Vignette bords */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 120% 100% at 50% 50%, transparent 30%, rgba(0,0,0,0.40) 100%)' }} />
       </div>
 
       {/* ── Navigation ── */}
@@ -124,7 +129,7 @@ export function TechLandingPage() {
             </h1>
 
             {/* Subtext */}
-            <p className="text-[15px] sm:text-[17px] lg:text-[19px] text-zinc-400 leading-relaxed max-w-[580px] mb-7 sm:mb-10">
+            <p className="text-[15px] sm:text-[17px] lg:text-[19px] text-zinc-200 leading-relaxed max-w-[580px] mb-7 sm:mb-10">
               La plateforme centralisée pour le service technique d'ATS Handling RDC.
               Parc GSE, maintenance, interventions, carburant et présences — tout en un seul écran.
             </p>
@@ -174,7 +179,7 @@ export function TechLandingPage() {
             <h2 className="text-[28px] sm:text-[36px] lg:text-[40px] font-bold text-zinc-50 tracking-tight leading-tight">
               Tout ce dont votre équipe<br />technique a besoin
             </h2>
-            <p className="text-[14px] sm:text-[16px] text-zinc-400 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="text-[14px] sm:text-[16px] text-zinc-300 mt-4 max-w-xl mx-auto leading-relaxed">
               De la gestion d'engins à l'export Excel, chaque module est pensé pour le terrain.
             </p>
           </div>
@@ -189,7 +194,7 @@ export function TechLandingPage() {
                     <Icon className={`w-5 h-5 ${cfg.icon}`} />
                   </div>
                   <h3 className="text-[14px] sm:text-[15px] font-bold text-zinc-100 mb-2">{f.title}</h3>
-                  <p className="text-[13px] text-zinc-400 leading-relaxed">{f.desc}</p>
+                  <p className="text-[13px] text-zinc-300 leading-relaxed">{f.desc}</p>
                 </div>
               );
             })}
@@ -226,7 +231,7 @@ export function TechLandingPage() {
               <h2 className="text-[26px] sm:text-[32px] lg:text-[36px] font-bold text-zinc-50 tracking-tight leading-tight mb-5 sm:mb-6">
                 Sécurisé, rapide<br />et toujours disponible
               </h2>
-              <p className="text-[14px] sm:text-[15px] text-zinc-400 leading-relaxed mb-6 sm:mb-8">
+              <p className="text-[14px] sm:text-[15px] text-zinc-300 leading-relaxed mb-6 sm:mb-8">
                 Construit sur Supabase avec contrôle d'accès par rôle. Chaque agent accède uniquement à ses données.
                 Les superviseurs ont une vision globale multi-sites en temps réel.
               </p>

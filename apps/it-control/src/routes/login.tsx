@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { supabase } from '@ats/supabase/client';
-import { Eye, EyeOff, Monitor, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -33,43 +33,43 @@ function LoginPage() {
         backgroundPosition: 'center',
       }}
     >
-      {/* Dark overlay — réduit pour laisser l'image visible */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(7,9,14,0.52) 0%, rgba(7,9,14,0.38) 100%)' }} />
+      {/* Overlay sombre — 35% pour garder l'image lisible */}
+      <div className="absolute inset-0" style={{ background: 'rgba(5, 6, 10, 0.38)' }} />
 
-      {/* Accent tint blue */}
+      {/* Vignette bords pour profondeur */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(59,130,246,0.12) 0%, transparent 65%)' }} />
+        style={{ background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%)' }} />
 
-      {/* Glass card */}
-      <div className="relative w-full max-w-[420px] z-10">
+      {/* Carte glass — vrai frosted glass */}
+      <div className="relative w-full max-w-[400px] z-10">
         <div
-          className="rounded-2xl border border-white/[0.12] p-8 shadow-2xl"
+          className="rounded-2xl p-8"
           style={{
-            background: 'rgba(8, 10, 18, 0.55)',
-            backdropFilter: 'blur(32px) saturate(220%)',
-            WebkitBackdropFilter: 'blur(32px) saturate(220%)',
-            boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 24px 64px rgba(0,0,0,0.40)',
+            background: 'rgba(255, 255, 255, 0.10)',
+            backdropFilter: 'blur(40px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            boxShadow: '0 8px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
           }}
         >
-          {/* Logo — texte + icône discret */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/[0.15] border border-blue-500/20 flex items-center justify-center flex-shrink-0">
-              <Monitor className="w-4 h-4 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-[14px] font-bold text-zinc-50 leading-tight">ATS IT Control</p>
-              <p className="text-[10px] text-zinc-500 leading-tight mt-0.5">Service Informatique · RDC</p>
-            </div>
+          {/* En-tête — texte uniquement, sans badge */}
+          <div className="mb-8">
+            <p className="text-[13px] font-black text-white leading-none tracking-tight uppercase">
+              ATS IT Control
+            </p>
+            <p className="text-[10px] text-white/50 leading-none mt-1.5 tracking-wide">
+              Service Informatique · RDC
+            </p>
           </div>
 
           <div className="mb-7">
-            <h1 className="text-[24px] font-black text-zinc-50 tracking-tight">Connexion</h1>
-            <p className="text-[13px] text-zinc-400 mt-1.5">Accédez à votre espace informatique</p>
+            <h1 className="text-[28px] font-black text-white tracking-tight leading-none">Connexion</h1>
+            <p className="text-[13px] text-white/60 mt-2">Accédez à votre espace informatique</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-500 mb-2 uppercase tracking-[0.08em]">
+              <label className="block text-[10px] font-bold text-white/50 mb-2 uppercase tracking-[0.10em]">
                 Adresse email
               </label>
               <input
@@ -80,7 +80,7 @@ function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-500 mb-2 uppercase tracking-[0.08em]">
+              <label className="block text-[10px] font-bold text-white/50 mb-2 uppercase tracking-[0.10em]">
                 Mot de passe
               </label>
               <div className="relative">
@@ -91,24 +91,26 @@ function LoginPage() {
                   placeholder="••••••••"
                 />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             {error && (
-              <div className="flex items-center gap-2.5 bg-red-500/10 border border-red-500/20 rounded-lg px-3.5 py-2.5">
+              <div className="flex items-center gap-2.5 rounded-lg px-3.5 py-2.5"
+                style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
                 <AlertCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
-                <p className="text-[12px] text-red-400">{error}</p>
+                <p className="text-[12px] text-red-300">{error}</p>
               </div>
             )}
 
             <button
               type="submit" disabled={loading || !email || !password}
               className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed
-                text-white text-[13px] font-semibold rounded-lg py-2.5 flex items-center justify-center gap-2
-                transition-all shadow-lg shadow-blue-900/30 mt-2"
+                text-white text-[13px] font-bold rounded-xl py-3 flex items-center justify-center gap-2
+                transition-all mt-2"
+              style={{ boxShadow: loading || !email || !password ? 'none' : '0 4px 20px rgba(59,130,246,0.40)' }}
             >
               {loading ? (
                 <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -121,20 +123,20 @@ function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-7 pt-5 border-t border-white/[0.06] space-y-2">
+          <div className="mt-6 pt-5 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             {[
               'Accès sécurisé par rôle et service',
               'Données en temps réel · RLS Supabase',
             ].map(t => (
               <div key={t} className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                <span className="text-[11px] text-zinc-500">{t}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span className="text-[11px] text-white/40">{t}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-zinc-600 mt-4">
+        <p className="text-center text-[11px] text-white/25 mt-4">
           Accès réservé au personnel IT ATS Handling RDC
         </p>
       </div>

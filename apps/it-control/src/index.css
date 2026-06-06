@@ -21,45 +21,46 @@
 }
 
 @layer components {
-  /* Form inputs — solid dark, no glass (readability) */
+  /* Form inputs — fond sombre solide pour lisibilité maximale */
   .input-base {
-    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-200
-      border border-zinc-700
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-100
+      border border-white/[0.12]
       placeholder:text-zinc-600
       focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
       transition-all duration-150;
-    background: rgba(9, 9, 11, 0.92);
+    background: rgba(9, 9, 11, 0.85);
   }
   .select-base {
-    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-200
-      border border-zinc-700
+    @apply w-full rounded-lg px-3.5 py-2.5 text-[13px] text-zinc-100
+      border border-white/[0.12]
       focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15
       transition-all duration-150 cursor-pointer;
-    background: rgba(9, 9, 11, 0.92);
+    background: rgba(9, 9, 11, 0.85);
   }
   .label-base {
-    @apply block text-[11px] font-semibold text-zinc-500 mb-1.5 tracking-[0.06em] uppercase;
+    @apply block text-[11px] font-semibold text-zinc-400 mb-1.5 tracking-[0.06em] uppercase;
   }
   .th {
-    @apply text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.07em];
+    @apply text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.07em];
   }
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }
 
-/* ── Glass theme ────────────────────────────────────────────────────────────
-   All bg-zinc-900 panels become frosted glass (semi-transparent + blur).
-   Form elements are excluded via .input-base / .select-base overrides above.
-   Key: low opacity (0.50) + strong blur (24px) = true glassmorphism.
+/* ── Vrai glassmorphism ─────────────────────────────────────────────────────
+   Fond BLANC semi-transparent (white frost) + blur fort.
+   Sur un fond sombre (image + overlay), rgba(255,255,255,0.09) crée un
+   panneau légèrement plus clair = effet verre givré premium.
+   Les inputs (.input-base / .select-base) gardent leur fond sombre opaque.
    ─────────────────────────────────────────────────────────────────────────── */
 .bg-zinc-900 {
-  background: rgba(12, 14, 22, 0.50) !important;
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  background: rgba(255, 255, 255, 0.09) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-/* Nested/lighter panels */
+/* Panneaux imbriqués / secondaires */
 .bg-zinc-800 {
-  background: rgba(18, 22, 32, 0.44) !important;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
 }
