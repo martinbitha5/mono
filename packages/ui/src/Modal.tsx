@@ -35,7 +35,8 @@ export function Modal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-3 pt-3 sm:p-4"
+      style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))' }}>
       {/* Backdrop sombre */}
       <div
         className="absolute inset-0 bg-black/65 backdrop-blur-sm"
@@ -82,7 +83,7 @@ export function Modal({
         </div>
 
         {/* Scrollable body — flex-1 + min-h-0 indispensables pour le scroll mobile */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 sm:p-6">
           {children}
         </div>
 

@@ -21,48 +21,64 @@
 }
 
 @layer components {
-  /* ── Inputs — fond sombre semi-opaque, texte blanc forcé ── */
+  /* ── Inputs — fond opaque solide, jamais transparent ──
+     rgba(0,0,0,0.X) dans un contexte backdrop-filter peut composer
+     contre le fond flou et paraître gris clair. On utilise une couleur
+     solide pour garantir un rendu cohérent partout.               ── */
   .input-base {
     @apply w-full rounded-lg px-3.5 py-2.5 text-[13px]
-      focus:outline-none focus:ring-2 focus:ring-orange-400/20
+      focus:outline-none focus:ring-2 focus:ring-orange-400/30
       transition-all duration-150;
-    background: rgba(0, 0, 0, 0.55) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: #0e1120 !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
     color: rgba(255, 255, 255, 0.95) !important;
+    -webkit-appearance: none;
+    appearance: none;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
   .input-base:focus {
-    border-color: rgba(251, 146, 60, 0.70) !important;
+    border-color: rgba(251, 146, 60, 0.75) !important;
+    background: #111425 !important;
   }
   .input-base::placeholder {
-    color: rgba(255, 255, 255, 0.38) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+  }
+  /* Supprime l'apparence native des number inputs (spinners gris) */
+  .input-base[type="number"] {
+    -moz-appearance: textfield;
+  }
+  .input-base[type="number"]::-webkit-inner-spin-button,
+  .input-base[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
   /* Fix autofill Chrome/Safari */
   .input-base:-webkit-autofill,
   .input-base:-webkit-autofill:hover,
   .input-base:-webkit-autofill:focus {
     -webkit-text-fill-color: rgba(255,255,255,0.95) !important;
-    -webkit-box-shadow: 0 0 0 1000px rgba(0,0,0,0.60) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #0e1120 inset !important;
     transition: background-color 9999s ease-in-out 0s;
   }
 
   .select-base {
     @apply w-full rounded-lg px-3.5 py-2.5 text-[13px]
-      focus:outline-none focus:ring-2 focus:ring-orange-400/20
+      focus:outline-none focus:ring-2 focus:ring-orange-400/30
       transition-all duration-150 cursor-pointer;
-    background: rgba(0, 0, 0, 0.55) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: #0e1120 !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
     color: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
   .select-base:focus {
-    border-color: rgba(251, 146, 60, 0.70) !important;
+    border-color: rgba(251, 146, 60, 0.75) !important;
+    background: #111425 !important;
   }
   /* Options dans les selects */
   .select-base option {
-    background: #1a1a1f;
+    background: #1a1d2e;
     color: #e4e4e7;
   }
 
@@ -77,24 +93,19 @@
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }
 
-/* ── Vrai glassmorphism — white frost ────────────────────────────────────────
-   rgba(255,255,255,0.09) sur fond sombre = panneau légèrement plus clair
-   = effet verre givré premium. Les inputs ont leurs propres règles ci-dessus.
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── Glassmorphism panels ─────────────────────────────────────────────────── */
 .bg-zinc-900 {
   background: rgba(255, 255, 255, 0.09) !important;
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
-
-/* Panneaux secondaires imbriqués */
 .bg-zinc-800 {
   background: rgba(255, 255, 255, 0.06) !important;
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
 }
 
-/* Inputs dans l'app qui utilisent bg-zinc-* directement — toujours sombres */
+/* Forcer color-scheme dark sur tous les inputs */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
