@@ -68,11 +68,11 @@
 
   .label-base {
     @apply block text-[11px] font-semibold mb-1.5 tracking-[0.06em] uppercase;
-    color: rgba(255,255,255,0.70) !important;
+    color: rgba(255,255,255,0.95) !important;
   }
   .th {
     @apply text-[11px] font-semibold uppercase tracking-[0.07em];
-    color: rgba(255,255,255,0.65) !important;
+    color: rgba(255,255,255,0.90) !important;
   }
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }

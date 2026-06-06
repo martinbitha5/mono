@@ -57,19 +57,19 @@ function LoginPage() {
             <p className="text-[13px] font-black text-white leading-none tracking-tight uppercase">
               ATS Tech Control
             </p>
-            <p className="text-[10px] text-white/70 leading-none mt-1.5 tracking-wide">
+            <p className="text-[10px] text-white/95 leading-none mt-1.5 tracking-wide">
               Service Technique · RDC
             </p>
           </div>
 
           <div className="mb-7">
             <h1 className="text-[28px] font-black text-white tracking-tight leading-none">Connexion</h1>
-            <p className="text-[13px] text-white/80 mt-2">Accédez à votre espace technique</p>
+            <p className="text-[13px] text-white mt-2">Accédez à votre espace technique</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[10px] font-bold text-white/80 mb-2 uppercase tracking-[0.10em]">
+              <label className="block text-[10px] font-bold text-white mb-2 uppercase tracking-[0.10em]">
                 Adresse email
               </label>
               <input
@@ -80,7 +80,7 @@ function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-white/80 mb-2 uppercase tracking-[0.10em]">
+              <label className="block text-[10px] font-bold text-white mb-2 uppercase tracking-[0.10em]">
                 Mot de passe
               </label>
               <div className="relative">
@@ -91,7 +91,7 @@ function LoginPage() {
                   placeholder="••••••••"
                 />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -130,13 +130,13 @@ function LoginPage() {
             ].map(t => (
               <div key={t} className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <span className="text-[11px] text-white/70">{t}</span>
+                <span className="text-[11px] text-white/95">{t}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-white/55 mt-4">
+        <p className="text-center text-[11px] text-white/90 mt-4">
           Accès réservé au personnel technique ATS Handling RDC
         </p>
       </div>
