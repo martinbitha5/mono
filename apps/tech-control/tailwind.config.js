@@ -8,20 +8,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Zinc scale → Stripe's blue-gray light palette (INVERTED) ──────
-        zinc: {
-          50:  '#0A2540',
-          100: '#1A2F45',
-          200: '#2D4A6D',
-          300: '#425466',
-          400: '#697386',
-          500: '#8898AA',
-          600: '#9BABC0',
-          700: '#C4D5E4',
-          800: '#E3EBF6',
-          900: '#FFFFFF',
-          950: '#F6F9FC',
-        },
+        // ── Zinc : palette Tailwind standard (dark-mode) ──────────────────
+        // zinc-900 = #18181b (sombre), zinc-800 = #27272a, zinc-50 = #fafafa
+        // NE PAS écraser zinc — utiliser les valeurs Tailwind par défaut.
+
         // ── Orange accent for Technical service ───────────────────────────
         blue: {
           50:  '#EDEAFF',

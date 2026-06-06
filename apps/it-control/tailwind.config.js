@@ -8,27 +8,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Zinc scale → Stripe's blue-gray light palette (INVERTED) ──────
-        // Dark zinc numbers = dark text; light zinc numbers = light surfaces.
-        // bg-zinc-950 = Stripe page bg (#F6F9FC)
-        // bg-zinc-900 = white card surface
-        // text-zinc-50 = Stripe dark navy heading (#0A2540)
-        zinc: {
-          50:  '#0A2540',  // Stripe dark navy  (headings)
-          100: '#1A2F45',
-          200: '#2D4A6D',  // dark body text
-          300: '#425466',  // Stripe body copy
-          400: '#697386',  // Stripe secondary
-          500: '#8898AA',  // Stripe muted
-          600: '#9BABC0',  // dim labels
-          700: '#C4D5E4',  // subtle borders / dividers
-          800: '#E3EBF6',  // light borders / hover tints
-          900: '#FFFFFF',  // card / surface white
-          950: '#F6F9FC',  // Stripe page background
-        },
+        // ── Zinc : palette Tailwind standard (dark-mode) ──────────────────
+        // zinc-900 = #18181b (sombre), zinc-800 = #27272a, zinc-50 = #fafafa
+        // NE PAS écraser zinc — utiliser les valeurs Tailwind par défaut.
 
-        // ── Blue → Stripe violet (#635BFF) ────────────────────────────────
-        // bg-blue-500 on white has 5.1:1 contrast (AA)
+        // ── Blue → accent IT Control ───────────────────────────────────────
         blue: {
           50:  '#EDEAFF',
           100: '#DDD8FF',
