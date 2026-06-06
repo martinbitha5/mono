@@ -203,7 +203,7 @@ export function GsePage() {
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'Total', value: all.length, color: 'text-zinc-300', bg: 'bg-zinc-900' },
           { label: 'OP', value: opCount, color: 'text-emerald-400', bg: 'bg-emerald-500/[0.05]', border: 'border-emerald-500/20' },
@@ -416,7 +416,7 @@ export function GsePage() {
 
           <div className="border border-zinc-800 rounded-xl p-4 space-y-3 bg-zinc-950">
             <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">Horamètres</p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="label-base">Actuel (h) *</label>
                 <input type="number" value={form.horametre_actuel}

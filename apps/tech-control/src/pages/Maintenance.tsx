@@ -164,7 +164,7 @@ export function MaintenancePage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-zinc-900 border border-zinc-800 border-l-4 border-l-red-500 rounded-xl px-5 py-4 shadow-card">
           <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">Critique / INOP</p>
           <p className="text-[32px] font-bold text-red-500 tabular-nums mt-1">{critical.length}</p>

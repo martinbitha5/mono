@@ -203,7 +203,7 @@ export function CarburantPage() {
   const [logModal,       setLogModal      ] = useState(false);
   const [stockModal,     setStockModal    ] = useState(false);
   const [errorMsg,       setErrorMsg      ] = useState<string | null>(null);
-  const [approPeriod,    setApproPeriod   ] = useState<ApproPeriod>('month');
+  const [approPeriod,    setApproPeriod   ] = useState<ApproPeriod>('today');
   const [editApproModal,   setEditApproModal  ] = useState(false);
   const [editApproLog,     setEditApproLog    ] = useState<FuelApproLog | null>(null);
   const [editApproForm,    setEditApproForm   ] = useState({ quantity: '', notes: '' });
@@ -491,7 +491,7 @@ export function CarburantPage() {
       {(stock?.length ?? 0) > 0 && (
         <div>
           <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em] mb-2.5">Stock actuel</p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {(['gasoil', 'essence', 'huile'] as FuelType[]).map((t) => (
               <StockCard key={t} type={t} stock={stock!} />
             ))}
@@ -527,7 +527,7 @@ export function CarburantPage() {
         </div>
 
         {/* Per-type totals for selected period */}
-        <div className="grid grid-cols-3 gap-3 mb-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
           {(['gasoil', 'essence', 'huile'] as FuelType[]).map((t) => {
             const qty = approTotal(t);
             const cfg = FUEL_CFG[t];
