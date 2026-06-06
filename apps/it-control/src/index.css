@@ -93,17 +93,8 @@
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 }
 
-/* ── Glassmorphism panels ─────────────────────────────────────────────────── */
-.bg-zinc-900 {
-  background: rgba(255, 255, 255, 0.09) !important;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-}
-.bg-zinc-800 {
-  background: rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-}
+/* Landing + Login utilisent des inline styles pour le glassmorphism —
+   pas besoin d'override global qui casse les cards sombres de l'app. */
 
 /* Forcer color-scheme dark sur tous les inputs */
 input:not([type="checkbox"]):not([type="radio"]),
