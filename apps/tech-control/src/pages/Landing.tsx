@@ -1,3 +1,4 @@
+import type React from 'react';
 import { Link } from '@tanstack/react-router';
 import {
   Wrench, Truck, AlertTriangle, Users, Droplets,
@@ -53,8 +54,13 @@ const colorMap: Record<string, { icon: string; border: string; bg: string }> = {
   purple:  { icon: 'text-purple-400',  border: 'border-purple-500/20',  bg: 'bg-purple-500/10'  },
 };
 
-const GLASS_CARD = 'border border-white/[0.08] rounded-2xl p-5 sm:p-6 transition-colors hover:border-white/[0.14]';
-const GLASS_BG   = { background: 'rgba(24,24,27,0.65)', backdropFilter: 'blur(16px) saturate(160%)', WebkitBackdropFilter: 'blur(16px) saturate(160%)' };
+const GLASS_CARD = 'border border-white/[0.10] rounded-2xl p-5 sm:p-6 transition-all hover:border-white/[0.18]';
+const GLASS_BG: React.CSSProperties = {
+  background: 'rgba(10, 13, 22, 0.50)',
+  backdropFilter: 'blur(24px) saturate(200%)',
+  WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+  boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.24)',
+};
 
 export function TechLandingPage() {
   return (
@@ -65,13 +71,14 @@ export function TechLandingPage() {
       {/* ── Background image (fixed) ── */}
       <div className="fixed inset-0 -z-10">
         <img src="/IMG_9478.jpeg" alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-zinc-950/80" />
+        {/* Overlay réduit à 40% pour que l'image reste visible */}
+        <div className="absolute inset-0 bg-zinc-950/40" />
       </div>
 
       {/* ── Navigation ── */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 lg:px-10 py-3 sm:py-4 border-b border-white/[0.07]"
-        style={{ background: 'rgba(9,9,11,0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        style={{ background: 'rgba(7,9,14,0.65)', backdropFilter: 'blur(24px) saturate(160%)', WebkitBackdropFilter: 'blur(24px) saturate(160%)' }}
       >
         <div className="flex items-center gap-2.5">
           <div>
@@ -191,7 +198,7 @@ export function TechLandingPage() {
       </section>
 
       {/* ── Stats strip ── */}
-      <section className="py-12 sm:py-16 border-y border-white/[0.06]" style={{ background: 'rgba(9,9,11,0.60)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+      <section className="py-12 sm:py-16 border-y border-white/[0.08]" style={{ background: 'rgba(7,9,14,0.52)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 text-center">
             {[
@@ -290,7 +297,7 @@ export function TechLandingPage() {
       </section>
 
       {/* ── Bottom CTA ── */}
-      <section className="relative py-16 sm:py-24 lg:py-28 border-t border-white/[0.06]" style={{ background: 'rgba(9,9,11,0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+      <section className="relative py-16 sm:py-24 lg:py-28 border-t border-white/[0.08]" style={{ background: 'rgba(7,9,14,0.60)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}>
         <div className="relative max-w-3xl mx-auto px-5 sm:px-6 text-center">
           <p className="text-[11px] text-orange-400 font-semibold uppercase tracking-[0.14em] mb-4 sm:mb-5">Prêt à commencer ?</p>
           <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold text-zinc-50 tracking-tight leading-tight mb-4">
@@ -312,7 +319,7 @@ export function TechLandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-white/[0.06] py-6 sm:py-8" style={{ background: 'rgba(9,9,11,0.80)' }}>
+      <footer className="border-t border-white/[0.08] py-6 sm:py-8" style={{ background: 'rgba(7,9,14,0.68)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-[12px] text-zinc-500 font-semibold">ATS Tech Control</p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-[12px] text-zinc-600">

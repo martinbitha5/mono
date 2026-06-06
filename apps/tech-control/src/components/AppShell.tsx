@@ -261,7 +261,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ══════════════════════════════════════════════════
           DESKTOP SIDEBAR  (hidden on mobile / tablet)
       ══════════════════════════════════════════════════ */}
-      <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 bg-zinc-950/80 backdrop-blur-2xl border-r border-white/[0.08] relative z-10">
+      <aside
+        className="hidden lg:flex flex-col w-56 flex-shrink-0 border-r border-white/[0.10] relative z-10"
+        style={{ background: 'rgba(7, 9, 14, 0.62)', backdropFilter: 'blur(28px) saturate(160%)', WebkitBackdropFilter: 'blur(28px) saturate(160%)' }}
+      >
         {/* Logo — texte uniquement, sans icône */}
         <div className="flex items-center px-5 h-14 border-b border-white/[0.06] flex-shrink-0">
           <div className="min-w-0 flex-1">
@@ -300,11 +303,14 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ══════════════════════════════════════════════════
           MOBILE FULL-SCREEN DRAWER
       ══════════════════════════════════════════════════ */}
-      <div className={[
-        'lg:hidden fixed inset-0 z-50 flex flex-col bg-zinc-950/90 backdrop-blur-2xl',
-        'transition-transform duration-300 ease-in-out',
-        drawerOpen ? 'translate-x-0' : '-translate-x-full',
-      ].join(' ')}>
+      <div
+        className={[
+          'lg:hidden fixed inset-0 z-50 flex flex-col',
+          'transition-transform duration-300 ease-in-out',
+          drawerOpen ? 'translate-x-0' : '-translate-x-full',
+        ].join(' ')}
+        style={{ background: 'rgba(6, 7, 12, 0.88)', backdropFilter: 'blur(32px) saturate(160%)', WebkitBackdropFilter: 'blur(32px) saturate(160%)' }}
+      >
         {/* Drawer header — texte uniquement */}
         <div className="flex items-center justify-between px-4 h-14 border-b border-white/[0.06] flex-shrink-0">
           <div>
@@ -372,7 +378,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* ── Top header (responsive) ── */}
-        <header className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 bg-zinc-950/70 backdrop-blur-xl border-b border-white/[0.08]">
+        <header
+          className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 border-b border-white/[0.10]"
+          style={{ background: 'rgba(7, 9, 14, 0.50)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}
+        >
 
           {/* Mobile: hamburger + app branding */}
           <button
@@ -455,7 +464,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ══════════════════════════════════════════════════
           MOBILE BOTTOM NAV  (hidden on desktop)
       ══════════════════════════════════════════════════ */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-zinc-950/80 backdrop-blur-xl border-t border-white/[0.08]">
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-20 border-t border-white/[0.10]"
+        style={{ background: 'rgba(7, 9, 14, 0.62)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}
+      >
         <div className="flex items-stretch h-16">
           {BOTTOM_NAV.map(item => {
             const active = currentPath === item.to;

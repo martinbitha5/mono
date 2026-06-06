@@ -47,11 +47,19 @@
 }
 
 /* ── Glass theme ────────────────────────────────────────────────────────────
-   All bg-zinc-900 panels become semi-transparent with blur.
-   Form elements are excluded via the .input-base / .select-base overrides above.
+   All bg-zinc-900 panels become frosted glass (semi-transparent + blur).
+   Form elements are excluded via .input-base / .select-base overrides above.
+   Key: low opacity (0.50) + strong blur (24px) = true glassmorphism.
    ─────────────────────────────────────────────────────────────────────────── */
 .bg-zinc-900 {
-  background: rgba(24, 24, 27, 0.70) !important;
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  background: rgba(12, 14, 22, 0.50) !important;
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+}
+
+/* Nested/lighter panels */
+.bg-zinc-800 {
+  background: rgba(18, 22, 32, 0.44) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
 }

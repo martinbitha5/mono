@@ -33,21 +33,22 @@ function LoginPage() {
         backgroundPosition: 'center',
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-zinc-950/75" />
+      {/* Dark overlay — réduit pour laisser l'image visible */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(7,9,14,0.52) 0%, rgba(7,9,14,0.38) 100%)' }} />
 
-      {/* Subtle blue tint */}
+      {/* Accent tint blue */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(59,130,246,0.08) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(59,130,246,0.12) 0%, transparent 65%)' }} />
 
       {/* Glass card */}
       <div className="relative w-full max-w-[420px] z-10">
         <div
-          className="rounded-2xl border border-white/[0.10] p-8 shadow-2xl"
+          className="rounded-2xl border border-white/[0.12] p-8 shadow-2xl"
           style={{
-            background: 'rgba(9, 9, 11, 0.72)',
-            backdropFilter: 'blur(24px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+            background: 'rgba(8, 10, 18, 0.55)',
+            backdropFilter: 'blur(32px) saturate(220%)',
+            WebkitBackdropFilter: 'blur(32px) saturate(220%)',
+            boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 24px 64px rgba(0,0,0,0.40)',
           }}
         >
           {/* Logo — texte + icône discret */}
