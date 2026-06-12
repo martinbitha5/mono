@@ -44,25 +44,25 @@ function EqCard({ eq, isAdmin, onRevision }: {
     : '—';
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-4 hover:bg-zinc-950 transition-colors">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-4 hover:bg-[#F4F5FA] transition-colors">
       {/* Identity */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-[13px] font-semibold text-zinc-200">
+          <p className="text-[13px] font-semibold text-zinc-800">
             {eq.name} <span className="text-zinc-500 font-normal">{eq.serie}</span>
           </p>
           {eq.statut === 'inop' && (
-            <span className="text-[10px] font-bold bg-red-500/10 text-red-400 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded-full">INOP</span>
+            <span className="text-[10px] font-bold bg-red-50 text-red-600 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded-full">INOP</span>
           )}
         </div>
         <p className="text-[11px] text-zinc-500 mt-0.5">{[eq.marque, eq.site].filter(Boolean).join(' · ')}</p>
-        {eq.obs && <p className="text-[11px] text-zinc-600 mt-0.5 italic truncate">{eq.obs}</p>}
+        {eq.obs && <p className="text-[11px] text-zinc-400 mt-0.5 italic truncate">{eq.obs}</p>}
         {/* Mini bar */}
         <div className="mt-2 hidden sm:block">
-          <div className="flex justify-between text-[9px] text-zinc-600 mb-0.5">
+          <div className="flex justify-between text-[9px] text-zinc-400 mb-0.5">
             <span>Progression révision</span><span>{pct}%</span>
           </div>
-          <div className="h-1 w-36 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1 w-36 bg-[#EEF0F7] rounded-full overflow-hidden">
             <div className={['h-full rounded-full', barColor].join(' ')} style={{ width: `${pct}%` }} />
           </div>
         </div>
@@ -71,25 +71,25 @@ function EqCard({ eq, isAdmin, onRevision }: {
       {/* Metrics */}
       <div className="hidden sm:flex items-center gap-5 text-[12px]">
         <div className="text-right">
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Horamètre</p>
-          <p className="font-mono text-zinc-300 font-semibold">{eq.horametre_actuel.toLocaleString()}h</p>
+          <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Horamètre</p>
+          <p className="font-mono text-zinc-700 font-semibold">{eq.horametre_actuel.toLocaleString()}h</p>
         </div>
         <div className="text-right">
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Intervalle</p>
-          <p className="font-mono text-zinc-400">{eq.intervalle.toLocaleString()}h</p>
+          <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Intervalle</p>
+          <p className="font-mono text-zinc-500">{eq.intervalle.toLocaleString()}h</p>
         </div>
         <div className="text-right">
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Prochaine rév.</p>
-          <p className="font-mono text-zinc-300">{eq.horametre_prochain.toLocaleString()}h</p>
+          <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Prochaine rév.</p>
+          <p className="font-mono text-zinc-700">{eq.horametre_prochain.toLocaleString()}h</p>
         </div>
         <div className="text-right min-w-[56px]">
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Delta</p>
+          <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Delta</p>
           <p className={['font-mono font-bold', deltaColor(eq.delta)].join(' ')}>
             {eq.delta > 0 ? '+' : ''}{eq.delta}h
           </p>
         </div>
         <div className="text-right hidden lg:block">
-          <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Dernière maj.</p>
+          <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Dernière maj.</p>
           <p className="text-zinc-500 text-[11px]">{lastRevDate}</p>
         </div>
       </div>
@@ -144,14 +144,14 @@ export function MaintenancePage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Suivi Maintenance</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Suivi Maintenance</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             Alertes basées sur les horamètres · {critical.length} critique(s), {warning.length} à surveiller
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => refetch()} disabled={isFetching}
-            className="p-2 rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors disabled:opacity-40">
+            className="p-2 rounded-lg border border-[#E6E8F0] text-zinc-500 hover:text-zinc-700 hover:bg-white transition-colors disabled:opacity-40">
             <RefreshCw className={['w-3.5 h-3.5', isFetching ? 'animate-spin' : ''].join(' ')} />
           </button>
           {isAdmin && (
@@ -165,49 +165,49 @@ export function MaintenancePage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-zinc-900 border border-zinc-800 border-l-4 border-l-red-500 rounded-xl px-5 py-4 shadow-card">
+        <div className="bg-white border border-[#E6E8F0] border-l-4 border-l-red-500 rounded-xl px-5 py-4 shadow-card">
           <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">Critique / INOP</p>
           <p className="text-[32px] font-bold text-red-500 tabular-nums mt-1">{critical.length}</p>
-          <p className="text-[11px] text-zinc-600 mt-0.5">Révision dépassée ou INOP</p>
+          <p className="text-[11px] text-zinc-400 mt-0.5">Révision dépassée ou INOP</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 border-l-4 border-l-amber-400 rounded-xl px-5 py-4 shadow-card">
+        <div className="bg-white border border-[#E6E8F0] border-l-4 border-l-amber-400 rounded-xl px-5 py-4 shadow-card">
           <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">À surveiller</p>
           <p className="text-[32px] font-bold text-amber-500 tabular-nums mt-1">{warning.length}</p>
-          <p className="text-[11px] text-zinc-600 mt-0.5">Révision dans moins de 50h</p>
+          <p className="text-[11px] text-zinc-400 mt-0.5">Révision dans moins de 50h</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 border-l-4 border-l-emerald-400 rounded-xl px-5 py-4 shadow-card">
+        <div className="bg-white border border-[#E6E8F0] border-l-4 border-l-emerald-400 rounded-xl px-5 py-4 shadow-card">
           <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">OP — OK</p>
           <p className="text-[32px] font-bold text-emerald-500 tabular-nums mt-1">{ok.length}</p>
-          <p className="text-[11px] text-zinc-600 mt-0.5">Aucune alerte maintenance</p>
+          <p className="text-[11px] text-zinc-400 mt-0.5">Aucune alerte maintenance</p>
         </div>
       </div>
 
       {isLoading && (
         <div className="space-y-2">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-zinc-900 border border-zinc-800 rounded-xl animate-pulse" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-white border border-[#E6E8F0] rounded-xl animate-pulse" />)}
         </div>
       )}
 
       {/* All clear state */}
       {!isLoading && critical.length === 0 && warning.length === 0 && (
-        <div className="border border-zinc-800 rounded-xl py-14 text-center bg-zinc-900 shadow-card">
+        <div className="border border-[#E6E8F0] rounded-xl py-14 text-center bg-white shadow-card">
           <CheckCircle2 className="w-10 h-10 text-emerald-500/40 mx-auto mb-3" />
-          <p className="text-[14px] font-semibold text-zinc-300">Tous les équipements sont à jour</p>
-          <p className="text-[13px] text-zinc-600 mt-1">Aucune alerte maintenance en cours</p>
+          <p className="text-[14px] font-semibold text-zinc-700">Tous les équipements sont à jour</p>
+          <p className="text-[13px] text-zinc-400 mt-1">Aucune alerte maintenance en cours</p>
         </div>
       )}
 
       {/* Critical */}
       {critical.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900 border-l-4 border-l-red-500">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-zinc-950">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white border-l-4 border-l-red-500">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#E6E8F0] bg-[#F4F5FA]">
             <AlertTriangle className="w-4 h-4 text-red-500" />
-            <h3 className="text-[13px] font-semibold text-zinc-200">
+            <h3 className="text-[13px] font-semibold text-zinc-800">
               Critiques — Révision dépassée / INOP
             </h3>
-            <span className="ml-auto text-[12px] font-bold text-red-400">{critical.length}</span>
+            <span className="ml-auto text-[12px] font-bold text-red-600">{critical.length}</span>
           </div>
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {critical.map((eq) => (
               <EqCard key={eq.id} eq={eq} isAdmin={isAdmin} onRevision={(e) => {
                 setRevisionItem(e);
@@ -220,13 +220,13 @@ export function MaintenancePage() {
 
       {/* Warning */}
       {warning.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900 border-l-4 border-l-amber-400">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-zinc-950">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white border-l-4 border-l-amber-400">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#E6E8F0] bg-[#F4F5FA]">
             <Clock className="w-4 h-4 text-amber-500" />
-            <h3 className="text-[13px] font-semibold text-zinc-200">À surveiller — Révision proche</h3>
-            <span className="ml-auto text-[12px] font-bold text-amber-400">{warning.length}</span>
+            <h3 className="text-[13px] font-semibold text-zinc-800">À surveiller — Révision proche</h3>
+            <span className="ml-auto text-[12px] font-bold text-amber-600">{warning.length}</span>
           </div>
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {warning.map((eq) => (
               <EqCard key={eq.id} eq={eq} isAdmin={isAdmin} onRevision={(e) => {
                 setRevisionItem(e);
@@ -239,13 +239,13 @@ export function MaintenancePage() {
 
       {/* OK */}
       {ok.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-zinc-950">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#E6E8F0] bg-[#F4F5FA]">
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-            <h3 className="text-[13px] font-semibold text-zinc-200">OP — Aucune alerte</h3>
+            <h3 className="text-[13px] font-semibold text-zinc-800">OP — Aucune alerte</h3>
             <span className="ml-auto text-[12px] text-zinc-500">{ok.length}</span>
           </div>
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {ok.map((eq) => (
               <EqCard key={eq.id} eq={eq} isAdmin={isAdmin} onRevision={(e) => {
                 setRevisionItem(e);
@@ -260,19 +260,19 @@ export function MaintenancePage() {
       <Modal open={!!revisionItem} onClose={() => setRevisionItem(null)} title="Enregistrer une révision" size="sm">
         {revisionItem && (
           <div className="space-y-4">
-            <div className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3">
-              <p className="text-[14px] font-bold text-zinc-100">{revisionItem.name} <span className="text-zinc-400">{revisionItem.serie}</span></p>
+            <div className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-xl px-4 py-3">
+              <p className="text-[14px] font-bold text-zinc-900">{revisionItem.name} <span className="text-zinc-500">{revisionItem.serie}</span></p>
               <p className="text-[12px] text-zinc-500 mt-0.5">{[revisionItem.marque, revisionItem.site].filter(Boolean).join(' · ')}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-[12px]">
-              <div className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5">
-                <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Horamètre actuel</p>
-                <p className="font-mono font-bold text-zinc-200">{revisionItem.horametre_actuel.toLocaleString()}h</p>
+              <div className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Horamètre actuel</p>
+                <p className="font-mono font-bold text-zinc-800">{revisionItem.horametre_actuel.toLocaleString()}h</p>
               </div>
-              <div className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5">
-                <p className="text-zinc-600 text-[10px] uppercase tracking-[0.06em] mb-0.5">Intervalle</p>
-                <p className="font-mono font-bold text-zinc-200">{revisionItem.intervalle.toLocaleString()}h</p>
+              <div className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                <p className="text-zinc-400 text-[10px] uppercase tracking-[0.06em] mb-0.5">Intervalle</p>
+                <p className="font-mono font-bold text-zinc-800">{revisionItem.intervalle.toLocaleString()}h</p>
               </div>
             </div>
 
@@ -284,7 +284,7 @@ export function MaintenancePage() {
                 placeholder={revisionItem.horametre_actuel.toString()} />
               <p className="text-[11px] text-zinc-500 mt-1.5">
                 Prochaine révision prévue à{' '}
-                <span className="font-semibold text-emerald-400">
+                <span className="font-semibold text-emerald-600">
                   {((parseInt(newRevisionH) || revisionItem.horametre_actuel) + revisionItem.intervalle).toLocaleString()}h
                 </span>
               </p>

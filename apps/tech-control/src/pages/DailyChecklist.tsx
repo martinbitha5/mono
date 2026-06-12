@@ -143,28 +143,28 @@ export function DailyChecklistPage() {
     return (
       <div className="space-y-5">
         <div>
-          <button onClick={() => setSelectedEq(null)} className="text-[12px] text-orange-500 hover:text-orange-400 mb-3 flex items-center gap-1">
+          <button onClick={() => setSelectedEq(null)} className="text-[12px] text-orange-500 hover:text-orange-600 mb-3 flex items-center gap-1">
             ← Retour à la liste
           </button>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Check List</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Check List</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {selectedEq.name} {selectedEq.serie} · {selectedEq.marque}
           </p>
         </div>
 
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-          <div className="px-5 py-4 border-b border-zinc-800 bg-zinc-950">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+          <div className="px-5 py-4 border-b border-[#E6E8F0] bg-[#F4F5FA]">
             <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">Points de contrôle</p>
-            <p className="text-[11px] text-zinc-600 mt-0.5">Cliquez pour basculer entre Conforme (C) et Non Conforme (NC)</p>
+            <p className="text-[11px] text-zinc-400 mt-0.5">Cliquez pour basculer entre Conforme (C) et Non Conforme (NC)</p>
           </div>
-          <div className="grid grid-cols-2 gap-px bg-zinc-800">
+          <div className="grid grid-cols-2 gap-px bg-[#EEF0F7]">
             {CHECK_ITEMS.map((item) => (
               <button key={item.id} type="button" onClick={() => toggle(item.id)}
                 className={['flex items-center justify-between px-4 py-3 transition-colors',
                   checks[item.id] === 'NC'
-                    ? 'bg-red-500/[0.08] hover:bg-red-500/[0.12]'
-                    : 'bg-zinc-900 hover:bg-zinc-950'].join(' ')}>
-                <span className={['text-[13px] font-medium', checks[item.id] === 'NC' ? 'text-red-400' : 'text-zinc-200'].join(' ')}>
+                    ? 'bg-red-50 hover:bg-red-100'
+                    : 'bg-white hover:bg-[#F4F5FA]'].join(' ')}>
+                <span className={['text-[13px] font-medium', checks[item.id] === 'NC' ? 'text-red-600' : 'text-zinc-800'].join(' ')}>
                   {item.label}
                 </span>
                 {checks[item.id] === 'NC'
@@ -175,14 +175,14 @@ export function DailyChecklistPage() {
           </div>
         </div>
 
-        <div className="border border-zinc-800 rounded-xl bg-zinc-900 px-5 py-4 space-y-4 shadow-card">
+        <div className="border border-[#E6E8F0] rounded-xl bg-white px-5 py-4 space-y-4 shadow-card">
           <div>
             <label className="label-base">Horamètre actuel</label>
             <input type="number" value={horametre}
               onChange={(e) => setHorametre(e.target.value)}
               placeholder={selectedEq.horametre_actuel.toString()}
               className="input-base" />
-            <p className="text-[11px] text-zinc-600 mt-1">Valeur précédente : {selectedEq.horametre_actuel.toLocaleString()}h</p>
+            <p className="text-[11px] text-zinc-400 mt-1">Valeur précédente : {selectedEq.horametre_actuel.toLocaleString()}h</p>
           </div>
           <div>
             <label className="label-base">Observation</label>
@@ -195,15 +195,15 @@ export function DailyChecklistPage() {
               <button type="button" onClick={() => setFinalStatus('op')}
                 className={['flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-medium text-[13px]',
                   finalStatus === 'op'
-                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-500'
-                    : 'border-zinc-800 bg-zinc-950 text-zinc-500'].join(' ')}>
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-500'
+                    : 'border-[#E6E8F0] bg-[#F4F5FA] text-zinc-500'].join(' ')}>
                 <CheckCircle2 className="w-4 h-4" /> OP
               </button>
               <button type="button" onClick={() => setFinalStatus('inop')}
                 className={['flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-medium text-[13px]',
                   finalStatus === 'inop'
-                    ? 'border-red-500 bg-red-500/10 text-red-500'
-                    : 'border-zinc-800 bg-zinc-950 text-zinc-500'].join(' ')}>
+                    ? 'border-red-500 bg-red-50 text-red-500'
+                    : 'border-[#E6E8F0] bg-[#F4F5FA] text-zinc-500'].join(' ')}>
                 <XCircle className="w-4 h-4" /> INOP
               </button>
             </div>
@@ -211,7 +211,7 @@ export function DailyChecklistPage() {
         </div>
 
         {ncCount > 0 && (
-          <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/[0.08] border border-amber-500/20 rounded-xl text-amber-500 text-[13px]">
+          <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-500 text-[13px]">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{ncCount} point{ncCount > 1 ? 's' : ''} non conforme{ncCount > 1 ? 's' : ''}</span>
           </div>
@@ -233,30 +233,30 @@ export function DailyChecklistPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Check List Journalière</h1>
+        <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Check List Journalière</h1>
         <p className="text-[13px] text-zinc-500 mt-0.5">
           {done}/{total} inspections effectuées · {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
       </div>
 
       {/* Progress */}
-      <div className="border border-zinc-800 rounded-xl bg-zinc-900 px-5 py-4 shadow-card">
+      <div className="border border-[#E6E8F0] rounded-xl bg-white px-5 py-4 shadow-card">
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[12px] font-medium text-zinc-400">Progression</span>
-          <span className="text-[12px] font-bold text-zinc-200">{pct}%</span>
+          <span className="text-[12px] font-medium text-zinc-500">Progression</span>
+          <span className="text-[12px] font-bold text-zinc-800">{pct}%</span>
         </div>
-        <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+        <div className="h-2 bg-[#EEF0F7] rounded-full overflow-hidden">
           <div className="h-full bg-orange-500 transition-all duration-500 rounded-full" style={{ width: `${pct}%` }} />
         </div>
         <div className="flex justify-between mt-2">
-          <span className="text-[11px] text-zinc-600">{done} effectuées</span>
-          <span className="text-[11px] text-zinc-600">{total - done} en attente</span>
+          <span className="text-[11px] text-zinc-400">{done} effectuées</span>
+          <span className="text-[11px] text-zinc-400">{total - done} en attente</span>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
         <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher un équipement..." className="input-base pl-9" />
       </div>
@@ -272,14 +272,14 @@ export function DailyChecklistPage() {
                 setChecks(defaultChecks);
                 setHorametre(eq.horametre_actuel.toString());
               }}
-                className="group flex items-center justify-between px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-orange-500/50 hover:bg-zinc-950 transition-colors text-left shadow-card">
+                className="group flex items-center justify-between px-4 py-3.5 bg-white border border-[#E6E8F0] rounded-xl hover:border-orange-200 hover:bg-[#F4F5FA] transition-colors text-left shadow-card">
                 <div>
-                  <p className="text-[13px] font-semibold text-zinc-200 group-hover:text-orange-500 transition-colors">
+                  <p className="text-[13px] font-semibold text-zinc-800 group-hover:text-orange-500 transition-colors">
                     {eq.name} {eq.serie}
                   </p>
                   <p className="text-[11px] text-zinc-500 mt-0.5">{eq.marque} · {eq.horametre_actuel.toLocaleString()}h</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-orange-500 transition-colors flex-shrink-0" />
+                <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-orange-500 transition-colors flex-shrink-0" />
               </button>
             ))}
           </div>
@@ -290,12 +290,12 @@ export function DailyChecklistPage() {
       {doneChecks.length > 0 && (
         <div>
           <p className="text-[12px] font-semibold text-zinc-500 uppercase tracking-[0.08em] mb-2">Déjà inspectés</p>
-          <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-            <div className="divide-y divide-zinc-800">
+          <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+            <div className="divide-y divide-[#EEF0F6]">
               {doneChecks.map((c) => (
                 <div key={c.id} className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-[13px] font-medium text-zinc-300">
+                    <p className="text-[13px] font-medium text-zinc-700">
                       {(c.equipment as { name: string; serie: string } | null)?.name}{' '}
                       {(c.equipment as { name: string; serie: string } | null)?.serie}
                     </p>
@@ -306,8 +306,8 @@ export function DailyChecklistPage() {
                   </div>
                   <span className={['text-[11px] font-bold px-2.5 py-1 rounded-full',
                     c.final_status === 'op'
-                      ? 'bg-emerald-500/10 text-emerald-500'
-                      : 'bg-red-500/10 text-red-500'].join(' ')}>
+                      ? 'bg-emerald-50 text-emerald-500'
+                      : 'bg-red-50 text-red-500'].join(' ')}>
                     {c.final_status.toUpperCase()}
                   </span>
                 </div>
@@ -320,7 +320,7 @@ export function DailyChecklistPage() {
       {eqLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-16 bg-zinc-900 border border-zinc-800 rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-white border border-[#E6E8F0] rounded-xl animate-pulse" />
           ))}
         </div>
       )}

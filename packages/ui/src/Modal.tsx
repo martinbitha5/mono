@@ -37,46 +37,42 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-3 pt-3 sm:p-4"
       style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))' }}>
-      {/* Backdrop sombre */}
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#1D1E2C]/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Dialog — verre sombre, jamais blanc */}
+      {/* Dialog — panneau blanc, thème clair */}
       <div
         className={[
-          'relative w-full flex flex-col',
+          'relative w-full flex flex-col bg-white',
           'rounded-2xl rounded-b-2xl',
           'max-h-[92dvh] sm:max-h-[88vh]',
           sizes[size],
         ].join(' ')}
         style={{
-          background: 'rgba(10, 12, 20, 0.96)',
-          backdropFilter: 'blur(40px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.80), 0 0 0 1px rgba(255,255,255,0.04)',
+          border: '1px solid #E6E8F0',
+          boxShadow: '0 24px 64px rgba(29,30,44,0.18), 0 4px 16px rgba(29,30,44,0.08)',
         }}
       >
         {/* Header */}
         <div
           className="flex items-start justify-between px-5 py-4 sm:px-6 sm:py-5 flex-shrink-0"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ borderBottom: '1px solid #EEF0F6' }}
         >
           <div>
-            <h2 className="text-[15px] font-semibold text-zinc-50 leading-snug">
+            <h2 className="text-[15px] font-semibold text-zinc-900 leading-snug">
               {title}
             </h2>
             {description && (
-              <p className="text-[13px] text-zinc-400 mt-0.5">{description}</p>
+              <p className="text-[13px] text-zinc-500 mt-0.5">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="ml-4 flex-shrink-0 p-1.5 rounded-lg text-zinc-500
-              hover:text-zinc-200 transition-colors"
-            style={{ background: 'rgba(255,255,255,0.05)' }}
+            className="ml-4 flex-shrink-0 p-1.5 rounded-lg text-zinc-400
+              hover:text-zinc-700 hover:bg-[#F4F5FA] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -91,7 +87,7 @@ export function Modal({
         {footer && (
           <div
             className="flex items-center justify-end gap-2 px-5 py-4 sm:px-6 flex-shrink-0"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.25)' }}
+            style={{ borderTop: '1px solid #EEF0F6', background: '#FAFBFE' }}
           >
             {footer}
           </div>

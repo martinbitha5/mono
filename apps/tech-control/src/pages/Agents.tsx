@@ -127,12 +127,12 @@ function PhotoPicker({
     <div className="flex flex-col items-center gap-1.5 mb-2">
       <div
         onClick={() => ref.current?.click()}
-        className="relative w-20 h-20 rounded-full bg-zinc-800 border-2 border-dashed border-zinc-700 hover:border-orange-500 flex items-center justify-center cursor-pointer overflow-hidden transition-colors"
+        className="relative w-20 h-20 rounded-full bg-[#EEF0F7] border-2 border-dashed border-[#D8DBE8] hover:border-orange-500 flex items-center justify-center cursor-pointer overflow-hidden transition-colors"
       >
         {shown ? (
           <img src={shown} alt="" className="w-full h-full object-cover" />
         ) : (
-          <Camera className="w-6 h-6 text-zinc-600" />
+          <Camera className="w-6 h-6 text-zinc-400" />
         )}
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-full">
           <Camera className="w-5 h-5 text-white" />
@@ -142,11 +142,11 @@ function PhotoPicker({
         onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
       {shown && (
         <button type="button" onClick={onRemove}
-          className="text-[11px] text-red-400 hover:text-red-300">
+          className="text-[11px] text-red-600 hover:text-red-700">
           Supprimer la photo
         </button>
       )}
-      <p className="text-[11px] text-zinc-600">Cliquez pour {shown ? 'changer' : 'ajouter'} la photo</p>
+      <p className="text-[11px] text-zinc-400">Cliquez pour {shown ? 'changer' : 'ajouter'} la photo</p>
     </div>
   );
 }
@@ -364,7 +364,7 @@ export function AgentsPage() {
             {/* Si off ou absent → bouton retour présent */}
             {(rec.status === 'absent' || rec.status === 'off') && (
               <button disabled={isPending} onClick={() => mark(getMarkStatus())}
-                className="p-1 rounded-md text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors disabled:opacity-40"
+                className="p-1 rounded-md text-zinc-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-40"
                 title="Marquer présent">
                 <UserCheck className="w-3.5 h-3.5" />
               </button>
@@ -372,7 +372,7 @@ export function AgentsPage() {
             {/* Si présent/retard → bouton absent */}
             {(rec.status === 'present' || rec.status === 'late') && (
               <button disabled={isPending} onClick={() => mark('absent')}
-                className="p-1 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                className="p-1 rounded-md text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
                 title="Marquer absent">
                 <UserX className="w-3.5 h-3.5" />
               </button>
@@ -380,7 +380,7 @@ export function AgentsPage() {
             {/* Si présent/retard/absent → bouton Off */}
             {rec.status !== 'off' && (
               <button disabled={isPending} onClick={() => mark('off')}
-                className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50 transition-colors disabled:opacity-40"
+                className="p-1 rounded-md text-zinc-500 hover:text-zinc-700 hover:bg-[#E6E8F0] transition-colors disabled:opacity-40"
                 title="Marquer Off (hors vacation)">
                 <CalendarOff className="w-3.5 h-3.5" />
               </button>
@@ -391,7 +391,7 @@ export function AgentsPage() {
           <div className="flex items-center gap-1">
             <button disabled={isPending} onClick={() => mark(getMarkStatus())}
               className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
-                text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20
+                text-emerald-600 hover:bg-emerald-50 border border-emerald-200
                 transition-colors disabled:opacity-40"
               title="Marquer présent">
               <UserCheck className="w-3.5 h-3.5" />
@@ -399,7 +399,7 @@ export function AgentsPage() {
             </button>
             <button disabled={isPending} onClick={() => mark('absent')}
               className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
-                text-red-400 hover:bg-red-500/10 border border-red-500/20
+                text-red-600 hover:bg-red-50 border border-red-200
                 transition-colors disabled:opacity-40"
               title="Marquer absent">
               <UserX className="w-3.5 h-3.5" />
@@ -407,7 +407,7 @@ export function AgentsPage() {
             </button>
             <button disabled={isPending} onClick={() => mark('off')}
               className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium
-                text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50 border border-zinc-700
+                text-zinc-500 hover:text-zinc-700 hover:bg-[#E6E8F0] border border-[#D8DBE8]
                 transition-colors disabled:opacity-40"
               title="Off — pas en vacation">
               <CalendarOff className="w-3.5 h-3.5" />
@@ -424,7 +424,7 @@ export function AgentsPage() {
 
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Agents</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Agents</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {filtered?.length ?? 0} agent{(filtered?.length ?? 0) !== 1 ? 's' : ''}
           </p>
@@ -432,9 +432,9 @@ export function AgentsPage() {
       </div>
 
       {/* Info banner */}
-      <div className="flex items-start gap-3 bg-orange-500/[0.07] border border-orange-500/20 rounded-xl px-4 py-3">
-        <Info className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
-        <p className="text-[12px] text-orange-300 leading-relaxed">
+      <div className="flex items-start gap-3 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
+        <Info className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+        <p className="text-[12px] text-orange-700 leading-relaxed">
           Les comptes agents sont créés et gérés depuis <strong className="text-orange-200">IT Control</strong>.
           Les agents ayant un accès au service Technique apparaissent ici automatiquement.
         </p>
@@ -442,7 +442,7 @@ export function AgentsPage() {
 
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom, email..." className="input-base pl-9 py-2" />
         </div>
@@ -459,9 +459,9 @@ export function AgentsPage() {
         </select>
       </div>
 
-      <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
         {/* Header */}
-        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950 ${gridCols}`}>
+        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA] ${gridCols}`}>
           <span />
           {['Agent', 'Rôle', 'Site', 'Statut', 'Fonction'].map((h) => (
             <span key={h} className="th">{h}</span>
@@ -471,35 +471,35 @@ export function AgentsPage() {
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-20 h-5 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-8 h-8 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-20 h-5 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : filtered?.length === 0 ? (
           <div className="py-16 text-center">
-            <Users className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <Users className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucun agent trouvé</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {filtered?.map((user) => {
               const rec = attendanceMap?.get(user.id);
               return (
                 <div
                   key={user.id}
                   onClick={() => setDetailUser(user)}
-                  className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-zinc-950 transition-colors cursor-pointer ${gridCols}`}
+                  className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-[#F4F5FA] transition-colors cursor-pointer ${gridCols}`}
                 >
                   <UserAvatar user={user} size="sm" />
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
+                      <p className="text-[13px] font-medium text-zinc-800 truncate">{user.full_name}</p>
                       {/* Indicateur présence mobile */}
                       {isAdminOrSupervisor && rec && (
                         <span className="md:hidden flex-shrink-0">
@@ -507,7 +507,7 @@ export function AgentsPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[12px] text-zinc-600 truncate">{user.email}</p>
+                    <p className="text-[12px] text-zinc-400 truncate">{user.email}</p>
                   </div>
 
                   <span><Badge color={roleColors[user.role]}>{roleLabels[user.role]}</Badge></span>
@@ -520,7 +520,7 @@ export function AgentsPage() {
                     </Badge>
                   </span>
 
-                  <span className="hidden md:block text-[12px] text-zinc-600 truncate">{user.fonction ?? '—'}</span>
+                  <span className="hidden md:block text-[12px] text-zinc-400 truncate">{user.fonction ?? '—'}</span>
 
                   {/* Colonne présence (desktop) */}
                   {isAdminOrSupervisor && (
@@ -534,13 +534,13 @@ export function AgentsPage() {
                     <span className="hidden md:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={(e) => e.stopPropagation()}>
                       <button onClick={() => openEdit(user)}
-                        className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors" title="Modifier">
+                        className="p-1.5 rounded-md hover:bg-[#EEF0F7] text-zinc-500 hover:text-zinc-800 transition-colors" title="Modifier">
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => toggleStatus.mutate(user)}
                         className={`p-1.5 rounded-md transition-colors ${user.status === 'active'
-                          ? 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'
-                          : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                          ? 'text-zinc-500 hover:text-red-600 hover:bg-red-50'
+                          : 'text-zinc-500 hover:text-emerald-600 hover:bg-emerald-50'}`}
                         title={user.status === 'active' ? 'Désactiver' : 'Activer'}>
                         {user.status === 'active'
                           ? <UserX className="w-3.5 h-3.5" />
@@ -552,7 +552,7 @@ export function AgentsPage() {
                             if (confirm(`Supprimer définitivement ${user.full_name} ?`))
                               deleteUser.mutate(user);
                           }}
-                          className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Supprimer">
+                          className="p-1.5 rounded-md text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Supprimer">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
@@ -572,7 +572,7 @@ export function AgentsPage() {
             <div className="flex items-center gap-4">
               <UserAvatar user={detailUser} size="lg" />
               <div className="flex-1">
-                <p className="text-[17px] font-bold text-zinc-100">{detailUser.full_name}</p>
+                <p className="text-[17px] font-bold text-zinc-900">{detailUser.full_name}</p>
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                   <Badge color={roleColors[detailUser.role]}>{roleLabels[detailUser.role]}</Badge>
                   <Badge color={detailUser.status === 'active' ? 'green' : 'gray'} dot>
@@ -589,7 +589,7 @@ export function AgentsPage() {
 
             {/* Présence du jour — admin/supervisor seulement */}
             {isAdminOrSupervisor && (
-              <div className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3.5 space-y-2.5">
+              <div className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-xl px-4 py-3.5 space-y-2.5">
                 <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em] flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
                   Présence aujourd'hui — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -603,14 +603,14 @@ export function AgentsPage() {
                           {attendanceLabels[rec.status]} — {new Date(rec.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                         </Badge>
                       ) : (
-                        <span className="text-[12px] text-zinc-600">Pas encore pointé</span>
+                        <span className="text-[12px] text-zinc-400">Pas encore pointé</span>
                       )}
                       <div className="flex items-center gap-2 ml-auto flex-wrap">
                         <button
                           disabled={markAttendance.isPending}
                           onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: getMarkStatus() })}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
-                            text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20 transition-colors disabled:opacity-40"
+                            text-emerald-600 hover:bg-emerald-50 border border-emerald-200 transition-colors disabled:opacity-40"
                         >
                           <UserCheck className="w-3.5 h-3.5" /> Présent
                         </button>
@@ -618,7 +618,7 @@ export function AgentsPage() {
                           disabled={markAttendance.isPending}
                           onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: 'absent' })}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
-                            text-red-400 hover:bg-red-500/10 border border-red-500/20 transition-colors disabled:opacity-40"
+                            text-red-600 hover:bg-red-50 border border-red-200 transition-colors disabled:opacity-40"
                         >
                           <UserX className="w-3.5 h-3.5" /> Absent
                         </button>
@@ -626,7 +626,7 @@ export function AgentsPage() {
                           disabled={markAttendance.isPending}
                           onClick={() => markAttendance.mutate({ userId: detailUser.id, site: detailUser.site, status: 'off' })}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium
-                            text-zinc-400 hover:bg-zinc-700/50 border border-zinc-700 transition-colors disabled:opacity-40"
+                            text-zinc-500 hover:bg-[#E6E8F0] border border-[#D8DBE8] transition-colors disabled:opacity-40"
                         >
                           <CalendarOff className="w-3.5 h-3.5" /> Off
                         </button>
@@ -645,24 +645,24 @@ export function AgentsPage() {
                 { icon: Briefcase, label: 'Fonction',      val: detailUser.fonction || '—' },
                 { icon: Calendar,  label: 'Date de début', val: detailUser.start_date ? new Date(detailUser.start_date).toLocaleDateString('fr-FR') : '—' },
               ].map(({ icon: Icon, label, val }) => (
-                <div key={label} className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5">
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1 flex items-center gap-1">
+                <div key={label} className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                  <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1 flex items-center gap-1">
                     <Icon className="w-3 h-3" /> {label}
                   </p>
-                  <p className="text-[13px] text-zinc-300 break-all">{val}</p>
+                  <p className="text-[13px] text-zinc-700 break-all">{val}</p>
                 </div>
               ))}
-              <div className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5">
-                <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1">Ancienneté</p>
-                <p className="text-[13px] text-zinc-300">{calculateSeniority(detailUser.start_date)}</p>
+              <div className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1">Ancienneté</p>
+                <p className="text-[13px] text-zinc-700">{calculateSeniority(detailUser.start_date)}</p>
               </div>
             </div>
 
             {isAdmin && detailUser.id !== me?.id && (
-              <div className="flex justify-end pt-2 border-t border-zinc-800">
+              <div className="flex justify-end pt-2 border-t border-[#E6E8F0]">
                 <button
                   onClick={() => { if (confirm(`Supprimer définitivement ${detailUser.full_name} ?`)) deleteUser.mutate(detailUser); }}
-                  className="text-[12px] text-red-400 hover:text-red-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-500/10 transition-colors">
+                  className="text-[12px] text-red-600 hover:text-red-700 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
                   <Trash2 className="w-3.5 h-3.5" /> Supprimer l'agent
                 </button>
               </div>
@@ -749,7 +749,7 @@ export function AgentsPage() {
             </div>
 
             {editUser.id === me?.id && (
-              <div className="border border-orange-500/20 bg-orange-500/[0.04] rounded-xl px-4 py-4 space-y-3">
+              <div className="border border-orange-200 bg-orange-50 rounded-xl px-4 py-4 space-y-3">
                 <p className="text-[12px] font-semibold text-orange-500 uppercase tracking-[0.08em]">
                   Changer mon mot de passe (optionnel)
                 </p>
@@ -766,12 +766,12 @@ export function AgentsPage() {
                   </div>
                 </div>
                 {pwNew && pwNew !== pwConfirm && (
-                  <p className="text-[12px] text-red-400">Les mots de passe ne correspondent pas</p>
+                  <p className="text-[12px] text-red-600">Les mots de passe ne correspondent pas</p>
                 )}
               </div>
             )}
 
-            {editError && <p className="text-[12px] text-red-400">{editError}</p>}
+            {editError && <p className="text-[12px] text-red-600">{editError}</p>}
 
             <div className="flex justify-end gap-2 pt-1">
               <Button variant="ghost" onClick={() => setEditUser(null)}>Annuler</Button>

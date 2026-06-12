@@ -183,15 +183,15 @@ export function GsePage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Parc GSE</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Parc GSE</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {all.length} équipements
-            {alertCount > 0 && <span className="ml-2 text-red-400 font-semibold">· {alertCount} alerte(s)</span>}
+            {alertCount > 0 && <span className="ml-2 text-red-600 font-semibold">· {alertCount} alerte(s)</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => refetch()} disabled={isFetching}
-            className="p-2 rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors disabled:opacity-40">
+            className="p-2 rounded-lg border border-[#E6E8F0] text-zinc-500 hover:text-zinc-700 hover:bg-white transition-colors disabled:opacity-40">
             <RefreshCw className={['w-3.5 h-3.5', isFetching ? 'animate-spin' : ''].join(' ')} />
           </button>
           {isAdmin && (
@@ -205,12 +205,12 @@ export function GsePage() {
       {/* Summary stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Total', value: all.length, color: 'text-zinc-300', bg: 'bg-zinc-900' },
-          { label: 'OP', value: opCount, color: 'text-emerald-400', bg: 'bg-emerald-500/[0.05]', border: 'border-emerald-500/20' },
-          { label: 'INOP', value: inopCount, color: 'text-red-400', bg: 'bg-red-500/[0.05]', border: 'border-red-500/20' },
-          { label: 'Alertes', value: alertCount, color: 'text-amber-400', bg: 'bg-amber-500/[0.05]', border: 'border-amber-500/20' },
+          { label: 'Total', value: all.length, color: 'text-zinc-700', bg: 'bg-white' },
+          { label: 'OP', value: opCount, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+          { label: 'INOP', value: inopCount, color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
+          { label: 'Alertes', value: alertCount, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
         ].map((s) => (
-          <div key={s.label} className={['border rounded-xl px-4 py-3 shadow-card', s.bg, s.border ?? 'border-zinc-800'].join(' ')}>
+          <div key={s.label} className={['border rounded-xl px-4 py-3 shadow-card', s.bg, s.border ?? 'border-[#E6E8F0]'].join(' ')}>
             <p className="text-[11px] text-zinc-500 font-semibold uppercase tracking-[0.08em]">{s.label}</p>
             <p className={['text-[26px] font-bold leading-none tabular-nums mt-1', s.color].join(' ')}>{s.value}</p>
           </div>
@@ -219,11 +219,11 @@ export function GsePage() {
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-2">
-        <div className="flex items-center gap-1 bg-zinc-950 border border-zinc-800 rounded-lg p-1 flex-shrink-0">
+        <div className="flex items-center gap-1 bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg p-1 flex-shrink-0">
           {STATUS_TABS.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={['px-3 py-1.5 rounded-md text-[12px] font-medium transition-all whitespace-nowrap',
-                tab === t.key ? 'bg-zinc-900 text-zinc-200 shadow-card' : 'text-zinc-500 hover:text-zinc-400'].join(' ')}>
+                tab === t.key ? 'bg-white text-zinc-800 shadow-card' : 'text-zinc-500 hover:text-zinc-500'].join(' ')}>
               {t.label}
               {t.key === 'alert' && alertCount > 0 && (
                 <span className="ml-1.5 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">{alertCount}</span>
@@ -232,7 +232,7 @@ export function GsePage() {
           ))}
         </div>
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom, série, marque…" className="input-base pl-9 py-2" />
         </div>
@@ -252,14 +252,14 @@ export function GsePage() {
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-44 bg-zinc-900 border border-zinc-800 rounded-xl animate-pulse" />
+            <div key={i} className="h-44 bg-white border border-[#E6E8F0] rounded-xl animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="border border-zinc-800 rounded-xl py-16 text-center bg-zinc-900 shadow-card">
-          <Truck className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+        <div className="border border-[#E6E8F0] rounded-xl py-16 text-center bg-white shadow-card">
+          <Truck className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
           <p className="text-[13px] text-zinc-500 font-medium">Aucun équipement trouvé</p>
-          <p className="text-[12px] text-zinc-700 mt-1">Modifiez les filtres ou la recherche</p>
+          <p className="text-[12px] text-zinc-300 mt-1">Modifiez les filtres ou la recherche</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -267,31 +267,31 @@ export function GsePage() {
             const bar = horaBar(eq.horametre_actuel, eq.horametre_revision, eq.intervalle);
             return (
               <div key={eq.id}
-                className={['group bg-zinc-900 border border-zinc-800 rounded-xl border-l-4 shadow-card hover:bg-zinc-950 transition-colors overflow-hidden',
+                className={['group bg-white border border-[#E6E8F0] rounded-xl border-l-4 shadow-card hover:bg-[#F4F5FA] transition-colors overflow-hidden',
                   deltaBorderL(eq.delta, eq.statut)].join(' ')}>
                 {/* Card header */}
                 <div className="flex items-start justify-between px-4 pt-4 pb-3">
                   <div className="min-w-0 flex-1 pr-2">
-                    <p className="text-[14px] font-bold text-zinc-100 leading-snug">{eq.name}</p>
+                    <p className="text-[14px] font-bold text-zinc-900 leading-snug">{eq.name}</p>
                     <p className="text-[12px] text-zinc-500 mt-0.5">{[eq.serie, eq.marque].filter(Boolean).join(' · ')}</p>
-                    <p className="text-[11px] text-zinc-600 mt-0.5">{typeLabel(eq.type)}{eq.site !== profile?.site ? ` · ${eq.site}` : ''}</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">{typeLabel(eq.type)}{eq.site !== profile?.site ? ` · ${eq.site}` : ''}</p>
                   </div>
                   <Badge color={eq.statut === 'op' ? 'green' : 'red'} dot>{eq.statut.toUpperCase()}</Badge>
                 </div>
 
                 {/* Horametre bar */}
                 <div className="px-4 pb-3">
-                  <div className="flex justify-between text-[10px] text-zinc-600 mb-1">
+                  <div className="flex justify-between text-[10px] text-zinc-400 mb-1">
                     <span>Révision ({eq.intervalle}h)</span>
                     <span>{bar.pct}%</span>
                   </div>
-                  <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[#EEF0F7] rounded-full overflow-hidden">
                     <div className={['h-full rounded-full transition-all', bar.color].join(' ')} style={{ width: `${bar.pct}%` }} />
                   </div>
                 </div>
 
                 {/* Metrics row */}
-                <div className="grid grid-cols-3 gap-px bg-zinc-800 border-t border-zinc-800">
+                <div className="grid grid-cols-3 gap-px bg-[#EEF0F7] border-t border-[#E6E8F0]">
                   {[
                     { label: 'Horamètre', value: `${eq.horametre_actuel.toLocaleString()}h` },
                     { label: 'Proch. rév.', value: `${eq.horametre_prochain.toLocaleString()}h` },
@@ -299,49 +299,49 @@ export function GsePage() {
                       value: `${eq.delta > 0 ? '+' : ''}${eq.delta}h`,
                       cls: deltaColor(eq.delta) },
                   ].map((m) => (
-                    <div key={m.label} className="bg-zinc-900 px-3 py-2.5 text-center">
-                      <p className="text-[9px] text-zinc-600 uppercase tracking-[0.06em] font-semibold">{m.label}</p>
-                      <p className={['text-[12px] font-mono font-bold mt-0.5', m.cls ?? 'text-zinc-300'].join(' ')}>{m.value}</p>
+                    <div key={m.label} className="bg-white px-3 py-2.5 text-center">
+                      <p className="text-[9px] text-zinc-400 uppercase tracking-[0.06em] font-semibold">{m.label}</p>
+                      <p className={['text-[12px] font-mono font-bold mt-0.5', m.cls ?? 'text-zinc-700'].join(' ')}>{m.value}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Obs */}
                 {eq.obs && (
-                  <div className="px-4 py-2.5 border-t border-zinc-800 bg-zinc-950">
+                  <div className="px-4 py-2.5 border-t border-[#E6E8F0] bg-[#F4F5FA]">
                     <p className="text-[11px] text-zinc-500 leading-relaxed truncate">{eq.obs}</p>
                   </div>
                 )}
 
                 {/* Alert badge */}
                 {eq.delta > 0 && (
-                  <div className="px-4 py-2 border-t border-zinc-800 bg-red-500/[0.06] flex items-center gap-1.5">
-                    <AlertTriangle className="w-3 h-3 text-red-400 flex-shrink-0" />
-                    <span className="text-[11px] text-red-400 font-medium">Révision dépassée de {eq.delta}h</span>
+                  <div className="px-4 py-2 border-t border-[#E6E8F0] bg-red-50 flex items-center gap-1.5">
+                    <AlertTriangle className="w-3 h-3 text-red-600 flex-shrink-0" />
+                    <span className="text-[11px] text-red-600 font-medium">Révision dépassée de {eq.delta}h</span>
                   </div>
                 )}
 
                 {/* Actions (admin) */}
                 {isAdmin && (
-                  <div className="flex gap-1.5 px-4 py-2.5 border-t border-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-1.5 px-4 py-2.5 border-t border-[#E6E8F0] opacity-0 group-hover:opacity-100 transition-opacity">
                     {eq.statut !== 'op' && (
                       <button onClick={() => toggleStatut.mutate({ id: eq.id, statut: 'op' })}
-                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-colors">
+                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-emerald-50 text-emerald-500 hover:bg-emerald-100 transition-colors">
                         <CheckCircle2 className="w-3 h-3" /> OP
                       </button>
                     )}
                     {eq.statut !== 'inop' && (
                       <button onClick={() => toggleStatut.mutate({ id: eq.id, statut: 'inop' })}
-                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">
+                        className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
                         <XCircle className="w-3 h-3" /> INOP
                       </button>
                     )}
                     <button onClick={() => openEdit(eq)}
-                      className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 transition-colors">
+                      className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium py-1.5 rounded-lg bg-[#EEF0F7] text-zinc-500 hover:bg-[#E6E8F0] hover:text-zinc-800 transition-colors">
                       <Wrench className="w-3 h-3" /> Éditer
                     </button>
                     <button onClick={() => setDeleteItem(eq)}
-                      className="flex items-center justify-center gap-1 text-[11px] font-medium px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">
+                      className="flex items-center justify-center gap-1 text-[11px] font-medium px-3 py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
                       <Trash2 className="w-3 h-3" />
                     </button>
                   </div>
@@ -356,13 +356,13 @@ export function GsePage() {
       <Modal open={!!deleteItem} onClose={() => setDeleteItem(null)} title="Supprimer l'équipement" size="sm">
         <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
               <AlertTriangle className="w-5 h-5 text-red-500" />
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-zinc-200">{deleteItem?.name}</p>
+              <p className="text-[13px] font-semibold text-zinc-800">{deleteItem?.name}</p>
               <p className="text-[12px] text-zinc-500 mt-0.5">{deleteItem?.serie} · {deleteItem?.site}</p>
-              <p className="text-[12px] text-red-400 mt-2">
+              <p className="text-[12px] text-red-600 mt-2">
                 Les checklists et logs carburant associés seront supprimés automatiquement (CASCADE).
               </p>
             </div>
@@ -414,7 +414,7 @@ export function GsePage() {
             </div>
           </div>
 
-          <div className="border border-zinc-800 rounded-xl p-4 space-y-3 bg-zinc-950">
+          <div className="border border-[#E6E8F0] rounded-xl p-4 space-y-3 bg-[#F4F5FA]">
             <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">Horamètres</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
@@ -437,7 +437,7 @@ export function GsePage() {
               </div>
             </div>
             <div className={['text-[12px] px-3 py-2 rounded-lg',
-              previewDelta > 0 ? 'bg-red-500/10 text-red-400' : previewDelta > -50 ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'].join(' ')}>
+              previewDelta > 0 ? 'bg-red-50 text-red-600' : previewDelta > -50 ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'].join(' ')}>
               Prochaine révision : <strong>{(form.horametre_revision + form.intervalle).toLocaleString()}h</strong>
               {' '}— Delta : <strong>{previewDelta > 0 ? '+' : ''}{previewDelta}h</strong>
             </div>

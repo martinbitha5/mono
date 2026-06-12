@@ -51,14 +51,14 @@ function BigMetric({ value, label, color }: { value: number; label: string; colo
   return (
     <div>
       <p className={['text-[32px] font-bold leading-none tabular-nums', color].join(' ')}>{value}</p>
-      <p className="text-[12px] text-zinc-600 mt-1.5 font-medium">{label}</p>
+      <p className="text-[12px] text-zinc-400 mt-1.5 font-medium">{label}</p>
     </div>
   );
 }
 
 function StatRow({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
+    <div className="flex items-center justify-between py-2.5 border-b border-[#E6E8F0] last:border-0">
       <span className="text-[13px] text-zinc-500">{label}</span>
       <span className={['text-[13px] font-bold tabular-nums', color].join(' ')}>{value}</span>
     </div>
@@ -77,10 +77,10 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-zinc-900 border border-white/[0.06] rounded-xl">
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-white/[0.05]">
+    <div className="bg-white border border-[#E6E8F0] rounded-xl">
+      <div className="flex items-center gap-2 px-5 py-4 border-b border-[#E6E8F0]">
         <Icon className={['w-4 h-4', iconColor].join(' ')} />
-        <h3 className="text-[13px] font-semibold text-zinc-200">{title}</h3>
+        <h3 className="text-[13px] font-semibold text-zinc-800">{title}</h3>
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -115,7 +115,7 @@ export function ReportsPage() {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Rapports</h1>
+          <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Rapports</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Statistiques par période et site</p>
         </div>
         {isAdmin && (
@@ -133,7 +133,7 @@ export function ReportsPage() {
       </div>
 
       {/* Filters */}
-      <div className="border border-white/[0.06] rounded-xl bg-zinc-900 px-5 py-4">
+      <div className="border border-[#E6E8F0] rounded-xl bg-white px-5 py-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <label className="label-base">Du</label>
@@ -170,7 +170,7 @@ export function ReportsPage() {
       {isLoading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-zinc-900 rounded-xl border border-white/[0.06] animate-pulse" />
+            <div key={i} className="h-24 bg-white rounded-xl border border-[#E6E8F0] animate-pulse" />
           ))}
         </div>
       ) : (
@@ -182,43 +182,43 @@ export function ReportsPage() {
                 icon: Users,
                 label: 'Présences enregistrées',
                 value: data?.attendance.total ?? 0,
-                color: 'text-blue-400',
-                iconColor: 'text-blue-400',
-                bg: 'bg-blue-500/[0.06]',
+                color: 'text-blue-600',
+                iconColor: 'text-blue-600',
+                bg: 'bg-blue-50',
               },
               {
                 icon: AlertTriangle,
                 label: 'Incidents signalés',
                 value: data?.incidents.total ?? 0,
-                color: 'text-red-400',
-                iconColor: 'text-red-400',
-                bg: 'bg-red-500/[0.06]',
+                color: 'text-red-600',
+                iconColor: 'text-red-600',
+                bg: 'bg-red-50',
               },
               {
                 icon: MonitorCheck,
                 label: 'Installations validées',
                 value: data?.installations.validated ?? 0,
-                color: 'text-emerald-400',
-                iconColor: 'text-emerald-400',
-                bg: 'bg-emerald-500/[0.06]',
+                color: 'text-emerald-600',
+                iconColor: 'text-emerald-600',
+                bg: 'bg-emerald-50',
               },
               {
                 icon: Package,
                 label: 'Équipements en panne',
                 value: data?.faultyEquipment ?? 0,
-                color: 'text-amber-400',
-                iconColor: 'text-amber-400',
-                bg: 'bg-amber-500/[0.06]',
+                color: 'text-amber-600',
+                iconColor: 'text-amber-600',
+                bg: 'bg-amber-50',
               },
             ].map((kpi) => {
               const KpiIcon = kpi.icon;
               return (
-                <div key={kpi.label} className={['border border-white/[0.06] rounded-xl px-5 py-5 flex items-center gap-4', kpi.bg].join(' ')}>
+                <div key={kpi.label} className={['border border-[#E6E8F0] rounded-xl px-5 py-5 flex items-center gap-4', kpi.bg].join(' ')}>
                   <div className="flex-1">
                     <p className={['text-[28px] font-bold leading-none tabular-nums', kpi.color].join(' ')}>
                       {kpi.value}
                     </p>
-                    <p className="text-[11px] text-zinc-600 mt-2 font-medium leading-tight">{kpi.label}</p>
+                    <p className="text-[11px] text-zinc-400 mt-2 font-medium leading-tight">{kpi.label}</p>
                   </div>
                   <KpiIcon className={['w-8 h-8 opacity-20 flex-shrink-0', kpi.iconColor].join(' ')} />
                 </div>
@@ -228,41 +228,41 @@ export function ReportsPage() {
 
           {/* Detail cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <SectionCard icon={Users} title="Présences" iconColor="text-blue-400">
-              <StatRow label="Présents" value={data?.attendance.present ?? 0} color="text-emerald-400" />
-              <StatRow label="En retard" value={data?.attendance.late ?? 0} color="text-amber-400" />
-              <StatRow label="Absents" value={data?.attendance.absent ?? 0} color="text-red-400" />
+            <SectionCard icon={Users} title="Présences" iconColor="text-blue-600">
+              <StatRow label="Présents" value={data?.attendance.present ?? 0} color="text-emerald-600" />
+              <StatRow label="En retard" value={data?.attendance.late ?? 0} color="text-amber-600" />
+              <StatRow label="Absents" value={data?.attendance.absent ?? 0} color="text-red-600" />
               <div className="pt-3 mt-1">
                 <BigMetric
                   value={data?.attendance.total ?? 0}
                   label="Total pointages"
-                  color="text-zinc-300"
+                  color="text-zinc-700"
                 />
               </div>
             </SectionCard>
 
-            <SectionCard icon={AlertTriangle} title="Incidents" iconColor="text-red-400">
-              <StatRow label="Critiques" value={data?.incidents.critical ?? 0} color="text-red-400" />
-              <StatRow label="Résolus" value={data?.incidents.resolved ?? 0} color="text-emerald-400" />
-              <StatRow label="Ouverts" value={data?.incidents.open ?? 0} color="text-amber-400" />
+            <SectionCard icon={AlertTriangle} title="Incidents" iconColor="text-red-600">
+              <StatRow label="Critiques" value={data?.incidents.critical ?? 0} color="text-red-600" />
+              <StatRow label="Résolus" value={data?.incidents.resolved ?? 0} color="text-emerald-600" />
+              <StatRow label="Ouverts" value={data?.incidents.open ?? 0} color="text-amber-600" />
               <div className="pt-3 mt-1">
                 <BigMetric
                   value={data?.incidents.total ?? 0}
                   label="Total incidents"
-                  color="text-zinc-300"
+                  color="text-zinc-700"
                 />
               </div>
             </SectionCard>
 
-            <SectionCard icon={MonitorCheck} title="Installations" iconColor="text-emerald-400">
-              <StatRow label="Validées" value={data?.installations.validated ?? 0} color="text-emerald-400" />
-              <StatRow label="Problèmes détectés" value={data?.installations.issues ?? 0} color="text-red-400" />
+            <SectionCard icon={MonitorCheck} title="Installations" iconColor="text-emerald-600">
+              <StatRow label="Validées" value={data?.installations.validated ?? 0} color="text-emerald-600" />
+              <StatRow label="Problèmes détectés" value={data?.installations.issues ?? 0} color="text-red-600" />
               <StatRow label="Non validées" value={(data?.installations.total ?? 0) - (data?.installations.validated ?? 0) - (data?.installations.issues ?? 0)} color="text-zinc-500" />
               <div className="pt-3 mt-1">
                 <BigMetric
                   value={data?.installations.total ?? 0}
                   label="Total validations"
-                  color="text-zinc-300"
+                  color="text-zinc-700"
                 />
               </div>
             </SectionCard>

@@ -109,31 +109,31 @@ function useGseBysite() {
 
 /* ── Présentation ─────────────────────────────────────────── */
 
-const PANEL    = 'border border-white/[0.07] rounded-lg bg-[#0C0C0E] overflow-hidden';
-const PANEL_HD = 'flex items-center justify-between px-4 h-11 border-b border-white/[0.06] flex-shrink-0';
-const TH       = 'font-mono text-[9px] tracking-[0.16em] text-zinc-600 uppercase';
+const PANEL    = 'border border-[#E6E8F0] rounded-lg bg-white overflow-hidden';
+const PANEL_HD = 'flex items-center justify-between px-4 h-11 border-b border-[#E6E8F0] flex-shrink-0';
+const TH       = 'font-mono text-[9px] tracking-[0.16em] text-zinc-400 uppercase';
 
 function Kpi({ value, label, sub, accent, loading }: {
   value: string | number; label: string; sub?: string;
   accent?: 'red' | 'green' | 'blue' | 'orange'; loading?: boolean;
 }) {
   const accentMap = {
-    red:    'text-red-400',
-    green:  'text-emerald-400',
-    blue:   'text-blue-400',
-    orange: 'text-orange-400',
+    red:    'text-red-600',
+    green:  'text-emerald-600',
+    blue:   'text-blue-600',
+    orange: 'text-orange-600',
   };
   return (
-    <div className="bg-[#0C0C0E] px-5 py-4">
+    <div className="bg-white px-5 py-4">
       <p className={TH}>{label}</p>
       {loading ? (
-        <div className="h-7 w-14 bg-white/[0.05] rounded mt-2 animate-pulse" />
+        <div className="h-7 w-14 bg-[#F4F5FA] rounded mt-2 animate-pulse" />
       ) : (
-        <p className={['mt-2 font-mono text-[26px] tabular-nums leading-none', accent ? accentMap[accent] : 'text-zinc-50'].join(' ')}>
+        <p className={['mt-2 font-mono text-[26px] tabular-nums leading-none', accent ? accentMap[accent] : 'text-zinc-900'].join(' ')}>
           {value}
         </p>
       )}
-      {sub && !loading && <p className="text-[11px] text-zinc-600 mt-1.5">{sub}</p>}
+      {sub && !loading && <p className="text-[11px] text-zinc-400 mt-1.5">{sub}</p>}
     </div>
   );
 }
@@ -173,15 +173,15 @@ export function Dashboard() {
       {/* ── En-tête ── */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-zinc-50">
+          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-zinc-900">
             {greeting}, {profile?.full_name?.split(' ')[0] ?? 'Agent'}
           </h1>
           <p className="mt-1 font-mono text-[11px] tracking-[0.06em] text-zinc-500 uppercase">
             {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-            {profile?.site && <span className="text-zinc-600"> · {profile.site}</span>}
+            {profile?.site && <span className="text-zinc-400"> · {profile.site}</span>}
           </p>
         </div>
-        <span className="hidden sm:flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-zinc-600 uppercase pb-1">
+        <span className="hidden sm:flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-zinc-400 uppercase pb-1">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           Temps réel
         </span>
@@ -190,16 +190,16 @@ export function Dashboard() {
       {/* ── Bandeau d'état ── */}
       {!isLoading && (
         <div className={[
-          'flex items-center gap-3 px-4 py-2.5 rounded-lg border text-[12px] bg-[#0C0C0E]',
-          isOperational ? 'border-emerald-500/20' : 'border-red-500/25',
+          'flex items-center gap-3 px-4 py-2.5 rounded-lg border text-[12px] bg-white',
+          isOperational ? 'border-emerald-200' : 'border-red-200',
         ].join(' ')}>
           {isOperational
-            ? <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            : <ShieldAlert className="w-4 h-4 text-red-400 flex-shrink-0" />}
-          <span className={['font-mono text-[11px] tracking-[0.1em] uppercase font-semibold', isOperational ? 'text-emerald-400' : 'text-red-400'].join(' ')}>
+            ? <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            : <ShieldAlert className="w-4 h-4 text-red-600 flex-shrink-0" />}
+          <span className={['font-mono text-[11px] tracking-[0.1em] uppercase font-semibold', isOperational ? 'text-emerald-600' : 'text-red-600'].join(' ')}>
             {isOperational ? 'Opérations normales' : 'Attention requise'}
           </span>
-          <span className="text-zinc-700 hidden sm:inline">·</span>
+          <span className="text-zinc-300 hidden sm:inline">·</span>
           <div className="hidden sm:flex items-center gap-4 text-zinc-500">
             <span className="flex items-center gap-1.5">
               {(stats?.presentCount ?? 0) > 0
@@ -224,7 +224,7 @@ export function Dashboard() {
       )}
 
       {/* ── KPI ── */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-px bg-white/[0.07] border border-white/[0.07] rounded-lg overflow-hidden">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-px bg-[#E6E8F0] border border-[#E6E8F0] rounded-lg overflow-hidden">
         <Kpi label="Présents aujourd'hui" value={stats?.presentCount ?? 0} loading={isLoading} />
         <Kpi
           label="Interventions ouvertes"
@@ -251,28 +251,28 @@ export function Dashboard() {
       {siteSummary && (
         <div className={PANEL}>
           <div className={PANEL_HD}>
-            <span className="text-[13px] font-semibold text-zinc-200">Statut par site</span>
-            <span className="font-mono text-[10px] tracking-[0.14em] text-zinc-600 uppercase">{SITES.length} sites</span>
+            <span className="text-[13px] font-semibold text-zinc-800">Statut par site</span>
+            <span className="font-mono text-[10px] tracking-[0.14em] text-zinc-400 uppercase">{SITES.length} sites</span>
           </div>
-          <div className="hidden sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_110px] gap-4 px-4 py-2 border-b border-white/[0.05]">
+          <div className="hidden sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_110px] gap-4 px-4 py-2 border-b border-[#E6E8F0]">
             <span /><span className={TH}>Site</span><span className={TH}>Agents</span>
             <span className={TH}>GSE total</span><span className={TH}>INOP</span><span className={TH}>Interventions</span>
           </div>
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {siteSummary.map((s) => (
-              <div key={s.site} className="flex sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_110px] items-center gap-4 px-4 py-2.5 hover:bg-white/[0.02] transition-colors">
+              <div key={s.site} className="flex sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_110px] items-center gap-4 px-4 py-2.5 hover:bg-[#FAFBFE] transition-colors">
                 <div className="flex-shrink-0">
                   <div className={['w-1.5 h-1.5 rounded-full', s.faulty > 0 || s.openIncidents > 0 ? 'bg-red-400' : s.present === 0 ? 'bg-amber-400' : 'bg-emerald-400'].join(' ')} />
                 </div>
-                <span className="text-[13px] font-medium text-zinc-300">{s.site}</span>
-                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.present > 0 ? 'text-emerald-400' : 'text-zinc-700'].join(' ')}>
+                <span className="text-[13px] font-medium text-zinc-700">{s.site}</span>
+                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.present > 0 ? 'text-emerald-600' : 'text-zinc-300'].join(' ')}>
                   {s.present > 0 ? s.present : '—'}
                 </span>
-                <span className="hidden sm:block font-mono text-[12px] tabular-nums text-zinc-400">{s.total > 0 ? s.total : '—'}</span>
-                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.faulty > 0 ? 'text-red-400' : 'text-zinc-700'].join(' ')}>
+                <span className="hidden sm:block font-mono text-[12px] tabular-nums text-zinc-500">{s.total > 0 ? s.total : '—'}</span>
+                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.faulty > 0 ? 'text-red-600' : 'text-zinc-300'].join(' ')}>
                   {s.faulty > 0 ? s.faulty : '—'}
                 </span>
-                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.openIncidents > 0 ? 'text-amber-400' : 'text-zinc-700'].join(' ')}>
+                <span className={['hidden sm:block font-mono text-[12px] tabular-nums', s.openIncidents > 0 ? 'text-amber-600' : 'text-zinc-300'].join(' ')}>
                   {s.openIncidents > 0 ? s.openIncidents : '—'}
                 </span>
               </div>
@@ -287,14 +287,14 @@ export function Dashboard() {
         <div className={['xl:col-span-2', PANEL].join(' ')}>
           <div className={PANEL_HD}>
             <div className="flex items-center gap-2">
-              <span className="text-[13px] font-semibold text-zinc-200">Interventions actives</span>
+              <span className="text-[13px] font-semibold text-zinc-800">Interventions actives</span>
               {!!stats?.openInterventions && (
-                <span className="font-mono text-[10px] font-semibold bg-red-500/10 text-red-400 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded">
+                <span className="font-mono text-[10px] font-semibold bg-red-50 text-red-600 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded">
                   {stats.openInterventions}
                 </span>
               )}
             </div>
-            <Link to="/interventions" className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-600 hover:text-orange-400 transition-colors">
+            <Link to="/interventions" className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-400 hover:text-orange-600 transition-colors">
               Voir tout <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -302,25 +302,25 @@ export function Dashboard() {
             <div className="py-14 text-center">
               <CheckCircle className="w-7 h-7 text-emerald-500/30 mx-auto mb-3" />
               <p className="text-[13px] text-zinc-500 font-medium">Aucune intervention active</p>
-              <p className="text-[12px] text-zinc-700 mt-1">Toutes les opérations se déroulent normalement</p>
+              <p className="text-[12px] text-zinc-300 mt-1">Toutes les opérations se déroulent normalement</p>
             </div>
           ) : (
-            <div className="divide-y divide-white/[0.04]">
+            <div className="divide-y divide-[#EEF0F6]">
               {interventions.map((item) => {
                 const dot = PRIORITY_DOT[item.priority] ?? 'bg-zinc-600';
                 const cfg = STATUS_CFG[item.status as keyof typeof STATUS_CFG] ?? STATUS_CFG.ouvert;
                 const elapsed = Math.floor((Date.now() - new Date(item.created_at).getTime()) / 60000);
                 const elapsedStr = elapsed < 60 ? `${elapsed}m` : `${Math.floor(elapsed / 60)}h${elapsed % 60 > 0 ? String(elapsed % 60).padStart(2, '0') : ''}`;
                 return (
-                  <div key={item.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
+                  <div key={item.id} className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFBFE] transition-colors">
                     <div className={['w-1.5 h-1.5 rounded-full flex-shrink-0', dot].join(' ')} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium text-zinc-200 truncate">{item.title}</p>
-                      <p className="text-[11px] text-zinc-600 mt-0.5">{item.site}</p>
+                      <p className="text-[13px] font-medium text-zinc-800 truncate">{item.title}</p>
+                      <p className="text-[11px] text-zinc-400 mt-0.5">{item.site}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <Badge color={cfg.color}>{cfg.label}</Badge>
-                      <span className="font-mono text-[11px] text-zinc-600 tabular-nums hidden sm:inline">{elapsedStr}</span>
+                      <span className="font-mono text-[11px] text-zinc-400 tabular-nums hidden sm:inline">{elapsedStr}</span>
                     </div>
                   </div>
                 );
@@ -334,33 +334,33 @@ export function Dashboard() {
           {/* Présences */}
           <div className={PANEL}>
             <div className={PANEL_HD}>
-              <span className="text-[13px] font-semibold text-zinc-200">Présences</span>
-              <Link to="/attendance" className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-600 hover:text-orange-400 transition-colors">
+              <span className="text-[13px] font-semibold text-zinc-800">Présences</span>
+              <Link to="/attendance" className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-400 hover:text-orange-600 transition-colors">
                 Voir tout <ArrowUpRight className="w-3 h-3" />
               </Link>
             </div>
             {!attendance?.length ? (
               <div className="py-10 text-center">
-                <Clock className="w-6 h-6 text-zinc-700 mx-auto mb-2" />
-                <p className="text-[12px] text-zinc-600">Aucun pointage aujourd'hui</p>
+                <Clock className="w-6 h-6 text-zinc-300 mx-auto mb-2" />
+                <p className="text-[12px] text-zinc-400">Aucun pointage aujourd'hui</p>
               </div>
             ) : (
-              <div className="divide-y divide-white/[0.04]">
+              <div className="divide-y divide-[#EEF0F6]">
                 {attendance.map((r) => {
                   const name = (r.profiles as { full_name: string } | null)?.full_name ?? '—';
                   const cfg  = ATT_CFG[r.status as keyof typeof ATT_CFG] ?? ATT_CFG.present;
                   const time = new Date(r.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
                   return (
-                    <div key={r.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors">
-                      <div className="w-6 h-6 rounded bg-white/[0.05] border border-white/[0.06] flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-500 flex-shrink-0">
+                    <div key={r.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAFBFE] transition-colors">
+                      <div className="w-6 h-6 rounded bg-[#F4F5FA] border border-[#E6E8F0] flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-500 flex-shrink-0">
                         {name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-medium text-zinc-300 truncate">{name}</p>
+                        <p className="text-[12px] font-medium text-zinc-700 truncate">{name}</p>
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
                         <Badge color={cfg.color} dot>{cfg.label}</Badge>
-                        <span className="font-mono text-[10px] text-zinc-600 tabular-nums">{time}</span>
+                        <span className="font-mono text-[10px] text-zinc-400 tabular-nums">{time}</span>
                       </div>
                     </div>
                   );
@@ -372,9 +372,9 @@ export function Dashboard() {
           {/* Actions rapides */}
           <div className={PANEL}>
             <div className={PANEL_HD}>
-              <span className="text-[13px] font-semibold text-zinc-200">Actions rapides</span>
+              <span className="text-[13px] font-semibold text-zinc-800">Actions rapides</span>
             </div>
-            <div className="divide-y divide-white/[0.04]">
+            <div className="divide-y divide-[#EEF0F6]">
               {[
                 { to: '/attendance',    label: 'Pointer ma présence',       icon: Users         },
                 { to: '/gse',           label: 'Voir les équipements GSE',  icon: Truck         },
@@ -383,10 +383,10 @@ export function Dashboard() {
                 const Icon = item.icon;
                 return (
                   <Link key={item.to} to={item.to}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors group">
-                    <Icon className="w-3.5 h-3.5 text-zinc-600 group-hover:text-orange-400 transition-colors flex-shrink-0" strokeWidth={1.75} />
-                    <span className="text-[13px] text-zinc-400 group-hover:text-zinc-200 transition-colors">{item.label}</span>
-                    <ArrowUpRight className="w-3 h-3 text-zinc-700 group-hover:text-zinc-500 ml-auto transition-colors" />
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFBFE] transition-colors group">
+                    <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-orange-600 transition-colors flex-shrink-0" strokeWidth={1.75} />
+                    <span className="text-[13px] text-zinc-500 group-hover:text-zinc-800 transition-colors">{item.label}</span>
+                    <ArrowUpRight className="w-3 h-3 text-zinc-300 group-hover:text-zinc-500 ml-auto transition-colors" />
                   </Link>
                 );
               })}

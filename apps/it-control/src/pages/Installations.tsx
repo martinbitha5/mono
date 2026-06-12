@@ -76,7 +76,7 @@ export function InstallationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Installations</h1>
+          <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Installations</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Validations pré-opératoires du jour</p>
         </div>
         <Button onClick={() => setModalOpen(true)} size="sm">
@@ -86,34 +86,34 @@ export function InstallationsPage() {
       </div>
 
       {/* Table */}
-      <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
         {/* Header */}
-        <div className="hidden sm:grid sm:grid-cols-[16px_1fr_80px_80px_80px_90px_72px] gap-4 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.015]">
+        <div className="hidden sm:grid sm:grid-cols-[16px_1fr_80px_80px_80px_90px_72px] gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#FAFBFE]">
           <span />
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Compagnie</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Réseau</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Machines</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Logiciels</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Statut</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Heure</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Compagnie</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Réseau</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Machines</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Logiciels</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Statut</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Heure</span>
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-zinc-800 animate-pulse" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-[#EEF0F7] animate-pulse" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : installations?.length === 0 ? (
           <div className="py-16 text-center">
-            <MonitorCheck className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <MonitorCheck className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucune installation enregistrée aujourd'hui</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {installations?.map((inst) => {
               const cfg = statusConfig[inst.status as keyof typeof statusConfig] ?? statusConfig.not_validated;
               const time = new Date(inst.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -121,7 +121,7 @@ export function InstallationsPage() {
               return (
                 <div
                   key={inst.id}
-                  className="flex sm:grid sm:grid-cols-[16px_1fr_80px_80px_80px_90px_72px] items-center gap-4 px-4 py-3.5 hover:bg-white/[0.02] transition-colors"
+                  className="flex sm:grid sm:grid-cols-[16px_1fr_80px_80px_80px_90px_72px] items-center gap-4 px-4 py-3.5 hover:bg-[#FAFBFE] transition-colors"
                 >
                   {/* Status dot */}
                   <div className="flex-shrink-0 flex items-center">
@@ -130,11 +130,11 @@ export function InstallationsPage() {
 
                   {/* Airline + site */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{inst.airline}</p>
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{inst.airline}</p>
                     {inst.comment && (
-                      <p className="text-[12px] text-zinc-600 truncate mt-0.5 hidden sm:block">{inst.comment}</p>
+                      <p className="text-[12px] text-zinc-400 truncate mt-0.5 hidden sm:block">{inst.comment}</p>
                     )}
-                    <p className="text-[12px] text-zinc-600 sm:hidden">{inst.site}</p>
+                    <p className="text-[12px] text-zinc-400 sm:hidden">{inst.site}</p>
                   </div>
 
                   {/* Check indicators */}
@@ -148,7 +148,7 @@ export function InstallationsPage() {
                   </span>
 
                   {/* Time */}
-                  <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+                  <span className="hidden sm:block text-[11px] text-zinc-400 font-mono tabular-nums">{time}</span>
                 </div>
               );
             })}
@@ -208,7 +208,7 @@ export function InstallationsPage() {
           <div className="flex items-center justify-between pt-1">
             <div className="flex items-center gap-2">
               <div className={['w-1.5 h-1.5 rounded-full', statusConfig[status].dot].join(' ')} />
-              <span className="text-[12px] text-zinc-400">{statusConfig[status].label}</span>
+              <span className="text-[12px] text-zinc-500">{statusConfig[status].label}</span>
             </div>
             <div className="flex gap-2">
               <Button variant="ghost" onClick={() => setModalOpen(false)}>Annuler</Button>
@@ -246,14 +246,14 @@ function ChecklistItem({
     <label className={[
       'flex items-start gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-all',
       checked
-        ? 'bg-emerald-500/[0.05] border-emerald-500/20'
-        : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.10]',
+        ? 'bg-emerald-50 border-emerald-200'
+        : 'bg-[#FAFBFE] border-[#E6E8F0] hover:border-[#E6E8F0]',
     ].join(' ')}>
       <div className={[
         'w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition-all',
         checked
           ? 'bg-emerald-600 border-emerald-600'
-          : 'border-white/[0.15] bg-transparent',
+          : 'border-[#E6E8F0] bg-transparent',
       ].join(' ')}>
         {checked && (
           <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 10 8" fill="none">
@@ -262,8 +262,8 @@ function ChecklistItem({
         )}
       </div>
       <div>
-        <p className="text-[13px] font-medium text-zinc-200">{label}</p>
-        <p className="text-[12px] text-zinc-600 mt-0.5">{desc}</p>
+        <p className="text-[13px] font-medium text-zinc-800">{label}</p>
+        <p className="text-[12px] text-zinc-400 mt-0.5">{desc}</p>
       </div>
       <input
         type="checkbox"

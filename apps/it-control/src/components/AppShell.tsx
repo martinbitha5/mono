@@ -85,11 +85,11 @@ function NotifTypeIcon({ type }: { type: AppNotification['type'] }) {
 }
 
 function notifIconBg(type: AppNotification['type']) {
-  if (type === 'gse_inop')     return 'bg-red-500/15 text-red-400';
-  if (type === 'intervention') return 'bg-orange-500/15 text-orange-400';
-  if (type === 'incident')     return 'bg-amber-500/15 text-amber-400';
-  if (type === 'maintenance')  return 'bg-blue-500/15 text-blue-400';
-  return 'bg-zinc-700 text-zinc-400';
+  if (type === 'gse_inop')     return 'bg-red-50 text-red-600';
+  if (type === 'intervention') return 'bg-orange-50 text-orange-600';
+  if (type === 'incident')     return 'bg-amber-50 text-amber-600';
+  if (type === 'maintenance')  return 'bg-blue-50 text-blue-600';
+  return 'bg-[#E6E8F0] text-zinc-500';
 }
 
 // ── Notification panel ────────────────────────────────────────────────────────
@@ -103,19 +103,19 @@ function NotifPanel({
 }) {
   return (
     <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] sm:w-80 max-w-sm
-      bg-zinc-900/90 backdrop-blur-xl border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden">
+      bg-white backdrop-blur-xl border border-[#E6E8F0] rounded-xl shadow-2xl z-50 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6E8F0]">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-semibold text-zinc-100">Notifications</span>
+          <span className="text-[13px] font-semibold text-zinc-900">Notifications</span>
           {unreadCount > 0 && (
-            <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded text-[10px] font-semibold">
+            <span className="px-1.5 py-0.5 bg-blue-100 text-blue-600 rounded text-[10px] font-semibold">
               {unreadCount} non lu{unreadCount > 1 ? 's' : ''}
             </span>
           )}
         </div>
         {unreadCount > 0 && (
-          <button onClick={markAllRead} className="text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors">
+          <button onClick={markAllRead} className="text-[11px] text-zinc-500 hover:text-zinc-700 transition-colors">
             Tout lire
           </button>
         )}
@@ -125,14 +125,14 @@ function NotifPanel({
       <div className="max-h-[360px] overflow-y-auto">
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 gap-2">
-            <Bell className="w-8 h-8 text-zinc-700" />
-            <p className="text-[12px] text-zinc-600">Aucune notification</p>
+            <Bell className="w-8 h-8 text-zinc-300" />
+            <p className="text-[12px] text-zinc-400">Aucune notification</p>
           </div>
         ) : (
           notifications.map(n => {
             const itemCls = [
-              'block px-4 py-3 border-b border-white/[0.04] last:border-0 transition-colors',
-              !n.read ? 'bg-white/[0.03]' : 'hover:bg-white/[0.02]',
+              'block px-4 py-3 border-b border-[#E6E8F0] last:border-0 transition-colors',
+              !n.read ? 'bg-[#FAFBFE]' : 'hover:bg-[#FAFBFE]',
               n.link ? 'cursor-pointer' : '',
             ].join(' ');
             const inner = (
@@ -145,13 +145,13 @@ function NotifPanel({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className="text-[12px] font-semibold text-zinc-100 leading-tight truncate flex-1">
+                    <p className="text-[12px] font-semibold text-zinc-900 leading-tight truncate flex-1">
                       {n.title}
                     </p>
                     {!n.read && <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />}
                   </div>
                   <p className="text-[11px] text-zinc-500 mt-0.5 leading-tight line-clamp-2">{n.body}</p>
-                  <p className="text-[10px] text-zinc-700 mt-1">{relativeTime(n.created_at)}</p>
+                  <p className="text-[10px] text-zinc-300 mt-1">{relativeTime(n.created_at)}</p>
                 </div>
               </div>
             );
@@ -181,7 +181,7 @@ function SidebarSection({
   if (!visible.length) return null;
   return (
     <div>
-      <p className="px-3 mb-1 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.1em]">{heading}</p>
+      <p className="px-3 mb-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.1em]">{heading}</p>
       <div className="space-y-px">
         {visible.map(item => {
           const active = currentPath === item.to;
@@ -193,11 +193,11 @@ function SidebarSection({
                 'flex items-center gap-2.5 px-3 py-[7px] rounded-lg',
                 'text-[13px] font-medium transition-colors duration-100',
                 active
-                  ? 'bg-blue-500/[0.15] text-blue-400'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05]',
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'text-zinc-500 hover:text-zinc-800 hover:bg-[#F4F5FA]',
               ].join(' ')}
             >
-              <Icon className={['w-[15px] h-[15px] flex-shrink-0', active ? 'text-blue-400' : 'text-zinc-600'].join(' ')} />
+              <Icon className={['w-[15px] h-[15px] flex-shrink-0', active ? 'text-blue-600' : 'text-zinc-400'].join(' ')} />
               <span className="flex-1 truncate">{item.label}</span>
             </Link>
           );
@@ -250,20 +250,20 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div
       className="flex h-[100dvh] overflow-hidden"
-      style={{ background: '#0A0A0B' }}
+      style={{ background: '#F4F5FA' }}
     >
 
       {/* ══════════════════════════════════════════════════
           DESKTOP SIDEBAR  (hidden on mobile / tablet)
       ══════════════════════════════════════════════════ */}
       <aside
-        className="hidden lg:flex flex-col w-56 flex-shrink-0 border-r border-white/[0.10] relative z-10"
-        style={{ background: 'rgba(7, 9, 14, 0.62)', backdropFilter: 'blur(28px) saturate(160%)', WebkitBackdropFilter: 'blur(28px) saturate(160%)' }}
+        className="hidden lg:flex flex-col w-56 flex-shrink-0 border-r border-[#E6E8F0] relative z-10"
+        style={{ background: '#FFFFFF' }}
       >
         {/* Logo — texte uniquement, sans icône */}
-        <div className="flex items-center px-5 h-14 border-b border-white/[0.06] flex-shrink-0">
+        <div className="flex items-center px-5 h-14 border-b border-[#E6E8F0] flex-shrink-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-bold text-zinc-50 leading-tight truncate">ATS IT Control</p>
+            <p className="text-[13px] font-bold text-zinc-900 leading-tight truncate">ATS IT Control</p>
             <p className="text-[10px] text-zinc-500 leading-tight mt-px">Service Informatique</p>
           </div>
         </div>
@@ -275,20 +275,20 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* User */}
-        <div className="flex-shrink-0 px-3 py-3 border-t border-white/[0.06] space-y-1">
-          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-black/30">
+        <div className="flex-shrink-0 px-3 py-3 border-t border-[#E6E8F0] space-y-1">
+          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-[#F4F5FA]">
             <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 select-none overflow-hidden">
               {profile?.photo_url
                 ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
                 : initial}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-semibold text-zinc-100 truncate leading-tight">{profile?.full_name ?? '—'}</p>
+              <p className="text-[12px] font-semibold text-zinc-900 truncate leading-tight">{profile?.full_name ?? '—'}</p>
               <p className="text-[10px] text-zinc-500 leading-tight mt-px truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
             </div>
           </div>
           <button onClick={signOut}
-            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors">
             <LogOut className="w-3.5 h-3.5" />
             Se déconnecter
           </button>
@@ -304,16 +304,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           'transition-transform duration-300 ease-in-out',
           drawerOpen ? 'translate-x-0' : '-translate-x-full',
         ].join(' ')}
-        style={{ background: 'rgba(6, 7, 12, 0.88)', backdropFilter: 'blur(32px) saturate(160%)', WebkitBackdropFilter: 'blur(32px) saturate(160%)' }}
+        style={{ background: '#FFFFFF' }}
       >
         {/* Drawer header — texte uniquement */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-white/[0.06] flex-shrink-0">
+        <div className="flex items-center justify-between px-4 h-14 border-b border-[#E6E8F0] flex-shrink-0">
           <div>
-            <p className="text-[13px] font-bold text-zinc-50 leading-tight">ATS IT Control</p>
+            <p className="text-[13px] font-bold text-zinc-900 leading-tight">ATS IT Control</p>
             <p className="text-[10px] text-zinc-500 leading-tight mt-px">Service Informatique</p>
           </div>
           <button onClick={closeDrawer}
-            className="p-2 rounded-xl text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-100 transition-colors">
+            className="p-2 rounded-xl text-zinc-500 hover:bg-[#F4F5FA] hover:text-zinc-900 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -331,11 +331,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                     'flex items-center gap-3.5 px-3 py-3.5 rounded-xl',
                     'text-[15px] font-medium transition-colors',
                     active
-                      ? 'bg-blue-500/15 text-blue-400'
-                      : 'text-zinc-400 hover:bg-white/[0.05] hover:text-zinc-100',
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-zinc-500 hover:bg-[#F4F5FA] hover:text-zinc-900',
                   ].join(' ')}
                 >
-                  <Icon className={['w-5 h-5 flex-shrink-0', active ? 'text-blue-400' : 'text-zinc-600'].join(' ')} />
+                  <Icon className={['w-5 h-5 flex-shrink-0', active ? 'text-blue-600' : 'text-zinc-400'].join(' ')} />
                   <span className="flex-1">{item.label}</span>
                 </Link>
               );
@@ -344,23 +344,23 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Drawer user + logout */}
-        <div className="flex-shrink-0 border-t border-white/[0.06] px-3 py-4 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-black/30">
+        <div className="flex-shrink-0 border-t border-[#E6E8F0] px-3 py-4 space-y-2">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#F4F5FA]">
             <div className="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white text-[15px] font-bold flex-shrink-0 select-none overflow-hidden">
               {profile?.photo_url
                 ? <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
                 : initial}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-zinc-100 truncate">{profile?.full_name ?? '—'}</p>
-              <p className="text-[12px] text-zinc-400 truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
+              <p className="text-[14px] font-semibold text-zinc-900 truncate">{profile?.full_name ?? '—'}</p>
+              <p className="text-[12px] text-zinc-500 truncate">{roleLabel[profile?.role ?? ''] ?? profile?.role}</p>
               {profile?.site && (
-                <p className="text-[11px] text-zinc-600 truncate mt-px">{profile.site} · {siteCode}</p>
+                <p className="text-[11px] text-zinc-400 truncate mt-px">{profile.site} · {siteCode}</p>
               )}
             </div>
           </div>
           <button onClick={signOut}
-            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-red-400 hover:bg-red-500/10 transition-colors border border-red-500/20">
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-red-600 hover:bg-red-50 transition-colors border border-red-200">
             <LogOut className="w-4 h-4" />
             Se déconnecter
           </button>
@@ -374,21 +374,21 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         {/* ── Top header (responsive) ── */}
         <header
-          className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 border-b border-white/[0.10]"
-          style={{ background: 'rgba(7, 9, 14, 0.50)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}
+          className="flex-shrink-0 flex items-center h-14 px-4 lg:px-6 border-b border-[#E6E8F0]"
+          style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
         >
 
           {/* Mobile: hamburger + app branding */}
           <button
             onClick={() => setDrawerOpen(true)}
-            className="lg:hidden p-2 mr-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
+            className="lg:hidden p-2 mr-2 rounded-lg text-zinc-500 hover:text-zinc-800 hover:bg-[#F4F5FA] transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="flex lg:hidden items-center flex-1 min-w-0">
             <div className="min-w-0">
-              <p className="text-[12px] font-bold text-zinc-100 leading-tight">ATS IT Control</p>
+              <p className="text-[12px] font-bold text-zinc-900 leading-tight">ATS IT Control</p>
               {profile?.site && (
                 <p className="text-[10px] text-zinc-500 leading-none mt-px">{profile.site} · {siteCode}</p>
               )}
@@ -399,20 +399,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="hidden lg:flex flex-1 items-center gap-4 text-[12px]">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-              <span className="font-mono tabular-nums text-zinc-400">
+              <span className="font-mono tabular-nums text-zinc-500">
                 {time.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </span>
             </div>
-            <span className="text-zinc-700">·</span>
+            <span className="text-zinc-300">·</span>
             <span className="text-zinc-500">
               {time.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
             </span>
             {profile?.site && (
               <>
-                <span className="text-zinc-700">·</span>
+                <span className="text-zinc-300">·</span>
                 <div className="flex items-center gap-2">
                   <span className="text-zinc-500">{profile.site}</span>
-                  <span className="px-1.5 py-px bg-black/30 border border-white/[0.08] rounded text-[10px] font-mono font-semibold text-zinc-400">
+                  <span className="px-1.5 py-px bg-[#F4F5FA] border border-[#E6E8F0] rounded text-[10px] font-mono font-semibold text-zinc-500">
                     {siteCode}
                   </span>
                 </div>
@@ -424,7 +424,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="relative ml-2" ref={notifRef}>
             <button
               onClick={toggleNotif}
-              className="relative p-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
+              className="relative p-2 rounded-lg text-zinc-500 hover:text-zinc-800 hover:bg-[#F4F5FA] transition-colors"
               title="Notifications"
             >
               <Bell className="w-[18px] h-[18px]" />
@@ -460,8 +460,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           MOBILE BOTTOM NAV  (hidden on desktop)
       ══════════════════════════════════════════════════ */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-20 border-t border-white/[0.10]"
-        style={{ background: 'rgba(7, 9, 14, 0.62)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)' }}
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-20 border-t border-[#E6E8F0]"
+        style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
       >
         <div className="flex items-stretch h-16">
           {BOTTOM_NAV.map(item => {
@@ -472,7 +472,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.to} to={item.to}
                 className={[
                   'flex-1 flex flex-col items-center justify-center gap-1 transition-colors',
-                  active ? 'text-blue-400' : 'text-zinc-600 hover:text-zinc-400',
+                  active ? 'text-blue-600' : 'text-zinc-400 hover:text-zinc-500',
                 ].join(' ')}
               >
                 <Icon className="w-[22px] h-[22px]" />
@@ -484,7 +484,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {/* More → opens drawer */}
           <button
             onClick={() => setDrawerOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-1 text-zinc-600 hover:text-zinc-400 transition-colors"
+            className="flex-1 flex flex-col items-center justify-center gap-1 text-zinc-400 hover:text-zinc-500 transition-colors"
           >
             <Menu className="w-[22px] h-[22px]" />
             <span className="text-[9px] font-medium leading-none">Menu</span>

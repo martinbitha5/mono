@@ -99,14 +99,14 @@ function BigMetric({ value, label, color }: { value: number | string; label: str
   return (
     <div>
       <p className={['text-[32px] font-bold leading-none tabular-nums', color].join(' ')}>{value}</p>
-      <p className="text-[12px] text-zinc-600 mt-1.5 font-medium">{label}</p>
+      <p className="text-[12px] text-zinc-400 mt-1.5 font-medium">{label}</p>
     </div>
   );
 }
 
 function StatRow({ label, value, color }: { label: string; value: number | string; color: string }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-zinc-800 last:border-0">
+    <div className="flex items-center justify-between py-2.5 border-b border-[#E6E8F0] last:border-0">
       <span className="text-[13px] text-zinc-500">{label}</span>
       <span className={['text-[13px] font-bold tabular-nums', color].join(' ')}>{value}</span>
     </div>
@@ -117,10 +117,10 @@ function SectionCard({
   icon: Icon, title, iconColor, children,
 }: { icon: React.ElementType; title: string; iconColor: string; children: React.ReactNode }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-card">
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-zinc-800">
+    <div className="bg-white border border-[#E6E8F0] rounded-xl shadow-card">
+      <div className="flex items-center gap-2 px-5 py-4 border-b border-[#E6E8F0]">
         <Icon className={['w-4 h-4', iconColor].join(' ')} />
-        <h3 className="text-[13px] font-semibold text-zinc-200">{title}</h3>
+        <h3 className="text-[13px] font-semibold text-zinc-800">{title}</h3>
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -152,7 +152,7 @@ export function ReportsPage() {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Rapports</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Rapports</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Statistiques par période et site</p>
         </div>
         {isAdmin && (
@@ -164,7 +164,7 @@ export function ReportsPage() {
       </div>
 
       {/* Filters */}
-      <div className="border border-zinc-800 rounded-xl bg-zinc-900 px-5 py-4 shadow-card">
+      <div className="border border-[#E6E8F0] rounded-xl bg-white px-5 py-4 shadow-card">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <label className="label-base">Du</label>
@@ -187,7 +187,7 @@ export function ReportsPage() {
       {isLoading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-zinc-900 rounded-xl border border-zinc-800 animate-pulse" />
+            <div key={i} className="h-24 bg-white rounded-xl border border-[#E6E8F0] animate-pulse" />
           ))}
         </div>
       ) : (
@@ -197,35 +197,35 @@ export function ReportsPage() {
             {[
               {
                 icon: Users,    label: 'Présences enregistrées',
-                value: data?.attendance.total ?? 0, color: 'text-blue-500', iconColor: 'text-blue-400',
-                bg: 'bg-blue-500/[0.05]',
+                value: data?.attendance.total ?? 0, color: 'text-blue-500', iconColor: 'text-blue-600',
+                bg: 'bg-blue-50',
               },
               {
                 icon: Wrench,   label: 'Interventions signalées',
-                value: data?.interventions.total ?? 0, color: 'text-red-500', iconColor: 'text-red-400',
-                bg: 'bg-red-500/[0.05]',
+                value: data?.interventions.total ?? 0, color: 'text-red-500', iconColor: 'text-red-600',
+                bg: 'bg-red-50',
               },
               {
                 icon: Truck,    label: 'GSE opérationnels',
-                value: data?.gse.operational ?? 0, color: 'text-emerald-500', iconColor: 'text-emerald-400',
-                bg: 'bg-emerald-500/[0.05]',
+                value: data?.gse.operational ?? 0, color: 'text-emerald-500', iconColor: 'text-emerald-600',
+                bg: 'bg-emerald-50',
               },
               {
                 icon: Droplets, label: 'Carburant consommé',
                 value: `${(data?.fuel.conso.total ?? 0).toFixed(0)} L`,
-                color: 'text-amber-500', iconColor: 'text-amber-400',
-                bg: 'bg-amber-500/[0.05]',
+                color: 'text-amber-500', iconColor: 'text-amber-600',
+                bg: 'bg-amber-50',
               },
             ].map((kpi) => {
               const KpiIcon = kpi.icon;
               return (
                 <div key={kpi.label}
-                  className={['border border-zinc-800 rounded-xl px-5 py-5 flex items-center gap-4 shadow-card', kpi.bg].join(' ')}>
+                  className={['border border-[#E6E8F0] rounded-xl px-5 py-5 flex items-center gap-4 shadow-card', kpi.bg].join(' ')}>
                   <div className="flex-1 min-w-0">
                     <p className={['text-[26px] font-bold leading-none tabular-nums truncate', kpi.color].join(' ')}>
                       {kpi.value}
                     </p>
-                    <p className="text-[11px] text-zinc-600 mt-2 font-medium leading-tight">{kpi.label}</p>
+                    <p className="text-[11px] text-zinc-400 mt-2 font-medium leading-tight">{kpi.label}</p>
                   </div>
                   <KpiIcon className={['w-8 h-8 opacity-20 flex-shrink-0', kpi.iconColor].join(' ')} />
                 </div>
@@ -235,68 +235,68 @@ export function ReportsPage() {
 
           {/* Detail cards — row 1 */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <SectionCard icon={Users} title="Présences" iconColor="text-blue-400">
+            <SectionCard icon={Users} title="Présences" iconColor="text-blue-600">
               <StatRow label="Présents"  value={data?.attendance.present ?? 0} color="text-emerald-500" />
               <StatRow label="En retard" value={data?.attendance.late    ?? 0} color="text-amber-500" />
               <StatRow label="Absents"   value={data?.attendance.absent  ?? 0} color="text-red-500" />
               <div className="pt-3 mt-1">
-                <BigMetric value={data?.attendance.total ?? 0} label="Total pointages" color="text-zinc-300" />
+                <BigMetric value={data?.attendance.total ?? 0} label="Total pointages" color="text-zinc-700" />
               </div>
             </SectionCard>
 
-            <SectionCard icon={Wrench} title="Interventions GSE" iconColor="text-red-400">
+            <SectionCard icon={Wrench} title="Interventions GSE" iconColor="text-red-600">
               <StatRow label="Critiques"  value={data?.interventions.critical   ?? 0} color="text-red-500" />
               <StatRow label="En cours"   value={data?.interventions.inProgress ?? 0} color="text-amber-500" />
               <StatRow label="Résolues"   value={data?.interventions.resolved   ?? 0} color="text-emerald-500" />
               <StatRow label="Ouvertes"   value={data?.interventions.open       ?? 0} color="text-zinc-500" />
               <div className="pt-3 mt-1">
-                <BigMetric value={data?.interventions.total ?? 0} label="Total interventions" color="text-zinc-300" />
+                <BigMetric value={data?.interventions.total ?? 0} label="Total interventions" color="text-zinc-700" />
               </div>
             </SectionCard>
 
-            <SectionCard icon={Truck} title="GSE" iconColor="text-orange-400">
+            <SectionCard icon={Truck} title="GSE" iconColor="text-orange-600">
               <StatRow label="Opérationnels (OP)"  value={data?.gse.operational ?? 0} color="text-emerald-500" />
               <StatRow label="Hors service (INOP)" value={data?.gse.inop        ?? 0} color="text-red-500" />
               <div className="pt-3 mt-1">
-                <BigMetric value={data?.gse.total ?? 0} label="Total équipements" color="text-zinc-300" />
+                <BigMetric value={data?.gse.total ?? 0} label="Total équipements" color="text-zinc-700" />
               </div>
             </SectionCard>
           </div>
 
           {/* Detail cards — row 2 : Carburant */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <SectionCard icon={Droplets} title="Consommations" iconColor="text-amber-400">
-              <StatRow label="Gasoil"  value={`${(data?.fuel.conso.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-400" />
-              <StatRow label="Essence" value={`${(data?.fuel.conso.essence ?? 0).toFixed(0)} L`} color="text-blue-400" />
-              <StatRow label="Huile"   value={`${(data?.fuel.conso.huile   ?? 0).toFixed(0)} L`} color="text-emerald-400" />
+            <SectionCard icon={Droplets} title="Consommations" iconColor="text-amber-600">
+              <StatRow label="Gasoil"  value={`${(data?.fuel.conso.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-600" />
+              <StatRow label="Essence" value={`${(data?.fuel.conso.essence ?? 0).toFixed(0)} L`} color="text-blue-600" />
+              <StatRow label="Huile"   value={`${(data?.fuel.conso.huile   ?? 0).toFixed(0)} L`} color="text-emerald-600" />
               <div className="pt-3 mt-1">
                 <BigMetric
                   value={`${(data?.fuel.conso.total ?? 0).toFixed(0)} L`}
                   label="Total consommé sur la période"
-                  color="text-zinc-300"
+                  color="text-zinc-700"
                 />
               </div>
             </SectionCard>
 
-            <SectionCard icon={Droplets} title="Approvisionnements" iconColor="text-emerald-400">
-              <StatRow label="Gasoil"  value={`+${(data?.fuel.appro.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-400" />
-              <StatRow label="Essence" value={`+${(data?.fuel.appro.essence ?? 0).toFixed(0)} L`} color="text-blue-400" />
-              <StatRow label="Huile"   value={`+${(data?.fuel.appro.huile   ?? 0).toFixed(0)} L`} color="text-emerald-400" />
+            <SectionCard icon={Droplets} title="Approvisionnements" iconColor="text-emerald-600">
+              <StatRow label="Gasoil"  value={`+${(data?.fuel.appro.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-600" />
+              <StatRow label="Essence" value={`+${(data?.fuel.appro.essence ?? 0).toFixed(0)} L`} color="text-blue-600" />
+              <StatRow label="Huile"   value={`+${(data?.fuel.appro.huile   ?? 0).toFixed(0)} L`} color="text-emerald-600" />
               <div className="pt-3 mt-1">
                 <BigMetric
                   value={`+${(data?.fuel.appro.total ?? 0).toFixed(0)} L`}
                   label="Total approvisionné sur la période"
-                  color="text-zinc-300"
+                  color="text-zinc-700"
                 />
               </div>
             </SectionCard>
 
-            <SectionCard icon={Droplets} title="Stock actuel" iconColor="text-zinc-400">
-              <StatRow label="Gasoil"  value={`${(data?.fuel.stock.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-400" />
-              <StatRow label="Essence" value={`${(data?.fuel.stock.essence ?? 0).toFixed(0)} L`} color="text-blue-400" />
-              <StatRow label="Huile"   value={`${(data?.fuel.stock.huile   ?? 0).toFixed(0)} L`} color="text-emerald-400" />
+            <SectionCard icon={Droplets} title="Stock actuel" iconColor="text-zinc-500">
+              <StatRow label="Gasoil"  value={`${(data?.fuel.stock.gasoil  ?? 0).toFixed(0)} L`} color="text-amber-600" />
+              <StatRow label="Essence" value={`${(data?.fuel.stock.essence ?? 0).toFixed(0)} L`} color="text-blue-600" />
+              <StatRow label="Huile"   value={`${(data?.fuel.stock.huile   ?? 0).toFixed(0)} L`} color="text-emerald-600" />
               <div className="pt-3 mt-1">
-                <p className="text-[11px] text-zinc-600">Snapshot en temps réel — indépendant de la période sélectionnée</p>
+                <p className="text-[11px] text-zinc-400">Snapshot en temps réel — indépendant de la période sélectionnée</p>
               </div>
             </SectionCard>
           </div>

@@ -33,9 +33,9 @@ type FuelStock = {
 };
 
 const FUEL_CFG: Record<FuelType, { label: string; color: string; dot: string; bg: string; border: string }> = {
-  gasoil:  { label: 'Gasoil',  color: 'text-amber-500',   dot: 'bg-amber-400',   bg: 'bg-amber-500/[0.08]',   border: 'border-amber-500/20'  },
-  essence: { label: 'Essence', color: 'text-blue-400',    dot: 'bg-blue-400',    bg: 'bg-blue-500/[0.08]',    border: 'border-blue-500/20'   },
-  huile:   { label: 'Huile',   color: 'text-emerald-400', dot: 'bg-emerald-400', bg: 'bg-emerald-500/[0.08]', border: 'border-emerald-500/20'},
+  gasoil:  { label: 'Gasoil',  color: 'text-amber-500',   dot: 'bg-amber-400',   bg: 'bg-amber-50',   border: 'border-amber-200'  },
+  essence: { label: 'Essence', color: 'text-blue-600',    dot: 'bg-blue-400',    bg: 'bg-blue-50',    border: 'border-blue-200'   },
+  huile:   { label: 'Huile',   color: 'text-emerald-600', dot: 'bg-emerald-400', bg: 'bg-emerald-50', border: 'border-emerald-200'},
 };
 
 const PERIOD_LABELS: Record<ApproPeriod, string> = {
@@ -135,15 +135,15 @@ function StatCard({ label, value, unit, sub, icon: Icon, accent }: {
   icon: typeof Droplets; accent?: string;
 }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4 shadow-card">
+    <div className="bg-white border border-[#E6E8F0] rounded-xl px-5 py-4 shadow-card">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">{label}</p>
-        <Icon className={['w-4 h-4', accent ?? 'text-zinc-600'].join(' ')} />
+        <Icon className={['w-4 h-4', accent ?? 'text-zinc-400'].join(' ')} />
       </div>
-      <p className="text-[26px] font-bold text-zinc-50 leading-none tabular-nums">
+      <p className="text-[26px] font-bold text-zinc-900 leading-none tabular-nums">
         {value}<span className="text-[14px] font-normal text-zinc-500 ml-1">{unit}</span>
       </p>
-      {sub && <p className="text-[11px] text-zinc-600 mt-1.5">{sub}</p>}
+      {sub && <p className="text-[11px] text-zinc-400 mt-1.5">{sub}</p>}
     </div>
   );
 }
@@ -159,34 +159,34 @@ function StockCard({ type, stock }: { type: FuelType; stock: FuelStock[] }) {
 
   return (
     <div className={[
-      'bg-zinc-900 border rounded-xl px-5 py-4 shadow-card',
-      isAlert   ? 'border-zinc-800 border-l-4 border-l-red-500'
-      : isWarning ? 'border-zinc-800 border-l-4 border-l-amber-400'
-      : 'border-zinc-800',
+      'bg-white border rounded-xl px-5 py-4 shadow-card',
+      isAlert   ? 'border-[#E6E8F0] border-l-4 border-l-red-500'
+      : isWarning ? 'border-[#E6E8F0] border-l-4 border-l-amber-400'
+      : 'border-[#E6E8F0]',
     ].join(' ')}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={['w-2 h-2 rounded-full flex-shrink-0', cfg.dot].join(' ')} />
-          <p className="text-[12px] font-semibold text-zinc-300">{cfg.label}</p>
+          <p className="text-[12px] font-semibold text-zinc-700">{cfg.label}</p>
         </div>
         {isAlert   && <AlertTriangle className="w-3.5 h-3.5 text-red-500" />}
-        {isWarning && <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />}
+        {isWarning && <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />}
       </div>
       <p className={[
         'text-[26px] font-bold leading-none tabular-nums',
-        isAlert ? 'text-red-400' : isWarning ? 'text-amber-400' : 'text-zinc-50',
+        isAlert ? 'text-red-600' : isWarning ? 'text-amber-600' : 'text-zinc-900',
       ].join(' ')}>
         {qty.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}
         <span className="text-[13px] font-normal text-zinc-500 ml-1">L</span>
       </p>
-      <div className="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+      <div className="mt-3 h-1.5 bg-[#EEF0F7] rounded-full overflow-hidden">
         <div
           className={['h-full rounded-full transition-all',
             isAlert ? 'bg-red-500' : isWarning ? 'bg-amber-400' : 'bg-emerald-500'].join(' ')}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <p className="text-[10px] text-zinc-600 mt-1.5">
+      <p className="text-[10px] text-zinc-400 mt-1.5">
         Seuil alerte : {threshold.toLocaleString('fr-FR')} L
       </p>
     </div>
@@ -409,7 +409,7 @@ export function CarburantPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Gestion du Carburant</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Gestion du Carburant</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Suivi des consommations et approvisionnements</p>
         </div>
         <div className="flex items-center gap-2">
@@ -430,7 +430,7 @@ export function CarburantPage() {
 
       {/* Lecture seule pour les agents techniques */}
       {!isAdmin && (
-        <div className="flex items-center gap-3 px-4 py-3 bg-zinc-800/60 border border-zinc-700/50 rounded-xl text-[12px] text-zinc-500">
+        <div className="flex items-center gap-3 px-4 py-3 bg-[#F0F1F7] border border-[#D8DBE8]/50 rounded-xl text-[12px] text-zinc-500">
           <Fuel className="w-4 h-4 flex-shrink-0" />
           Lecture seule — la saisie carburant est réservée aux superviseurs et administrateurs.
         </div>
@@ -438,10 +438,10 @@ export function CarburantPage() {
 
       {/* Error banner */}
       {errorMsg && (
-        <div className="flex items-center gap-3 px-4 py-3 bg-red-500/[0.07] border border-red-500/25 rounded-xl text-[13px]">
+        <div className="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-[13px]">
           <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <span className="text-red-400 flex-1">{errorMsg}</span>
-          <button onClick={() => setErrorMsg(null)} className="text-red-400/50 hover:text-red-400 transition-colors flex-shrink-0">
+          <span className="text-red-600 flex-1">{errorMsg}</span>
+          <button onClick={() => setErrorMsg(null)} className="text-red-600/50 hover:text-red-600 transition-colors flex-shrink-0">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -451,14 +451,14 @@ export function CarburantPage() {
       {stockAlerts.map((type) => {
         const qty = stockForType(stock ?? [], type);
         return (
-          <div key={type} className="flex items-center gap-3 px-4 py-3 bg-red-500/[0.06] border border-red-500/20 rounded-xl text-[13px]">
+          <div key={type} className="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-[13px]">
             <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-            <span className="font-semibold text-red-400">Stock {FUEL_CFG[type].label} critique</span>
-            <span className="text-red-400/70">— {qty.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} L restant(s)</span>
+            <span className="font-semibold text-red-600">Stock {FUEL_CFG[type].label} critique</span>
+            <span className="text-red-600/70">— {qty.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} L restant(s)</span>
             {isAdmin && (
               <button
                 onClick={() => { setStockForm({ ...defaultStock, fuel_type: type }); setStockModal(true); setErrorMsg(null); }}
-                className="ml-auto text-[11px] font-semibold text-red-400 hover:text-red-300 underline underline-offset-2">
+                className="ml-auto text-[11px] font-semibold text-red-600 hover:text-red-700 underline underline-offset-2">
                 Approvisionner
               </button>
             )}
@@ -482,7 +482,7 @@ export function CarburantPage() {
         <StatCard label="Conso. aujourd'hui" value={todayTotal.toFixed(0)} unit="L" icon={TrendingDown}
           accent="text-orange-500" sub={`${todayLogs.length} saisie(s)`} />
         <StatCard label="Conso. ce mois"     value={monthTotal.toFixed(0)} unit="L" icon={CalendarDays}
-          accent="text-blue-400" sub={`${monthLogs.length} saisies`} />
+          accent="text-blue-600" sub={`${monthLogs.length} saisies`} />
         <StatCard label="Total enregistré"   value={(logs ?? []).reduce((s, l) => s + Number(l.quantity), 0).toFixed(0)} unit="L"
           icon={Fuel} accent="text-zinc-500" sub={`${logs?.length ?? 0} entrées (50 max)`} />
       </div>
@@ -505,11 +505,11 @@ export function CarburantPage() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <History className="w-3.5 h-3.5 text-emerald-500" />
-            <p className="text-[12px] font-semibold text-zinc-300 uppercase tracking-[0.06em]">
+            <p className="text-[12px] font-semibold text-zinc-700 uppercase tracking-[0.06em]">
               Historique des Approvisionnements
             </p>
           </div>
-          <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 gap-0.5">
+          <div className="flex items-center bg-white border border-[#E6E8F0] rounded-lg p-0.5 gap-0.5">
             {(['today', 'week', 'month', 'all'] as ApproPeriod[]).map((p) => (
               <button
                 key={p}
@@ -518,7 +518,7 @@ export function CarburantPage() {
                   'px-2.5 py-1 text-[11px] rounded-md font-medium transition-colors',
                   approPeriod === p
                     ? 'bg-orange-500 text-white shadow-sm'
-                    : 'text-zinc-500 hover:text-zinc-300',
+                    : 'text-zinc-500 hover:text-zinc-700',
                 ].join(' ')}>
                 {PERIOD_LABELS[p]}
               </button>
@@ -532,19 +532,19 @@ export function CarburantPage() {
             const qty = approTotal(t);
             const cfg = FUEL_CFG[t];
             return (
-              <div key={t} className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 shadow-card">
+              <div key={t} className="bg-white border border-[#E6E8F0] rounded-xl px-4 py-3.5 shadow-card">
                 <div className="flex items-center gap-1.5 mb-2">
                   <div className={['w-1.5 h-1.5 rounded-full flex-shrink-0', cfg.dot].join(' ')} />
                   <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.06em]">{cfg.label}</span>
                 </div>
                 <p className={[
                   'text-[22px] font-bold leading-none tabular-nums',
-                  qty > 0 ? 'text-emerald-400' : 'text-zinc-700',
+                  qty > 0 ? 'text-emerald-600' : 'text-zinc-300',
                 ].join(' ')}>
                   +{qty.toLocaleString('fr-FR', { maximumFractionDigits: 0 })}
-                  <span className="text-[12px] font-normal text-zinc-600 ml-1">L</span>
+                  <span className="text-[12px] font-normal text-zinc-400 ml-1">L</span>
                 </p>
-                <p className="text-[10px] text-zinc-700 mt-1.5">
+                <p className="text-[10px] text-zinc-300 mt-1.5">
                   {filteredAppro.filter((a) => a.fuel_type === t).length} opération(s)
                 </p>
               </div>
@@ -553,12 +553,12 @@ export function CarburantPage() {
         </div>
 
         {/* Appro history table */}
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-950">
-            <span className="text-[12px] font-semibold text-zinc-300">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6E8F0] bg-[#F4F5FA]">
+            <span className="text-[12px] font-semibold text-zinc-700">
               {PERIOD_LABELS[approPeriod]}
             </span>
-            <span className="text-[11px] text-zinc-600">
+            <span className="text-[11px] text-zinc-400">
               {filteredAppro.length} approvisionnement(s) ·{' '}
               <span className="text-emerald-500 font-mono font-semibold">
                 +{filteredAppro.reduce((s, a) => s + Number(a.quantity), 0)
@@ -567,7 +567,7 @@ export function CarburantPage() {
             </span>
           </div>
 
-          <div className={`hidden sm:grid gap-3 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950 ${
+          <div className={`hidden sm:grid gap-3 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA] ${
             isAdmin ? 'sm:grid-cols-[110px_100px_110px_1fr_130px_56px]' : 'sm:grid-cols-[110px_100px_110px_1fr_130px]'
           }`}>
             <span className="th">Date</span>
@@ -580,23 +580,23 @@ export function CarburantPage() {
 
           {filteredAppro.length === 0 ? (
             <div className="py-12 text-center">
-              <PackagePlus className="w-7 h-7 text-zinc-800 mx-auto mb-2" />
-              <p className="text-[12px] text-zinc-600">Aucun approvisionnement sur cette période</p>
+              <PackagePlus className="w-7 h-7 text-zinc-200 mx-auto mb-2" />
+              <p className="text-[12px] text-zinc-400">Aucun approvisionnement sur cette période</p>
             </div>
           ) : (
-            <div className="divide-y divide-zinc-800">
+            <div className="divide-y divide-[#EEF0F6]">
               {filteredAppro.map((log) => {
                 const cfg = FUEL_CFG[log.fuel_type];
                 const dt  = new Date(log.created_at);
                 const ag  = log.agent as { full_name: string } | null;
                 return (
                   <div key={log.id}
-                    className={`group flex sm:grid items-center gap-3 px-4 py-3 hover:bg-zinc-950 transition-colors ${
+                    className={`group flex sm:grid items-center gap-3 px-4 py-3 hover:bg-[#F4F5FA] transition-colors ${
                       isAdmin ? 'sm:grid-cols-[110px_100px_110px_1fr_130px_56px]' : 'sm:grid-cols-[110px_100px_110px_1fr_130px]'
                     }`}>
                     <span className="text-[12px] font-mono text-zinc-500 whitespace-nowrap">
                       {dt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}{' '}
-                      <span className="text-zinc-700">
+                      <span className="text-zinc-300">
                         {dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </span>
@@ -604,11 +604,11 @@ export function CarburantPage() {
                       <div className={['w-1.5 h-1.5 rounded-full flex-shrink-0', cfg.dot].join(' ')} />
                       <span className={['text-[12px] font-medium', cfg.color].join(' ')}>{cfg.label}</span>
                     </div>
-                    <span className="text-[13px] font-mono font-bold text-emerald-400 text-right tabular-nums">
+                    <span className="text-[13px] font-mono font-bold text-emerald-600 text-right tabular-nums">
                       +{Number(log.quantity).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} L
                     </span>
                     <span className="hidden sm:block text-[12px] text-zinc-500 truncate">
-                      {log.notes || <span className="text-zinc-700 italic">—</span>}
+                      {log.notes || <span className="text-zinc-300 italic">—</span>}
                     </span>
                     <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{ag?.full_name ?? '—'}</span>
 
@@ -627,13 +627,13 @@ export function CarburantPage() {
                                   onError: () => setConfirmDeleteId(null),
                                 });
                               }}
-                              className="px-2 py-1 rounded-md text-[11px] font-semibold bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors disabled:opacity-40 whitespace-nowrap">
+                              className="px-2 py-1 rounded-md text-[11px] font-semibold bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-40 whitespace-nowrap">
                               {deleteAppro.isPending ? '…' : 'Confirmer'}
                             </button>
                             <button
                               disabled={deleteAppro.isPending}
                               onClick={() => setConfirmDeleteId(null)}
-                              className="px-2 py-1 rounded-md text-[11px] font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors disabled:opacity-40">
+                              className="px-2 py-1 rounded-md text-[11px] font-medium text-zinc-500 hover:text-zinc-700 hover:bg-[#EEF0F7] transition-colors disabled:opacity-40">
                               Annuler
                             </button>
                           </>
@@ -641,13 +641,13 @@ export function CarburantPage() {
                           <>
                             <button
                               onClick={() => openEditAppro(log)}
-                              className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 transition-colors"
+                              className="p-1.5 rounded-md hover:bg-[#EEF0F7] text-zinc-500 hover:text-zinc-800 transition-colors"
                               title="Modifier">
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(log.id)}
-                              className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                              className="p-1.5 rounded-md text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                               title="Supprimer">
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -664,16 +664,16 @@ export function CarburantPage() {
       </div>
 
       {/* ═══════════════ HISTORIQUE DES CONSOMMATIONS ═══════════════ */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-zinc-800 bg-zinc-950">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E6E8F0] bg-[#F4F5FA]">
           <div className="flex items-center gap-2">
             <TrendingDown className="w-3.5 h-3.5 text-orange-500" />
-            <span className="text-[13px] font-semibold text-zinc-200">Historique des consommations</span>
+            <span className="text-[13px] font-semibold text-zinc-800">Historique des consommations</span>
           </div>
-          <span className="text-[11px] text-zinc-600">{logs?.length ?? 0} entrées</span>
+          <span className="text-[11px] text-zinc-400">{logs?.length ?? 0} entrées</span>
         </div>
 
-        <div className="hidden sm:grid sm:grid-cols-[1fr_100px_110px_80px_110px_110px] gap-3 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950">
+        <div className="hidden sm:grid sm:grid-cols-[1fr_100px_110px_80px_110px_110px] gap-3 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA]">
           <span className="th">Équipement</span>
           <span className="th">Type</span>
           <span className="th text-right">Quantité</span>
@@ -683,22 +683,22 @@ export function CarburantPage() {
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="px-4 py-4 flex gap-3 items-center">
-                <div className="h-4 flex-1 bg-zinc-800 rounded animate-pulse" />
-                <div className="h-4 w-20 bg-zinc-800 rounded animate-pulse" />
+                <div className="h-4 flex-1 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="h-4 w-20 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : (logs?.length ?? 0) === 0 ? (
           <div className="py-16 text-center">
-            <Fuel className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <Fuel className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucune saisie carburant</p>
-            <p className="text-[12px] text-zinc-700 mt-1">Utilisez "Saisie Carburant" pour enregistrer une consommation</p>
+            <p className="text-[12px] text-zinc-300 mt-1">Utilisez "Saisie Carburant" pour enregistrer une consommation</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {logs!.map((log) => {
               const eq  = log.equipment as { name: string; serie: string } | null;
               const ag  = log.agent    as { full_name: string }           | null;
@@ -706,27 +706,27 @@ export function CarburantPage() {
               const dt  = new Date(log.created_at);
               return (
                 <div key={log.id}
-                  className="flex sm:grid sm:grid-cols-[1fr_100px_110px_80px_110px_110px] items-center gap-3 px-4 py-3 hover:bg-zinc-950 transition-colors">
+                  className="flex sm:grid sm:grid-cols-[1fr_100px_110px_80px_110px_110px] items-center gap-3 px-4 py-3 hover:bg-[#F4F5FA] transition-colors">
                   <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">
                       {eq?.name ?? '—'} <span className="text-zinc-500 font-normal">{eq?.serie ?? ''}</span>
                     </p>
-                    {log.notes && <p className="text-[11px] text-zinc-600 truncate mt-0.5">{log.notes}</p>}
+                    {log.notes && <p className="text-[11px] text-zinc-400 truncate mt-0.5">{log.notes}</p>}
                   </div>
                   <div className="hidden sm:flex items-center gap-1.5">
                     <div className={['w-1.5 h-1.5 rounded-full flex-shrink-0', cfg.dot].join(' ')} />
                     <span className={['text-[12px] font-medium', cfg.color].join(' ')}>{cfg.label}</span>
                   </div>
-                  <span className="hidden sm:block text-[13px] font-mono font-bold text-zinc-200 text-right tabular-nums">
+                  <span className="hidden sm:block text-[13px] font-mono font-bold text-zinc-800 text-right tabular-nums">
                     {Number(log.quantity).toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} L
                   </span>
-                  <span className="hidden sm:block text-[12px] font-mono text-zinc-400 text-right">
+                  <span className="hidden sm:block text-[12px] font-mono text-zinc-500 text-right">
                     {log.horametre_at_fill > 0 ? `${log.horametre_at_fill.toLocaleString()}h` : '—'}
                   </span>
                   <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{ag?.full_name ?? '—'}</span>
-                  <span className="hidden sm:block text-[12px] text-zinc-600 font-mono">
+                  <span className="hidden sm:block text-[12px] text-zinc-400 font-mono">
                     {dt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}{' '}
-                    <span className="text-zinc-700">
+                    <span className="text-zinc-300">
                       {dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </span>
@@ -743,7 +743,7 @@ export function CarburantPage() {
       <Modal open={logModal} onClose={() => setLogModal(false)} title="Saisie Carburant" size="sm">
         <div className="space-y-4">
           {createLog.isError && (
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/[0.07] border border-red-500/25 rounded-xl text-[12px] text-red-400">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-xl text-[12px] text-red-600">
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               {(createLog.error as Error)?.message ?? 'Une erreur est survenue'}
             </div>
@@ -770,7 +770,7 @@ export function CarburantPage() {
             {selectedEq && (
               <p className="text-[11px] text-zinc-500 mt-1">
                 Horamètre actuel : <span className="font-mono">{selectedEq.horametre_actuel.toLocaleString()}h</span>
-                {selectedEq.site !== profile?.site && <span className="ml-2 text-zinc-600">· {selectedEq.site}</span>}
+                {selectedEq.site !== profile?.site && <span className="ml-2 text-zinc-400">· {selectedEq.site}</span>}
               </p>
             )}
           </div>
@@ -848,12 +848,12 @@ export function CarburantPage() {
         {editApproLog && (
           <div className="space-y-4">
             {/* Info read-only : type + date */}
-            <div className="flex items-center gap-3 px-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl">
+            <div className="flex items-center gap-3 px-3 py-2.5 bg-[#F4F5FA] border border-[#E6E8F0] rounded-xl">
               <div className={['w-2 h-2 rounded-full flex-shrink-0', FUEL_CFG[editApproLog.fuel_type].dot].join(' ')} />
               <span className={['text-[13px] font-semibold', FUEL_CFG[editApproLog.fuel_type].color].join(' ')}>
                 {FUEL_CFG[editApproLog.fuel_type].label}
               </span>
-              <span className="text-[12px] text-zinc-600 ml-auto">
+              <span className="text-[12px] text-zinc-400 ml-auto">
                 {new Date(editApproLog.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                 {' · '}
                 {new Date(editApproLog.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
@@ -871,7 +871,7 @@ export function CarburantPage() {
               />
               {editApproForm.quantity && parseFloat(editApproForm.quantity) > 0 &&
                 parseFloat(editApproForm.quantity) !== Number(editApproLog.quantity) && (
-                <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-amber-500/[0.06] border border-amber-500/20 rounded-lg text-[11px] text-amber-400">
+                <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-600">
                   <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>
                     Ancienne valeur : <strong>{Number(editApproLog.quantity).toLocaleString('fr-FR')} L</strong>
@@ -897,7 +897,7 @@ export function CarburantPage() {
             </div>
 
             {editAppro.isError && (
-              <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/[0.07] border border-red-500/25 rounded-xl text-[12px] text-red-400">
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-xl text-[12px] text-red-600">
                 <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
                 {(editAppro.error as Error)?.message ?? 'Erreur lors de la modification'}
               </div>
@@ -922,7 +922,7 @@ export function CarburantPage() {
       <Modal open={stockModal} onClose={() => setStockModal(false)} title="Approvisionnement" size="sm">
         <div className="space-y-4">
           {addStock.isError && (
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/[0.07] border border-red-500/25 rounded-xl text-[12px] text-red-400">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-xl text-[12px] text-red-600">
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               {(addStock.error as Error)?.message ?? 'Une erreur est survenue'}
             </div>
@@ -935,14 +935,14 @@ export function CarburantPage() {
               const thr = thresholdForType(stock ?? [], t);
               const cfg = FUEL_CFG[t];
               return (
-                <div key={t} className="flex items-center justify-between px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg">
+                <div key={t} className="flex items-center justify-between px-3 py-2 bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg">
                   <div className="flex items-center gap-2">
                     <div className={['w-2 h-2 rounded-full flex-shrink-0', cfg.dot].join(' ')} />
-                    <span className="text-[13px] text-zinc-300">{cfg.label}</span>
+                    <span className="text-[13px] text-zinc-700">{cfg.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {qty <= thr && <AlertTriangle className="w-3 h-3 text-red-400" />}
-                    <span className={['text-[13px] font-mono font-bold', qty <= thr ? 'text-red-400' : 'text-zinc-300'].join(' ')}>
+                    {qty <= thr && <AlertTriangle className="w-3 h-3 text-red-600" />}
+                    <span className={['text-[13px] font-mono font-bold', qty <= thr ? 'text-red-600' : 'text-zinc-700'].join(' ')}>
                       {qty.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} L
                     </span>
                   </div>
@@ -982,7 +982,7 @@ export function CarburantPage() {
 
           {/* Live preview */}
           {stockForm.quantity && parseFloat(stockForm.quantity) > 0 && (
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-emerald-500/[0.06] border border-emerald-500/20 rounded-xl text-[12px] text-emerald-400">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-[12px] text-emerald-600">
               <PackagePlus className="w-3.5 h-3.5 flex-shrink-0" />
               <span>
                 Stock {FUEL_CFG[stockForm.fuel_type].label} :{' '}

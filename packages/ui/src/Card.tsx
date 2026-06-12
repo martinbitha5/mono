@@ -16,7 +16,7 @@ export function Card({ padding = 'md', className = '', children, ...props }: Car
     <div
       {...props}
       className={[
-        'bg-zinc-900 border border-white/[0.06] rounded-xl',
+        'bg-white border border-[#E6E8F0] rounded-xl',
         paddings[padding],
         className,
       ].join(' ')}

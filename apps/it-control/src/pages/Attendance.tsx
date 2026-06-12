@@ -151,30 +151,30 @@ export function AttendancePage() {
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Présences</h1>
+        <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Présences</h1>
         <p className="text-[13px] text-zinc-500 mt-0.5">
           {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
       </div>
 
       {/* Check-in widget */}
-      <div className="border border-white/[0.06] rounded-xl bg-zinc-900">
-        <div className="px-5 py-4 border-b border-white/[0.05]">
-          <h2 className="text-[13px] font-semibold text-zinc-200">Mon pointage</h2>
+      <div className="border border-[#E6E8F0] rounded-xl bg-white">
+        <div className="px-5 py-4 border-b border-[#E6E8F0]">
+          <h2 className="text-[13px] font-semibold text-zinc-800">Mon pointage</h2>
         </div>
 
         <div className="px-5 py-4">
           {myRecord ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-[13px] font-medium text-zinc-200">Présence enregistrée</p>
+                <p className="text-[13px] font-medium text-zinc-800">Présence enregistrée</p>
                 <p className="text-[12px] text-zinc-500 mt-0.5">
                   {new Date(myRecord.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                   {' · '}
-                  <span className={myRecord.status === 'present' ? 'text-emerald-400' : myRecord.status === 'late' ? 'text-amber-400' : 'text-red-400'}>
+                  <span className={myRecord.status === 'present' ? 'text-emerald-600' : myRecord.status === 'late' ? 'text-amber-600' : 'text-red-600'}>
                     {statusLabels[myRecord.status as keyof typeof statusLabels]}
                   </span>
                   {myRecord.notes && <> · {myRecord.notes}</>}
@@ -230,18 +230,18 @@ export function AttendancePage() {
       </div>
 
       {/* ── Attendance table ─────────────────────────────────────────────── */}
-      <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05] bg-white/[0.015]">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6E8F0] bg-[#FAFBFE]">
           <div className="flex items-center gap-2">
-            <h2 className="text-[13px] font-semibold text-zinc-200">Présences du jour</h2>
+            <h2 className="text-[13px] font-semibold text-zinc-800">Présences du jour</h2>
             {isAdminOrSupervisor
               ? !!allAgents?.length && (
-                  <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[11px] font-bold bg-[#F4F5FA] text-zinc-500 px-1.5 py-0.5 rounded-md">
                     {allAgents.length}
                   </span>
                 )
               : !!attendance?.length && (
-                  <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">
+                  <span className="text-[11px] font-bold bg-[#F4F5FA] text-zinc-500 px-1.5 py-0.5 rounded-md">
                     {attendance.length}
                   </span>
                 )}
@@ -252,24 +252,24 @@ export function AttendancePage() {
         {isAdminOrSupervisor ? (
           <>
             {/* header */}
-            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] gap-3 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
+            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] gap-3 px-4 py-2 border-b border-[#E6E8F0] bg-[#FAFBFE]">
               <span />
               {['Agent', 'Site', 'Statut', 'Heure', ''].map((h) => (
-                <span key={h} className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">{h}</span>
+                <span key={h} className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">{h}</span>
               ))}
             </div>
 
             {isLoadingAll ? (
-              <div className="divide-y divide-white/[0.04]">
+              <div className="divide-y divide-[#EEF0F6]">
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                    <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
+                    <div className="w-7 h-7 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                    <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="divide-y divide-white/[0.04]">
+              <div className="divide-y divide-[#EEF0F6]">
                 {allAgents?.map((agent) => {
                   const initial = agent.full_name.charAt(0).toUpperCase();
                   const rec = agent.record;
@@ -282,17 +282,17 @@ export function AttendancePage() {
                   return (
                     <div
                       key={agent.id}
-                      className="group flex sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
+                      className="group flex sm:grid sm:grid-cols-[32px_1fr_100px_100px_72px_80px] items-center gap-3 px-4 py-3 hover:bg-[#FAFBFE] transition-colors"
                     >
                       {/* Avatar */}
-                      <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-300 flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-[#EEF0F7] flex items-center justify-center text-[11px] font-bold text-zinc-700 flex-shrink-0">
                         {initial}
                       </div>
 
                       {/* Name */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium text-zinc-200 truncate">{agent.full_name}</p>
-                        <p className="text-[12px] text-zinc-600 sm:hidden">{agent.site} · {time}</p>
+                        <p className="text-[13px] font-medium text-zinc-800 truncate">{agent.full_name}</p>
+                        <p className="text-[12px] text-zinc-400 sm:hidden">{agent.site} · {time}</p>
                       </div>
 
                       {/* Site */}
@@ -303,12 +303,12 @@ export function AttendancePage() {
                         {rec ? (
                           <Badge color={color} dot>{label}</Badge>
                         ) : (
-                          <span className="text-[12px] text-zinc-600">Non pointé</span>
+                          <span className="text-[12px] text-zinc-400">Non pointé</span>
                         )}
                       </span>
 
                       {/* Time */}
-                      <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+                      <span className="hidden sm:block text-[11px] text-zinc-400 font-mono tabular-nums">{time}</span>
 
                       {/* Action buttons */}
                       <span
@@ -319,7 +319,7 @@ export function AttendancePage() {
                         {(!rec || (rec.status as AttStatus) === 'absent' || (rec.status as AttStatus) === 'off') && (
                           <button
                             onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'present', existingId: rec?.id })}
-                            className="p-1 rounded-md hover:bg-emerald-500/10 text-zinc-600 hover:text-emerald-400 transition-colors"
+                            className="p-1 rounded-md hover:bg-emerald-50 text-zinc-400 hover:text-emerald-600 transition-colors"
                             title="Marquer présent"
                           >
                             <UserCheck className="w-3.5 h-3.5" />
@@ -329,7 +329,7 @@ export function AttendancePage() {
                         {(!rec || (rec.status as AttStatus) !== 'absent') && (
                           <button
                             onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'absent', existingId: rec?.id })}
-                            className="p-1 rounded-md hover:bg-red-500/10 text-zinc-600 hover:text-red-400 transition-colors"
+                            className="p-1 rounded-md hover:bg-red-50 text-zinc-400 hover:text-red-600 transition-colors"
                             title="Marquer absent"
                           >
                             <UserX className="w-3.5 h-3.5" />
@@ -339,7 +339,7 @@ export function AttendancePage() {
                         {(!rec || (rec.status as AttStatus) !== 'off') && (
                           <button
                             onClick={() => markAttendance.mutate({ userId: agent.id, site: agent.site, status: 'off', existingId: rec?.id })}
-                            className="p-1 rounded-md hover:bg-zinc-500/10 text-zinc-600 hover:text-zinc-300 transition-colors"
+                            className="p-1 rounded-md hover:bg-zinc-500/10 text-zinc-400 hover:text-zinc-700 transition-colors"
                             title="Marquer Off"
                           >
                             <CalendarOff className="w-3.5 h-3.5" />
@@ -356,29 +356,29 @@ export function AttendancePage() {
           /* ── Agent régulier : seulement ceux qui ont pointé ──────────────── */
           <>
             {/* header */}
-            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] gap-3 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
+            <div className="hidden sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] gap-3 px-4 py-2 border-b border-[#E6E8F0] bg-[#FAFBFE]">
               <span />
               {['Agent', 'Site', 'Statut', 'Heure'].map((h) => (
-                <span key={h} className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">{h}</span>
+                <span key={h} className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">{h}</span>
               ))}
             </div>
 
             {isLoading ? (
-              <div className="divide-y divide-white/[0.04]">
+              <div className="divide-y divide-[#EEF0F6]">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                    <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
+                    <div className="w-7 h-7 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                    <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
                   </div>
                 ))}
               </div>
             ) : attendance?.length === 0 ? (
               <div className="py-12 text-center">
-                <Clock className="w-7 h-7 text-zinc-700 mx-auto mb-3" />
+                <Clock className="w-7 h-7 text-zinc-300 mx-auto mb-3" />
                 <p className="text-[13px] text-zinc-500">Aucun pointage aujourd'hui</p>
               </div>
             ) : (
-              <div className="divide-y divide-white/[0.04]">
+              <div className="divide-y divide-[#EEF0F6]">
                 {attendance?.map((record) => {
                   const name = (record.profiles as { full_name: string } | null)?.full_name ?? '—';
                   const initial = name.charAt(0).toUpperCase();
@@ -389,18 +389,18 @@ export function AttendancePage() {
                   return (
                     <div
                       key={record.id}
-                      className="flex sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
+                      className="flex sm:grid sm:grid-cols-[32px_1fr_100px_90px_72px] items-center gap-3 px-4 py-3 hover:bg-[#FAFBFE] transition-colors"
                     >
-                      <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-300 flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-[#EEF0F7] flex items-center justify-center text-[11px] font-bold text-zinc-700 flex-shrink-0">
                         {initial}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium text-zinc-200 truncate">{name}</p>
-                        <p className="text-[12px] text-zinc-600 sm:hidden">{record.site} · {time}</p>
+                        <p className="text-[13px] font-medium text-zinc-800 truncate">{name}</p>
+                        <p className="text-[12px] text-zinc-400 sm:hidden">{record.site} · {time}</p>
                       </div>
                       <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{record.site}</span>
                       <span><Badge color={color} dot>{label}</Badge></span>
-                      <span className="hidden sm:block text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+                      <span className="hidden sm:block text-[11px] text-zinc-400 font-mono tabular-nums">{time}</span>
                     </div>
                   );
                 })}

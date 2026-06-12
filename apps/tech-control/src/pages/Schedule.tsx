@@ -85,7 +85,7 @@ export function SchedulePage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Planning</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Planning</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Gestion des vacations</p>
         </div>
         {canCreate && (
@@ -97,49 +97,49 @@ export function SchedulePage() {
 
       {/* Week navigator */}
       <div className="flex items-center gap-2">
-        <button onClick={prevWeek} className="p-1.5 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-950 text-zinc-500 hover:text-zinc-300 transition-colors shadow-card">
+        <button onClick={prevWeek} className="p-1.5 rounded-lg border border-[#E6E8F0] bg-white hover:bg-[#F4F5FA] text-zinc-500 hover:text-zinc-700 transition-colors shadow-card">
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <span className="px-4 py-1.5 text-[13px] font-semibold text-zinc-200 bg-zinc-900 border border-zinc-800 rounded-lg shadow-card">
+        <span className="px-4 py-1.5 text-[13px] font-semibold text-zinc-800 bg-white border border-[#E6E8F0] rounded-lg shadow-card">
           Semaine du {weekLabel}
         </span>
-        <button onClick={nextWeek} className="p-1.5 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-950 text-zinc-500 hover:text-zinc-300 transition-colors shadow-card">
+        <button onClick={nextWeek} className="p-1.5 rounded-lg border border-[#E6E8F0] bg-white hover:bg-[#F4F5FA] text-zinc-500 hover:text-zinc-700 transition-colors shadow-card">
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
       {isLoading ? (
         <div className="space-y-2">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-zinc-900 border border-zinc-800 rounded-xl animate-pulse" />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-white border border-[#E6E8F0] rounded-xl animate-pulse" />)}
         </div>
       ) : schedules?.length === 0 ? (
-        <div className="border border-zinc-800 rounded-xl py-16 text-center bg-zinc-900 shadow-card">
-          <Calendar className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+        <div className="border border-[#E6E8F0] rounded-xl py-16 text-center bg-white shadow-card">
+          <Calendar className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
           <p className="text-[13px] text-zinc-500 font-medium">Aucune vacation cette semaine</p>
         </div>
       ) : (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-          <div className="hidden sm:grid sm:grid-cols-[32px_1fr_120px_100px_100px_90px] gap-4 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+          <div className="hidden sm:grid sm:grid-cols-[32px_1fr_120px_100px_100px_90px] gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA]">
             <span /><span className="th">Agent</span><span className="th">Site</span>
             <span className="th">Début</span><span className="th">Fin</span><span className="th">Type</span>
           </div>
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {schedules?.map((s) => (
-              <div key={s.id} className="flex sm:grid sm:grid-cols-[32px_1fr_120px_100px_100px_90px] items-center gap-4 px-4 py-3.5 hover:bg-zinc-950 transition-colors">
+              <div key={s.id} className="flex sm:grid sm:grid-cols-[32px_1fr_120px_100px_100px_90px] items-center gap-4 px-4 py-3.5 hover:bg-[#F4F5FA] transition-colors">
                 <div className={['w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0',
                   s.shift_type === 'day' ? 'bg-amber-50 text-amber-500' : 'bg-blue-50 text-blue-500'].join(' ')}>
                   {s.shift_type === 'day' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-zinc-200 truncate">{(s.profiles as { full_name: string })?.full_name ?? '—'}</p>
+                  <p className="text-[13px] font-medium text-zinc-800 truncate">{(s.profiles as { full_name: string })?.full_name ?? '—'}</p>
                   <p className="text-[11px] text-zinc-500 sm:hidden truncate">{s.site}</p>
                 </div>
                 <span className="hidden sm:block text-[12px] text-zinc-500 truncate">{s.site}</span>
-                <span className="hidden sm:block text-[12px] text-zinc-400 font-mono tabular-nums">
+                <span className="hidden sm:block text-[12px] text-zinc-500 font-mono tabular-nums">
                   {new Date(s.start_time).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' })}{' '}
                   {new Date(s.start_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
-                <span className="hidden sm:block text-[12px] text-zinc-400 font-mono tabular-nums">
+                <span className="hidden sm:block text-[12px] text-zinc-500 font-mono tabular-nums">
                   {new Date(s.end_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
                 <Badge color={s.shift_type === 'day' ? 'yellow' : 'blue'}>{s.shift_type === 'day' ? 'Jour' : 'Nuit'}</Badge>

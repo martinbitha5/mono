@@ -118,12 +118,12 @@ function PhotoPicker({
     <div className="flex flex-col items-center gap-1.5 mb-2">
       <div
         onClick={() => ref.current?.click()}
-        className="relative w-20 h-20 rounded-full bg-zinc-800 border-2 border-dashed border-zinc-700 hover:border-blue-500 flex items-center justify-center cursor-pointer overflow-hidden transition-colors"
+        className="relative w-20 h-20 rounded-full bg-[#EEF0F7] border-2 border-dashed border-[#D8DBE8] hover:border-blue-500 flex items-center justify-center cursor-pointer overflow-hidden transition-colors"
       >
         {shown ? (
           <img src={shown} alt="" className="w-full h-full object-cover" />
         ) : (
-          <Camera className="w-6 h-6 text-zinc-600" />
+          <Camera className="w-6 h-6 text-zinc-400" />
         )}
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-full">
           <Camera className="w-5 h-5 text-white" />
@@ -133,11 +133,11 @@ function PhotoPicker({
         onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
       {shown && (
         <button type="button" onClick={onRemove}
-          className="text-[11px] text-red-400 hover:text-red-300">
+          className="text-[11px] text-red-600 hover:text-red-700">
           Supprimer la photo
         </button>
       )}
-      <p className="text-[11px] text-zinc-600">Cliquez pour {shown ? 'changer' : 'ajouter'} la photo</p>
+      <p className="text-[11px] text-zinc-400">Cliquez pour {shown ? 'changer' : 'ajouter'} la photo</p>
     </div>
   );
 }
@@ -372,7 +372,7 @@ export function UsersPage() {
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Agents</h1>
+          <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Agents</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {filtered?.length ?? 0} agent{(filtered?.length ?? 0) !== 1 ? 's' : ''}
           </p>
@@ -388,7 +388,7 @@ export function UsersPage() {
       {/* ── Filters ── */}
       <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Nom, email..." className="input-base pl-9 py-2" />
         </div>
@@ -410,41 +410,41 @@ export function UsersPage() {
       </div>
 
       {/* ── Table ── */}
-      <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
         {/* header row */}
-        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.015]
+        <div className={`hidden md:grid gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#FAFBFE]
           ${isAdminOrSupervisor
             ? 'md:grid-cols-[36px_1fr_110px_100px_72px_120px_80px]'
             : 'md:grid-cols-[36px_1fr_110px_100px_72px_120px]'}`}>
           <span />
           {['Agent','Rôle','Site','Statut','Fonction'].map((h) => (
-            <span key={h} className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">{h}</span>
+            <span key={h} className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">{h}</span>
           ))}
           {isAdminOrSupervisor && <span />}
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-20 h-5 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-8 h-8 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-20 h-5 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : filtered?.length === 0 ? (
           <div className="py-16 text-center">
-            <Users className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <Users className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucun agent trouvé</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {filtered?.map((user) => (
               <div
                 key={user.id}
                 onClick={() => setDetailUser(user)}
-                className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-white/[0.02] transition-colors cursor-pointer
+                className={`group flex md:grid items-center gap-4 px-4 py-3 hover:bg-[#FAFBFE] transition-colors cursor-pointer
                   ${isAdminOrSupervisor
                     ? 'md:grid-cols-[36px_1fr_110px_100px_72px_120px_80px]'
                     : 'md:grid-cols-[36px_1fr_110px_100px_72px_120px]'}`}
@@ -453,17 +453,17 @@ export function UsersPage() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{user.full_name}</p>
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{user.full_name}</p>
                     <span className={[
                       'hidden sm:inline-block flex-shrink-0 px-1.5 py-px rounded text-[9px] font-semibold uppercase tracking-wide',
-                      user.service === 'tech' ? 'bg-orange-500/15 text-orange-400'
-                      : user.service === 'both' ? 'bg-purple-500/15 text-purple-400'
-                      : 'bg-blue-500/15 text-blue-400',
+                      user.service === 'tech' ? 'bg-orange-50 text-orange-600'
+                      : user.service === 'both' ? 'bg-purple-50 text-purple-600'
+                      : 'bg-blue-50 text-blue-600',
                     ].join(' ')}>
                       {user.service === 'tech' ? 'TECH' : user.service === 'both' ? 'BOTH' : 'IT'}
                     </span>
                   </div>
-                  <p className="text-[12px] text-zinc-600 truncate">{user.email}</p>
+                  <p className="text-[12px] text-zinc-400 truncate">{user.email}</p>
                 </div>
 
                 <span><Badge color={roleColors[user.role]}>{roleLabels[user.role]}</Badge></span>
@@ -476,21 +476,21 @@ export function UsersPage() {
                   </Badge>
                 </span>
 
-                <span className="hidden md:block text-[12px] text-zinc-600 truncate">{user.fonction ?? '—'}</span>
+                <span className="hidden md:block text-[12px] text-zinc-400 truncate">{user.fonction ?? '—'}</span>
 
                 {isAdminOrSupervisor && (
                   <span className="hidden md:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={(e) => e.stopPropagation()}>
                     {/* Edit */}
                     <button onClick={() => openEdit(user)}
-                      className="p-1.5 rounded-md hover:bg-white/[0.06] text-zinc-500 hover:text-zinc-200 transition-colors" title="Modifier">
+                      className="p-1.5 rounded-md hover:bg-[#F4F5FA] text-zinc-500 hover:text-zinc-800 transition-colors" title="Modifier">
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     {/* Toggle status */}
                     <button onClick={() => toggleStatus.mutate(user)}
                       className={`p-1.5 rounded-md transition-colors ${user.status === 'active'
-                        ? 'text-zinc-500 hover:text-red-400 hover:bg-red-500/10'
-                        : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}
+                        ? 'text-zinc-500 hover:text-red-600 hover:bg-red-50'
+                        : 'text-zinc-500 hover:text-emerald-600 hover:bg-emerald-50'}`}
                       title={user.status === 'active' ? 'Désactiver' : 'Activer'}>
                       {user.status === 'active'
                         ? <UserX className="w-3.5 h-3.5" />
@@ -503,7 +503,7 @@ export function UsersPage() {
                           if (confirm(`Supprimer définitivement ${user.full_name} ?`))
                             deleteUser.mutate(user);
                         }}
-                        className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Supprimer">
+                        className="p-1.5 rounded-md text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Supprimer">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     )}
@@ -522,7 +522,7 @@ export function UsersPage() {
             <div className="flex items-center gap-4">
               <UserAvatar user={detailUser} size="lg" />
               <div className="flex-1">
-                <p className="text-[17px] font-bold text-zinc-100">{detailUser.full_name}</p>
+                <p className="text-[17px] font-bold text-zinc-900">{detailUser.full_name}</p>
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                   <Badge color={roleColors[detailUser.role]}>{roleLabels[detailUser.role]}</Badge>
                   <Badge color={detailUser.status === 'active' ? 'green' : 'gray'} dot>
@@ -546,16 +546,16 @@ export function UsersPage() {
                 { icon: Briefcase, label: 'Fonction',     val: detailUser.fonction || '—' },
                 { icon: Calendar,  label: 'Date de début',val: detailUser.start_date ? new Date(detailUser.start_date).toLocaleDateString('fr-FR') : '—' },
               ].map(({ icon: Icon, label, val }) => (
-                <div key={label} className="bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1 flex items-center gap-1">
+                <div key={label} className="bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                  <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1 flex items-center gap-1">
                     <Icon className="w-3 h-3" /> {label}
                   </p>
-                  <p className="text-[13px] text-zinc-300 break-all">{val}</p>
+                  <p className="text-[13px] text-zinc-700 break-all">{val}</p>
                 </div>
               ))}
-              <div className="bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
-                <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1">Ancienneté</p>
-                <p className="text-[13px] text-zinc-300">{calculateSeniority(detailUser.start_date)}</p>
+              <div className="bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1">Ancienneté</p>
+                <p className="text-[13px] text-zinc-700">{calculateSeniority(detailUser.start_date)}</p>
               </div>
             </div>
           </div>
@@ -655,7 +655,7 @@ export function UsersPage() {
             </div>
           </div>
 
-          {addError && <p className="text-[12px] text-red-400">{addError}</p>}
+          {addError && <p className="text-[12px] text-red-600">{addError}</p>}
 
           <div className="flex justify-end gap-2 pt-1">
             <Button variant="ghost" onClick={() => setAddOpen(false)}>Annuler</Button>
@@ -753,8 +753,8 @@ export function UsersPage() {
 
             {/* ── Password section — uniquement pour son propre profil ── */}
             {editUser.id === me?.id && (
-              <div className="border border-amber-500/20 bg-amber-500/[0.04] rounded-xl px-4 py-4 space-y-3">
-                <p className="text-[12px] font-semibold text-amber-400 uppercase tracking-[0.08em]">
+              <div className="border border-amber-200 bg-amber-50 rounded-xl px-4 py-4 space-y-3">
+                <p className="text-[12px] font-semibold text-amber-600 uppercase tracking-[0.08em]">
                   Changer mon mot de passe (optionnel)
                 </p>
                 <div className="grid grid-cols-2 gap-3">
@@ -770,12 +770,12 @@ export function UsersPage() {
                   </div>
                 </div>
                 {pwNew && pwNew !== pwConfirm && (
-                  <p className="text-[12px] text-red-400">Les mots de passe ne correspondent pas</p>
+                  <p className="text-[12px] text-red-600">Les mots de passe ne correspondent pas</p>
                 )}
               </div>
             )}
 
-            {editError && <p className="text-[12px] text-red-400">{editError}</p>}
+            {editError && <p className="text-[12px] text-red-600">{editError}</p>}
 
             <div className="flex justify-end gap-2 pt-1">
               <Button variant="ghost" onClick={() => setEditUser(null)}>Annuler</Button>

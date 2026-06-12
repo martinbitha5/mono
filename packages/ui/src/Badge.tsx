@@ -14,7 +14,7 @@ const colors: Record<Color, string> = {
   yellow: 'bg-amber-50     text-amber-700   ring-1 ring-amber-200',
   blue:   'bg-blue-50      text-blue-600    ring-1 ring-blue-200',
   purple: 'bg-purple-50    text-purple-700  ring-1 ring-purple-200',
-  gray:   'bg-zinc-950     text-zinc-400    ring-1 ring-zinc-800',
+  gray:   'bg-[#F4F5FA]     text-zinc-500    ring-1 ring-[#E6E8F0]',
   orange: 'bg-orange-50    text-orange-700  ring-1 ring-orange-200',
 };
 

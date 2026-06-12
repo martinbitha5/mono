@@ -85,21 +85,21 @@ export function AttendancePage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Présences</h1>
+        <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Présences</h1>
         <p className="text-[13px] text-zinc-500 mt-0.5">
           Pointage du jour — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
       </div>
 
       {/* Check-in card */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-card">
+      <div className="bg-white border border-[#E6E8F0] rounded-xl p-5 shadow-card">
         {alreadyCheckedIn ? (
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
               <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-zinc-200">Vous êtes pointé</p>
+              <p className="text-[13px] font-semibold text-zinc-800">Vous êtes pointé</p>
               <p className="text-[12px] text-zinc-500 mt-0.5">
                 <Badge color={statusColors[myRecord.status as keyof typeof statusColors] ?? 'gray'} dot>
                   {statusLabels[myRecord.status as keyof typeof statusLabels] ?? myRecord.status}
@@ -115,7 +115,7 @@ export function AttendancePage() {
                 <UserCheck className="w-5 h-5 text-orange-500" />
               </div>
               <div>
-                <p className="text-[13px] font-semibold text-zinc-200">Pointer votre présence</p>
+                <p className="text-[13px] font-semibold text-zinc-800">Pointer votre présence</p>
                 <p className="text-[12px] text-zinc-500">Site : {profile?.site}</p>
               </div>
             </div>
@@ -143,42 +143,42 @@ export function AttendancePage() {
       </div>
 
       {/* Table */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-        <div className="hidden sm:grid sm:grid-cols-[1fr_120px_90px_100px] gap-4 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+        <div className="hidden sm:grid sm:grid-cols-[1fr_120px_90px_100px] gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA]">
           <span className="th">Agent</span>
           <span className="th">Site</span>
           <span className="th">Statut</span>
           <span className="th">Heure</span>
         </div>
         {isLoading ? (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex gap-3">
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-20 h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-20 h-4 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : attendance?.length === 0 ? (
           <div className="py-16 text-center">
-            <Clock className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <Clock className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucun pointage aujourd'hui</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {attendance?.map((r) => {
               const p   = r.profiles as { full_name: string; role: string; site: string } | null;
               const cfg = statusColors[r.status as keyof typeof statusColors] ?? 'gray';
               const time = new Date(r.check_in_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
               return (
-                <div key={r.id} className="flex sm:grid sm:grid-cols-[1fr_120px_90px_100px] items-center gap-4 px-4 py-3 hover:bg-zinc-950 transition-colors">
+                <div key={r.id} className="flex sm:grid sm:grid-cols-[1fr_120px_90px_100px] items-center gap-4 px-4 py-3 hover:bg-[#F4F5FA] transition-colors">
                   <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{p?.full_name ?? '—'}</p>
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{p?.full_name ?? '—'}</p>
                     <p className="text-[11px] text-zinc-500 hidden sm:block">{roleLabels[p?.role ?? ''] ?? p?.role}</p>
                   </div>
                   <span className="hidden sm:block text-[12px] text-zinc-500">{r.site}</span>
                   <Badge color={cfg} dot>{statusLabels[r.status as keyof typeof statusLabels] ?? r.status}</Badge>
-                  <span className="text-[11px] text-zinc-600 font-mono tabular-nums">{time}</span>
+                  <span className="text-[11px] text-zinc-400 font-mono tabular-nums">{time}</span>
                 </div>
               );
             })}

@@ -10,23 +10,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
 }
 
-// Stripe-calibrated variants for light background
+// Variantes thème clair — l'accent vient de --accent défini par chaque app
 const variants: Record<Variant, string> = {
-  // Stripe violet solid — same as stripe.com "Commencer" button
+  // Bouton plein couleur accent (orange tech / bleu it)
   primary:
-    'bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white ' +
-    'shadow-btn border border-blue-600/20',
+    'bg-[var(--accent,#3B82F6)] hover:bg-[var(--accent-hover,#2563EB)] text-white ' +
+    'border border-transparent shadow-sm',
   // Stripe bordered secondary
   secondary:
-    'bg-white hover:bg-zinc-950 active:bg-zinc-800 text-zinc-200 ' +
-    'border border-zinc-700 shadow-card',
+    'bg-white hover:bg-[#F4F5FA] active:bg-[#EEF0F7] text-zinc-800 ' +
+    'border border-[#D8DBE8] shadow-card',
   // Danger
   danger:
     'bg-red-50 hover:bg-red-100 text-red-600 ' +
     'border border-red-200',
   // Ghost — no border, no bg
   ghost:
-    'hover:bg-zinc-950 active:bg-zinc-800 text-zinc-400 hover:text-zinc-200',
+    'hover:bg-[#F4F5FA] active:bg-[#EEF0F7] text-zinc-500 hover:text-zinc-800',
 };
 
 const sizes: Record<Size, string> = {
@@ -53,7 +53,7 @@ export function Button({
         'transition-all duration-150 select-none whitespace-nowrap',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'focus-visible:outline-none focus-visible:ring-2',
-        'focus-visible:ring-blue-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950',
+        'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
         variants[variant],
         sizes[size],
         className,

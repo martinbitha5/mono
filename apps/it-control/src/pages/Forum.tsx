@@ -32,11 +32,11 @@ type ReplyRow = {
 };
 
 const CAT_STYLES: Record<string, string> = {
-  general: 'text-zinc-400 bg-zinc-800',
-  technical: 'text-blue-400 bg-blue-500/10',
-  help: 'text-amber-400 bg-amber-500/10',
-  announcement: 'text-purple-400 bg-purple-500/10',
-  off_topic: 'text-zinc-500 bg-zinc-800/60',
+  general: 'text-zinc-500 bg-[#EEF0F7]',
+  technical: 'text-blue-600 bg-blue-50',
+  help: 'text-amber-600 bg-amber-50',
+  announcement: 'text-purple-600 bg-purple-50',
+  off_topic: 'text-zinc-500 bg-[#F0F1F7]',
 };
 
 const CAT_LABELS: Record<string, string> = {
@@ -269,18 +269,18 @@ export function ForumPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSelectedTopic(null)}
-            className="flex items-center gap-1 text-[12px] text-zinc-500 hover:text-zinc-200 transition-colors"
+            className="flex items-center gap-1 text-[12px] text-zinc-500 hover:text-zinc-800 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             Forum
           </button>
-          <span className="text-zinc-700 text-[12px]">/</span>
-          <span className="text-[13px] text-zinc-400 truncate max-w-xs">{selectedTopic.title}</span>
+          <span className="text-zinc-300 text-[12px]">/</span>
+          <span className="text-[13px] text-zinc-500 truncate max-w-xs">{selectedTopic.title}</span>
         </div>
 
         {/* Topic card */}
-        <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-white/[0.05] bg-white/[0.01]">
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#E6E8F0] bg-[#FAFBFE]">
             <div className="flex items-start gap-3">
               <AuthorAvatar
                 name={selectedTopic.author?.full_name ?? '?'}
@@ -289,25 +289,25 @@ export function ForumPage() {
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <span className="text-[13px] font-semibold text-zinc-200">
+                  <span className="text-[13px] font-semibold text-zinc-800">
                     {selectedTopic.author?.full_name ?? '—'}
                   </span>
                   {selectedTopic.author?.site && (
-                    <span className="text-[11px] text-zinc-600">{selectedTopic.author.site}</span>
+                    <span className="text-[11px] text-zinc-400">{selectedTopic.author.site}</span>
                   )}
-                  <span className="text-[11px] text-zinc-700">· {formatDate(selectedTopic.created_at)}</span>
+                  <span className="text-[11px] text-zinc-300">· {formatDate(selectedTopic.created_at)}</span>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={['text-[11px] px-2 py-0.5 rounded-md font-medium', CAT_STYLES[selectedTopic.category] ?? ''].join(' ')}>
                     {CAT_LABELS[selectedTopic.category] ?? selectedTopic.category}
                   </span>
                   {selectedTopic.is_pinned && (
-                    <span className="flex items-center gap-1 text-[11px] text-blue-400">
+                    <span className="flex items-center gap-1 text-[11px] text-blue-600">
                       <Pin className="w-3 h-3" /> Épinglé
                     </span>
                   )}
                   {selectedTopic.is_locked && (
-                    <span className="flex items-center gap-1 text-[11px] text-amber-400">
+                    <span className="flex items-center gap-1 text-[11px] text-amber-600">
                       <Lock className="w-3 h-3" /> Verrouillé
                     </span>
                   )}
@@ -317,9 +317,9 @@ export function ForumPage() {
           </div>
 
           <div className="px-5 py-5">
-            <h2 className="text-[17px] font-bold text-zinc-100 mb-3">{selectedTopic.title}</h2>
-            <p className="text-[13px] text-zinc-300 leading-relaxed whitespace-pre-wrap">{selectedTopic.content}</p>
-            <div className="flex items-center gap-4 mt-5 pt-4 border-t border-white/[0.04] text-[12px] text-zinc-600">
+            <h2 className="text-[17px] font-bold text-zinc-900 mb-3">{selectedTopic.title}</h2>
+            <p className="text-[13px] text-zinc-700 leading-relaxed whitespace-pre-wrap">{selectedTopic.content}</p>
+            <div className="flex items-center gap-4 mt-5 pt-4 border-t border-[#E6E8F0] text-[12px] text-zinc-400">
               <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {selectedTopic.views_count} vues</span>
               <span className="flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5" /> {selectedTopic.replies_count} réponses</span>
             </div>
@@ -374,49 +374,49 @@ export function ForumPage() {
         </div>
 
         {/* Replies + form */}
-        <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-white/[0.05] bg-white/[0.01] flex items-center gap-2">
-            <span className="text-[13px] font-semibold text-zinc-200">Réponses</span>
+        <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#E6E8F0] bg-[#FAFBFE] flex items-center gap-2">
+            <span className="text-[13px] font-semibold text-zinc-800">Réponses</span>
             {replies && replies.length > 0 && (
-              <span className="text-[11px] font-bold bg-white/[0.06] text-zinc-400 px-1.5 py-0.5 rounded-md">{replies.length}</span>
+              <span className="text-[11px] font-bold bg-[#F4F5FA] text-zinc-500 px-1.5 py-0.5 rounded-md">{replies.length}</span>
             )}
           </div>
 
           {!replies || replies.length === 0 ? (
             <div className="py-12 text-center">
-              <MessageSquare className="w-7 h-7 text-zinc-700 mx-auto mb-3" />
+              <MessageSquare className="w-7 h-7 text-zinc-300 mx-auto mb-3" />
               <p className="text-[13px] text-zinc-500">Aucune réponse — soyez le premier !</p>
             </div>
           ) : (
-            <div className="divide-y divide-white/[0.04]">
+            <div className="divide-y divide-[#EEF0F6]">
               {replies.map((reply) => (
                 <div
                   key={reply.id}
-                  className={['px-5 py-4', reply.is_solution ? 'bg-emerald-500/[0.03] border-l-2 border-emerald-500/30' : ''].join(' ')}
+                  className={['px-5 py-4', reply.is_solution ? 'bg-emerald-50 border-l-2 border-emerald-200' : ''].join(' ')}
                 >
                   <div className="flex items-start gap-3">
                     <AuthorAvatar name={reply.author?.full_name ?? '?'} photoUrl={reply.author?.photo_url} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[13px] font-semibold text-zinc-200">{reply.author?.full_name ?? '—'}</span>
-                        <span className="text-[11px] text-zinc-700">{formatDate(reply.created_at)}</span>
+                        <span className="text-[13px] font-semibold text-zinc-800">{reply.author?.full_name ?? '—'}</span>
+                        <span className="text-[11px] text-zinc-300">{formatDate(reply.created_at)}</span>
                         {reply.is_solution && (
-                          <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
+                          <span className="flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
                             <CheckCircle className="w-3 h-3" /> Solution
                           </span>
                         )}
                       </div>
                       {reply.parent_reply_id && (
-                        <div className="text-[12px] text-zinc-600 bg-white/[0.03] border-l-2 border-zinc-700 pl-2 mb-2 rounded-r py-1">
+                        <div className="text-[12px] text-zinc-400 bg-[#FAFBFE] border-l-2 border-[#D8DBE8] pl-2 mb-2 rounded-r py-1">
                           En réponse à un message précédent
                         </div>
                       )}
-                      <p className="text-[13px] text-zinc-300 leading-relaxed whitespace-pre-wrap">{reply.content}</p>
+                      <p className="text-[13px] text-zinc-700 leading-relaxed whitespace-pre-wrap">{reply.content}</p>
                       <div className="flex items-center gap-3 mt-2.5 text-[11px]">
                         {!selectedTopic.is_locked && (
                           <button
                             onClick={() => { setReplyingTo(reply); setReplyContent(''); replyRef.current?.focus(); }}
-                            className="text-zinc-600 hover:text-blue-400 transition-colors"
+                            className="text-zinc-400 hover:text-blue-600 transition-colors"
                           >
                             Répondre
                           </button>
@@ -424,7 +424,7 @@ export function ForumPage() {
                         {selectedTopic.author_id === user?.id && !reply.is_solution && (
                           <button
                             onClick={() => markSolution.mutate(reply.id)}
-                            className="text-zinc-600 hover:text-emerald-400 transition-colors"
+                            className="text-zinc-400 hover:text-emerald-600 transition-colors"
                           >
                             Marquer solution
                           </button>
@@ -432,7 +432,7 @@ export function ForumPage() {
                         {(reply.author_id === user?.id || isAdmin) && (
                           <button
                             onClick={() => { if (confirm('Supprimer cette réponse ?')) deleteReply.mutate(reply.id); }}
-                            className="text-zinc-600 hover:text-red-400 transition-colors"
+                            className="text-zinc-400 hover:text-red-600 transition-colors"
                           >
                             Supprimer
                           </button>
@@ -447,13 +447,13 @@ export function ForumPage() {
 
           {/* Reply input */}
           {!selectedTopic.is_locked && (
-            <div className="px-5 py-4 border-t border-white/[0.05] bg-white/[0.01]">
+            <div className="px-5 py-4 border-t border-[#E6E8F0] bg-[#FAFBFE]">
               {replyingTo && (
-                <div className="flex items-center gap-2 mb-2 text-[12px] text-zinc-500 bg-white/[0.03] px-3 py-2 rounded-lg border border-white/[0.04]">
+                <div className="flex items-center gap-2 mb-2 text-[12px] text-zinc-500 bg-[#FAFBFE] px-3 py-2 rounded-lg border border-[#E6E8F0]">
                   <span>
-                    En réponse à <span className="text-zinc-300 font-medium">{replyingTo.author?.full_name}</span>
+                    En réponse à <span className="text-zinc-700 font-medium">{replyingTo.author?.full_name}</span>
                   </span>
-                  <button onClick={() => setReplyingTo(null)} className="ml-auto text-[11px] text-zinc-600 hover:text-zinc-400">
+                  <button onClick={() => setReplyingTo(null)} className="ml-auto text-[11px] text-zinc-400 hover:text-zinc-500">
                     Annuler
                   </button>
                 </div>
@@ -544,7 +544,7 @@ export function ForumPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Forum</h1>
+          <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Forum</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">Discussion entre agents</p>
         </div>
         <Button onClick={() => setCreateOpen(true)} size="sm">
@@ -557,7 +557,7 @@ export function ForumPage() {
       <div className="flex items-center gap-1 flex-wrap">
         <button
           onClick={() => setCategory('all')}
-          className={['px-3 py-1.5 rounded-md text-[12px] font-medium transition-all', category === 'all' ? 'bg-white/[0.08] text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'].join(' ')}
+          className={['px-3 py-1.5 rounded-md text-[12px] font-medium transition-all', category === 'all' ? 'bg-[#E6E8F0] text-zinc-900' : 'text-zinc-500 hover:text-zinc-700'].join(' ')}
         >
           Tous
         </button>
@@ -565,7 +565,7 @@ export function ForumPage() {
           <button
             key={cat.value}
             onClick={() => setCategory(cat.value as ForumCategoryFilter)}
-            className={['px-3 py-1.5 rounded-md text-[12px] font-medium transition-all', category === cat.value ? 'bg-white/[0.08] text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'].join(' ')}
+            className={['px-3 py-1.5 rounded-md text-[12px] font-medium transition-all', category === cat.value ? 'bg-[#E6E8F0] text-zinc-900' : 'text-zinc-500 hover:text-zinc-700'].join(' ')}
           >
             {cat.label}
           </button>
@@ -573,55 +573,55 @@ export function ForumPage() {
       </div>
 
       {/* Topic table */}
-      <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-        <div className="hidden sm:grid sm:grid-cols-[36px_1fr_100px_80px_60px_48px] gap-4 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.015]">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
+        <div className="hidden sm:grid sm:grid-cols-[36px_1fr_100px_80px_60px_48px] gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#FAFBFE]">
           <span />
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Sujet</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Auteur</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Catégorie</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] flex items-center">
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Sujet</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Auteur</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Catégorie</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em] flex items-center">
             <Eye className="w-3 h-3" />
           </span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] flex items-center">
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em] flex items-center">
             <MessageSquare className="w-3 h-3" />
           </span>
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-7 h-7 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-20 h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-7 h-7 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-20 h-4 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : topics?.length === 0 ? (
           <div className="py-16 text-center">
-            <MessageSquare className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <MessageSquare className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucun sujet dans cette catégorie</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {topics?.map((topic) => (
               <div
                 key={topic.id}
                 onClick={() => openTopic(topic)}
                 className={[
-                  'flex sm:grid sm:grid-cols-[36px_1fr_100px_80px_60px_48px] items-center gap-4 px-4 py-3.5 hover:bg-white/[0.02] transition-colors cursor-pointer',
-                  topic.is_pinned ? 'border-l-2 border-blue-500/40' : '',
+                  'flex sm:grid sm:grid-cols-[36px_1fr_100px_80px_60px_48px] items-center gap-4 px-4 py-3.5 hover:bg-[#FAFBFE] transition-colors cursor-pointer',
+                  topic.is_pinned ? 'border-l-2 border-blue-200' : '',
                 ].join(' ')}
               >
                 <AuthorAvatar name={topic.author?.full_name ?? '?'} photoUrl={topic.author?.photo_url} size="sm" />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    {topic.is_pinned && <Pin className="w-3 h-3 text-blue-400 flex-shrink-0" />}
-                    {topic.is_locked && <Lock className="w-3 h-3 text-zinc-600 flex-shrink-0" />}
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{topic.title}</p>
+                    {topic.is_pinned && <Pin className="w-3 h-3 text-blue-600 flex-shrink-0" />}
+                    {topic.is_locked && <Lock className="w-3 h-3 text-zinc-400 flex-shrink-0" />}
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{topic.title}</p>
                   </div>
-                  <p className="text-[12px] text-zinc-600 truncate hidden sm:block">
+                  <p className="text-[12px] text-zinc-400 truncate hidden sm:block">
                     {topic.author?.site && `${topic.author.site} · `}{formatDate(topic.created_at)}
                   </p>
                 </div>
@@ -634,8 +634,8 @@ export function ForumPage() {
                   </span>
                 </span>
 
-                <span className="hidden sm:block text-[12px] text-zinc-600 tabular-nums">{topic.views_count}</span>
-                <span className="hidden sm:block text-[12px] text-zinc-600 tabular-nums">{topic.replies_count}</span>
+                <span className="hidden sm:block text-[12px] text-zinc-400 tabular-nums">{topic.views_count}</span>
+                <span className="hidden sm:block text-[12px] text-zinc-400 tabular-nums">{topic.replies_count}</span>
               </div>
             ))}
           </div>

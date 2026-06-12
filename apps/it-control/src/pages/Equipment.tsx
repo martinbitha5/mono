@@ -73,11 +73,11 @@ const logActionLabels: Record<string, string> = {
   repaired: 'Réparé',
 };
 const logActionColors: Record<string, string> = {
-  created: 'text-zinc-400',
-  assigned: 'text-blue-400',
-  returned: 'text-zinc-400',
-  faulty: 'text-red-400',
-  repaired: 'text-emerald-400',
+  created: 'text-zinc-500',
+  assigned: 'text-blue-600',
+  returned: 'text-zinc-500',
+  faulty: 'text-red-600',
+  repaired: 'text-emerald-600',
 };
 
 type EquipmentRow = {
@@ -337,7 +337,7 @@ export function EquipmentPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[18px] font-bold text-zinc-50 tracking-tight">Équipements</h1>
+          <h1 className="text-[18px] font-bold text-zinc-900 tracking-tight">Équipements</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {filtered?.length ?? 0} équipement{(filtered?.length ?? 0) !== 1 ? 's' : ''}
           </p>
@@ -361,7 +361,7 @@ export function EquipmentPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input
             type="text"
             value={search}
@@ -391,35 +391,35 @@ export function EquipmentPage() {
       </div>
 
       {/* Table */}
-      <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="hidden md:grid md:grid-cols-[12px_1fr_72px_90px_140px_90px_auto] gap-4 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.015]">
+        <div className="hidden md:grid md:grid-cols-[12px_1fr_72px_90px_140px_90px_auto] gap-4 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#FAFBFE]">
           <span />
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Équipement</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Type</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Site</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">N° de série</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Statut</span>
-          <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Actions</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Équipement</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Type</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Site</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">N° de série</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Statut</span>
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em]">Actions</span>
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="px-4 py-3.5 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-zinc-800 animate-pulse" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-20 h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-[#EEF0F7] animate-pulse" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-20 h-4 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
         ) : filtered?.length === 0 ? (
           <div className="py-16 text-center">
-            <Package className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+            <Package className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500 font-medium">Aucun équipement trouvé</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-[#EEF0F6]">
             {filtered?.map((eq) => {
               const statusColor = statusColors[eq.status as keyof typeof statusColors] ?? 'gray';
               const dot = statusDots[eq.status as keyof typeof statusDots] ?? 'bg-zinc-500';
@@ -429,7 +429,7 @@ export function EquipmentPage() {
                 <div
                   key={eq.id}
                   onClick={() => setDetailEq(eq as unknown as EquipmentRow)}
-                  className="group flex md:grid md:grid-cols-[12px_1fr_72px_90px_140px_90px_auto] items-center gap-4 px-4 py-3.5 hover:bg-white/[0.02] transition-colors cursor-pointer"
+                  className="group flex md:grid md:grid-cols-[12px_1fr_72px_90px_140px_90px_auto] items-center gap-4 px-4 py-3.5 hover:bg-[#FAFBFE] transition-colors cursor-pointer"
                 >
                   {/* Status dot */}
                   <div className="flex-shrink-0 flex items-center" onClick={(e) => e.stopPropagation()}>
@@ -438,11 +438,11 @@ export function EquipmentPage() {
 
                   {/* Name */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{eq.name}</p>
-                    <p className="text-[11px] text-zinc-600 mt-0.5 hidden md:block">
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{eq.name}</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5 hidden md:block">
                       {eq.marque && <span>{eq.marque}</span>}
-                      {eq.marque && assignee && <span className="mx-1.5 text-zinc-800">·</span>}
-                      {assignee && <span className="text-blue-400/80">→ {assignee.full_name}</span>}
+                      {eq.marque && assignee && <span className="mx-1.5 text-zinc-200">·</span>}
+                      {assignee && <span className="text-blue-600/80">→ {assignee.full_name}</span>}
                     </p>
                   </div>
 
@@ -455,7 +455,7 @@ export function EquipmentPage() {
                   <span className="hidden md:block text-[12px] text-zinc-500 truncate">{eq.site}</span>
 
                   {/* Serial */}
-                  <span className="hidden md:block text-[11px] text-zinc-600 font-mono truncate">
+                  <span className="hidden md:block text-[11px] text-zinc-400 font-mono truncate">
                     {eq.serial_number ?? '—'}
                   </span>
 
@@ -474,7 +474,7 @@ export function EquipmentPage() {
                     {canManage && eq.status === 'functional' && eq.availability === 'available' && (
                       <button
                         onClick={() => { setAssignModal(eq.id); setSelectedAgent(''); }}
-                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-blue-400 transition-colors px-2 py-1 rounded hover:bg-blue-500/10"
+                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-blue-600 transition-colors px-2 py-1 rounded hover:bg-blue-50"
                       >
                         <UserCheck className="w-3 h-3" />
                         Assigner
@@ -483,7 +483,7 @@ export function EquipmentPage() {
                     {canManage && eq.availability === 'assigned' && eq.status === 'functional' && (
                       <button
                         onClick={() => returnToPool.mutate(eq.id)}
-                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-zinc-200 transition-colors px-2 py-1 rounded hover:bg-white/[0.06]"
+                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-zinc-800 transition-colors px-2 py-1 rounded hover:bg-[#F4F5FA]"
                       >
                         <RotateCcw className="w-3 h-3" />
                         Retourner
@@ -492,7 +492,7 @@ export function EquipmentPage() {
                     {canManage && eq.status === 'functional' && (
                       <button
                         onClick={() => markFaulty.mutate(eq.id)}
-                        className="text-[11px] font-medium text-zinc-500 hover:text-red-400 transition-colors px-2 py-1 rounded hover:bg-red-500/10"
+                        className="text-[11px] font-medium text-zinc-500 hover:text-red-600 transition-colors px-2 py-1 rounded hover:bg-red-50"
                       >
                         Panne
                       </button>
@@ -500,7 +500,7 @@ export function EquipmentPage() {
                     {canManage && eq.status === 'faulty' && (
                       <button
                         onClick={() => markRepaired.mutate(eq.id)}
-                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-emerald-400 transition-colors px-2 py-1 rounded hover:bg-emerald-500/10"
+                        className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:text-emerald-600 transition-colors px-2 py-1 rounded hover:bg-emerald-50"
                       >
                         <Wrench className="w-3 h-3" />
                         Réparé
@@ -508,7 +508,7 @@ export function EquipmentPage() {
                     )}
                     <button
                       onClick={() => { setLogsModal(eq.id); setLogsEqName(eq.name); }}
-                      className="text-[11px] font-medium text-zinc-600 hover:text-zinc-300 transition-colors p-1.5 rounded hover:bg-white/[0.06]"
+                      className="text-[11px] font-medium text-zinc-400 hover:text-zinc-700 transition-colors p-1.5 rounded hover:bg-[#F4F5FA]"
                       title="Historique"
                     >
                       <History className="w-3.5 h-3.5" />
@@ -538,7 +538,7 @@ export function EquipmentPage() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={['w-2.5 h-2.5 rounded-full flex-shrink-0 mt-0.5', dot].join(' ')} />
                   <div className="min-w-0">
-                    <p className="text-[16px] font-bold text-zinc-100 truncate">{detailEq.name}</p>
+                    <p className="text-[16px] font-bold text-zinc-900 truncate">{detailEq.name}</p>
                     {detailEq.marque && (
                       <p className="text-[12px] text-zinc-500 mt-0.5">{detailEq.marque}</p>
                     )}
@@ -564,28 +564,28 @@ export function EquipmentPage() {
                   { label: 'Propriétaire', value: detailEq.proprietaire ?? '—' },
                   { label: 'Affectation', value: detailEq.affectation ?? '—' },
                 ].map(({ label, value, mono }) => (
-                  <div key={label} className="bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
-                    <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-0.5">{label}</p>
-                    <p className={['text-[13px] text-zinc-300', mono ? 'font-mono' : ''].join(' ')}>{value}</p>
+                  <div key={label} className="bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                    <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-0.5">{label}</p>
+                    <p className={['text-[13px] text-zinc-700', mono ? 'font-mono' : ''].join(' ')}>{value}</p>
                   </div>
                 ))}
               </div>
 
               {/* Assignee */}
-              <div className="bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
-                <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-0.5">Attribué à</p>
-                <p className="text-[13px] text-zinc-300">
+              <div className="bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-0.5">Attribué à</p>
+                <p className="text-[13px] text-zinc-700">
                   {detailEq.assignee
                     ? `${detailEq.assignee.full_name} — ${detailEq.assignee.site}`
-                    : <span className="text-zinc-600">Non attribué</span>}
+                    : <span className="text-zinc-400">Non attribué</span>}
                 </p>
               </div>
 
               {/* Description */}
               {detailEq.description && (
                 <div>
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1">Description</p>
-                  <p className="text-[13px] text-zinc-400 leading-relaxed bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
+                  <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1">Description</p>
+                  <p className="text-[13px] text-zinc-500 leading-relaxed bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
                     {detailEq.description}
                   </p>
                 </div>
@@ -594,15 +594,15 @@ export function EquipmentPage() {
               {/* Notes */}
               {detailEq.notes && (
                 <div>
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-1">Notes</p>
-                  <p className="text-[13px] text-zinc-400 leading-relaxed bg-white/[0.02] border border-white/[0.04] rounded-lg px-3 py-2.5">
+                  <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-1">Notes</p>
+                  <p className="text-[13px] text-zinc-500 leading-relaxed bg-[#FAFBFE] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
                     {detailEq.notes}
                   </p>
                 </div>
               )}
 
               {/* Dates */}
-              <p className="text-[11px] text-zinc-700">
+              <p className="text-[11px] text-zinc-300">
                 Créé le {new Date(detailEq.created_at).toLocaleDateString('fr-FR')}
                 {' · '}
                 Mis à jour le {new Date(detailEq.updated_at).toLocaleDateString('fr-FR')}
@@ -610,7 +610,7 @@ export function EquipmentPage() {
 
               {/* Actions */}
               {canManage && (
-                <div className="flex items-center gap-2 pt-2 border-t border-white/[0.05] flex-wrap">
+                <div className="flex items-center gap-2 pt-2 border-t border-[#E6E8F0] flex-wrap">
                   {detailEq.status === 'functional' && detailEq.availability === 'available' && (
                     <Button
                       size="sm"
@@ -813,7 +813,7 @@ export function EquipmentPage() {
         title="Attribuer l'équipement"
       >
         <div className="space-y-4">
-          <p className="text-[13px] text-zinc-400">
+          <p className="text-[13px] text-zinc-500">
             Sélectionnez l'agent qui recevra cet équipement.
           </p>
           <div>
@@ -856,14 +856,14 @@ export function EquipmentPage() {
       >
         {!logs || logs.length === 0 ? (
           <div className="py-10 text-center">
-            <History className="w-7 h-7 text-zinc-700 mx-auto mb-3" />
+            <History className="w-7 h-7 text-zinc-300 mx-auto mb-3" />
             <p className="text-[13px] text-zinc-500">Aucun historique disponible</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/[0.05]">
+          <div className="divide-y divide-[#EEF0F6]">
             {logs.map((log) => {
               const actionLabel = logActionLabels[log.action] ?? log.action;
-              const actionColor = logActionColors[log.action] ?? 'text-zinc-400';
+              const actionColor = logActionColors[log.action] ?? 'text-zinc-500';
               const date = new Date(log.created_at).toLocaleString('fr-FR', {
                 day: '2-digit', month: '2-digit', year: '2-digit',
                 hour: '2-digit', minute: '2-digit',
@@ -876,9 +876,9 @@ export function EquipmentPage() {
                       {actionLabel}
                     </p>
                     {log.notes && (
-                      <p className="text-[12px] text-zinc-600 mt-0.5">{log.notes}</p>
+                      <p className="text-[12px] text-zinc-400 mt-0.5">{log.notes}</p>
                     )}
-                    <p className="text-[11px] text-zinc-700 mt-1">{date}</p>
+                    <p className="text-[11px] text-zinc-300 mt-1">{date}</p>
                   </div>
                 </div>
               );

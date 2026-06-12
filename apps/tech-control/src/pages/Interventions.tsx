@@ -175,11 +175,11 @@ export function InterventionsPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">Interventions</h1>
+          <h1 className="text-[22px] font-bold text-zinc-900 tracking-tight">Interventions</h1>
           <p className="text-[13px] text-zinc-500 mt-0.5">
             {interventions?.length ?? 0} intervention(s)
-            {critiqueCount > 0 && <span className="ml-2 text-red-400 font-semibold">· {critiqueCount} critique(s)</span>}
-            {ouvertCount > 0 && statusFilter !== 'ouvert' && <span className="ml-2 text-amber-400">· {ouvertCount} ouvertes</span>}
+            {critiqueCount > 0 && <span className="ml-2 text-red-600 font-semibold">· {critiqueCount} critique(s)</span>}
+            {ouvertCount > 0 && statusFilter !== 'ouvert' && <span className="ml-2 text-amber-600">· {ouvertCount} ouvertes</span>}
           </p>
         </div>
         <Button onClick={() => setModalOpen(true)} size="sm">
@@ -189,28 +189,28 @@ export function InterventionsPage() {
 
       {/* Alert banner for critiques */}
       {critiqueCount > 0 && statusFilter !== 'resolu' && (
-        <div className="flex items-center gap-3 px-4 py-3 bg-red-500/[0.06] border border-red-500/20 rounded-xl text-[13px]">
+        <div className="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-[13px]">
           <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <span className="text-red-400 font-semibold">{critiqueCount} intervention(s) critique(s) en cours</span>
+          <span className="text-red-600 font-semibold">{critiqueCount} intervention(s) critique(s) en cours</span>
         </div>
       )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-2">
-        <div className="flex items-center gap-1 bg-zinc-950 border border-zinc-800 rounded-lg p-1 flex-shrink-0">
+        <div className="flex items-center gap-1 bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg p-1 flex-shrink-0">
           {STATUS_TABS.map((t) => {
             const count = t.key === 'all' ? 0
               : (interventions ?? []).filter((i) => i.status === t.key).length;
             return (
               <button key={t.key} onClick={() => setStatusFilter(t.key)}
                 className={['flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all whitespace-nowrap',
-                  statusFilter === t.key ? 'bg-zinc-900 text-zinc-200 shadow-card' : 'text-zinc-500 hover:text-zinc-400'].join(' ')}>
+                  statusFilter === t.key ? 'bg-white text-zinc-800 shadow-card' : 'text-zinc-500 hover:text-zinc-500'].join(' ')}>
                 {t.label}
                 {t.key !== 'all' && count > 0 && (
                   <span className={['text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                    t.key === 'ouvert' ? 'bg-red-500/10 text-red-400' :
-                    t.key === 'en_cours' ? 'bg-amber-500/10 text-amber-400' :
-                    'bg-emerald-500/10 text-emerald-400'].join(' ')}>{count}</span>
+                    t.key === 'ouvert' ? 'bg-red-50 text-red-600' :
+                    t.key === 'en_cours' ? 'bg-amber-50 text-amber-600' :
+                    'bg-emerald-50 text-emerald-600'].join(' ')}>{count}</span>
                 )}
               </button>
             );
@@ -218,7 +218,7 @@ export function InterventionsPage() {
         </div>
 
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Titre, équipement, agent…" className="input-base pl-9 py-2" />
         </div>
@@ -239,20 +239,20 @@ export function InterventionsPage() {
       </div>
 
       {/* Table */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-card bg-zinc-900">
-        <div className="hidden sm:grid sm:grid-cols-[12px_1fr_140px_88px_88px_64px_auto] gap-3 px-4 py-2.5 border-b border-zinc-800 bg-zinc-950">
+      <div className="border border-[#E6E8F0] rounded-xl overflow-hidden shadow-card bg-white">
+        <div className="hidden sm:grid sm:grid-cols-[12px_1fr_140px_88px_88px_64px_auto] gap-3 px-4 py-2.5 border-b border-[#E6E8F0] bg-[#F4F5FA]">
           <span /><span className="th">Intervention</span><span className="th">Équipement</span>
           <span className="th">Priorité</span><span className="th">Statut</span>
           <span className="th">Depuis</span><span />
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="px-4 py-4 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-zinc-800 animate-pulse flex-shrink-0" />
-                <div className="flex-1 h-4 bg-zinc-800 rounded animate-pulse" />
-                <div className="w-24 h-4 bg-zinc-800 rounded animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-[#EEF0F7] animate-pulse flex-shrink-0" />
+                <div className="flex-1 h-4 bg-[#EEF0F7] rounded animate-pulse" />
+                <div className="w-24 h-4 bg-[#EEF0F7] rounded animate-pulse" />
               </div>
             ))}
           </div>
@@ -263,28 +263,28 @@ export function InterventionsPage() {
               {search ? 'Aucun résultat pour cette recherche' : 'Aucune intervention'}
             </p>
             {!search && statusFilter === 'all' && (
-              <p className="text-[12px] text-zinc-700 mt-1">Toutes les opérations se déroulent normalement</p>
+              <p className="text-[12px] text-zinc-300 mt-1">Toutes les opérations se déroulent normalement</p>
             )}
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-[#EEF0F6]">
             {filtered.map((item) => {
               const eq = item.equipment as { name: string; serie: string } | null;
               return (
                 <div key={item.id} onClick={() => setDetailItem(item)}
-                  className="group flex sm:grid sm:grid-cols-[12px_1fr_140px_88px_88px_64px_auto] items-center gap-3 px-4 py-3.5 hover:bg-zinc-950 transition-colors cursor-pointer">
+                  className="group flex sm:grid sm:grid-cols-[12px_1fr_140px_88px_88px_64px_auto] items-center gap-3 px-4 py-3.5 hover:bg-[#F4F5FA] transition-colors cursor-pointer">
                   <div className={['w-2 h-2 rounded-full flex-shrink-0', PRIORITY_DOT[item.priority] ?? 'bg-zinc-600'].join(' ')} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-zinc-200 truncate">{item.title}</p>
+                    <p className="text-[13px] font-medium text-zinc-800 truncate">{item.title}</p>
                     <div className="flex items-center gap-2 mt-0.5">
                       {(item.reporter as { full_name: string } | null)?.full_name && (
-                        <span className="text-[11px] text-zinc-600 flex items-center gap-1">
+                        <span className="text-[11px] text-zinc-400 flex items-center gap-1">
                           <User className="w-2.5 h-2.5" />
                           {(item.reporter as { full_name: string }).full_name}
                         </span>
                       )}
                       {item.site !== profile?.site && (
-                        <span className="text-[10px] text-zinc-700">{item.site}</span>
+                        <span className="text-[10px] text-zinc-300">{item.site}</span>
                       )}
                     </div>
                   </div>
@@ -297,7 +297,7 @@ export function InterventionsPage() {
                   <span onClick={(e) => e.stopPropagation()}>
                     <Badge color={statusColors[item.status]} dot>{statusLabels[item.status]}</Badge>
                   </span>
-                  <span className="hidden sm:flex items-center gap-1 text-[11px] text-zinc-600 font-mono">
+                  <span className="hidden sm:flex items-center gap-1 text-[11px] text-zinc-400 font-mono">
                     <Clock className="w-2.5 h-2.5" />
                     {elapsed(item.created_at)}
                   </span>
@@ -306,12 +306,12 @@ export function InterventionsPage() {
                       onClick={(e) => e.stopPropagation()}>
                       {item.status === 'ouvert' && (
                         <button onClick={() => updateStatus.mutate({ id: item.id, status: 'en_cours' })}
-                          className="text-[11px] font-medium text-zinc-400 hover:text-orange-500 px-2 py-1 rounded hover:bg-orange-500/10 transition-colors">
+                          className="text-[11px] font-medium text-zinc-500 hover:text-orange-500 px-2 py-1 rounded hover:bg-orange-50 transition-colors">
                           Prendre
                         </button>
                       )}
                       <button onClick={() => updateStatus.mutate({ id: item.id, status: 'resolu' })}
-                        className="text-[11px] font-medium text-zinc-400 hover:text-emerald-400 px-2 py-1 rounded hover:bg-emerald-500/10 transition-colors">
+                        className="text-[11px] font-medium text-zinc-500 hover:text-emerald-600 px-2 py-1 rounded hover:bg-emerald-50 transition-colors">
                         Résoudre
                       </button>
                     </div>
@@ -339,24 +339,24 @@ export function InterventionsPage() {
             </div>
 
             <div>
-              <p className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] mb-1">Titre</p>
-              <p className="text-[15px] font-semibold text-zinc-100">{detailItem.title}</p>
+              <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em] mb-1">Titre</p>
+              <p className="text-[15px] font-semibold text-zinc-900">{detailItem.title}</p>
             </div>
 
             {detailItem.description && (
               <div>
-                <p className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] mb-1">Description</p>
-                <p className="text-[13px] text-zinc-300 leading-relaxed whitespace-pre-wrap">{detailItem.description}</p>
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em] mb-1">Description</p>
+                <p className="text-[13px] text-zinc-700 leading-relaxed whitespace-pre-wrap">{detailItem.description}</p>
               </div>
             )}
 
             {detailItem.photo_url && (
               <div>
-                <p className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em] mb-2">Photo</p>
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.08em] mb-2">Photo</p>
                 <img
                   src={detailItem.photo_url}
                   alt="Photo de l'intervention"
-                  className="w-full rounded-xl border border-zinc-800 object-cover max-h-56"
+                  className="w-full rounded-xl border border-[#E6E8F0] object-cover max-h-56"
                 />
               </div>
             )}
@@ -373,15 +373,15 @@ export function InterventionsPage() {
                   ? { label: 'Assigné à', value: (detailItem.assignee as { full_name: string }).full_name }
                   : null,
               ].filter(Boolean).map((f) => (
-                <div key={f!.label} className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5">
-                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.08em] mb-0.5">{f!.label}</p>
-                  <p className="text-[13px] font-medium text-zinc-300">{f!.value}</p>
+                <div key={f!.label} className="bg-[#F4F5FA] border border-[#E6E8F0] rounded-lg px-3 py-2.5">
+                  <p className="text-[10px] text-zinc-400 uppercase tracking-[0.08em] mb-0.5">{f!.label}</p>
+                  <p className="text-[13px] font-medium text-zinc-700">{f!.value}</p>
                 </div>
               ))}
               {detailItem.resolved_at && (
-                <div className="bg-emerald-500/[0.04] border border-emerald-500/10 rounded-lg px-3 py-2.5">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2.5">
                   <p className="text-[10px] text-emerald-600 uppercase tracking-[0.08em] mb-0.5">Résolu le</p>
-                  <p className="text-[13px] font-medium text-emerald-400">
+                  <p className="text-[13px] font-medium text-emerald-600">
                     {new Date(detailItem.resolved_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -389,7 +389,7 @@ export function InterventionsPage() {
             </div>
 
             {detailItem.status !== 'resolu' && canEdit && (
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E6E8F0]">
                 {detailItem.status === 'ouvert' && (
                   <Button variant="secondary" onClick={() => updateStatus.mutate({ id: detailItem.id, status: 'en_cours' })} loading={updateStatus.isPending}>
                     Prendre en charge
@@ -453,10 +453,10 @@ export function InterventionsPage() {
             <input
               type="file" accept="image/*"
               onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
-              className="input-base py-1.5 text-[12px] text-zinc-400
+              className="input-base py-1.5 text-[12px] text-zinc-500
                 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0
-                file:text-[11px] file:font-medium file:bg-zinc-800 file:text-zinc-300
-                hover:file:bg-zinc-700 file:cursor-pointer"
+                file:text-[11px] file:font-medium file:bg-[#EEF0F7] file:text-zinc-700
+                hover:file:bg-[#E6E8F0] file:cursor-pointer"
             />
             {photoFile && (
               <p className="text-[11px] text-zinc-500 mt-1 truncate">{photoFile.name}</p>
@@ -474,7 +474,7 @@ export function InterventionsPage() {
           )}
 
           {form.priority === 'critique' && (
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/[0.06] border border-red-500/20 rounded-xl text-[12px] text-red-400">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-200 rounded-xl text-[12px] text-red-600">
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               Priorité critique — cette intervention sera signalée immédiatement
             </div>
