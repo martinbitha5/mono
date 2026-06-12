@@ -250,12 +250,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div
       className="flex h-[100dvh] overflow-hidden"
-      style={{
-        backgroundImage: "url('/IMG_9478.jpeg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
+      style={{ background: '#0A0A0B' }}
     >
 
       {/* ══════════════════════════════════════════════════

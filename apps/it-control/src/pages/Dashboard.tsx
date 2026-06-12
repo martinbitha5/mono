@@ -7,7 +7,7 @@ import { SITES } from '@ats/types';
 import {
   Users, AlertTriangle, MonitorCheck, Package,
   CheckCircle, XCircle, ArrowUpRight, Clock,
-  ShieldCheck, ShieldAlert, Activity,
+  ShieldCheck, ShieldAlert,
 } from 'lucide-react';
 
 function useDashboardStats() {
@@ -126,6 +126,12 @@ function useSiteStatuses() {
   });
 }
 
+/* ── Présentation ─────────────────────────────────────────── */
+
+const PANEL    = 'border border-white/[0.07] rounded-lg bg-[#0C0C0E] overflow-hidden';
+const PANEL_HD = 'flex items-center justify-between px-4 h-11 border-b border-white/[0.06] flex-shrink-0';
+const TH       = 'font-mono text-[9px] tracking-[0.16em] text-zinc-600 uppercase';
+
 const PRIORITY_DOT: Record<string, string> = {
   critical: 'bg-red-400',
   medium: 'bg-amber-400',
@@ -144,13 +150,7 @@ const ATT_CFG = {
   absent: { color: 'red' as const, label: 'Absent' },
 };
 
-function Metric({
-  value,
-  label,
-  sub,
-  accent,
-  loading,
-}: {
+function Kpi({ value, label, sub, accent, loading }: {
   value: string | number;
   label: string;
   sub?: string;
@@ -163,14 +163,13 @@ function Metric({
     blue: 'text-blue-400',
     yellow: 'text-amber-400',
   };
-
   return (
-    <div className="bg-zinc-900 border border-white/[0.06] rounded-xl px-5 py-4">
-      <p className="text-[12px] font-medium text-zinc-600 uppercase tracking-[0.08em] mb-2">{label}</p>
+    <div className="bg-[#0C0C0E] px-5 py-4">
+      <p className={TH}>{label}</p>
       {loading ? (
-        <div className="h-8 w-16 bg-zinc-800 rounded animate-pulse" />
+        <div className="h-7 w-14 bg-white/[0.05] rounded mt-2 animate-pulse" />
       ) : (
-        <p className={['text-[28px] font-bold leading-none tabular-nums', accent ? accentMap[accent] : 'text-zinc-50'].join(' ')}>
+        <p className={['mt-2 font-mono text-[26px] tabular-nums leading-none', accent ? accentMap[accent] : 'text-zinc-50'].join(' ')}>
           {value}
         </p>
       )}
@@ -198,39 +197,34 @@ export function Dashboard() {
   })();
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
+    <div className="space-y-4">
+      {/* ── En-tête ── */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-[22px] font-bold text-zinc-50 tracking-tight">
+          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-zinc-50">
             {greeting}, {profile?.full_name?.split(' ')[0] ?? 'Agent'}
           </h1>
-          <p className="text-[13px] text-zinc-600 mt-1">
-            {new Date().toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-            {profile?.site && (
-              <span className="text-zinc-700"> · {profile.site}</span>
-            )}
+          <p className="mt-1 font-mono text-[11px] tracking-[0.06em] text-zinc-500 uppercase">
+            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            {profile?.site && <span className="text-zinc-600"> · {profile.site}</span>}
           </p>
         </div>
+        <span className="hidden sm:flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-zinc-600 uppercase pb-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Temps réel
+        </span>
       </div>
 
-      {/* Operational status bar */}
+      {/* ── Bandeau d'état ── */}
       {!isLoading && (
         <div className={[
-          'flex items-center gap-3 px-4 py-3 rounded-xl border text-[12px]',
-          isOperational
-            ? 'bg-emerald-500/[0.04] border-emerald-500/15'
-            : 'bg-red-500/[0.04] border-red-500/15',
+          'flex items-center gap-3 px-4 py-2.5 rounded-lg border text-[12px] bg-[#0C0C0E]',
+          isOperational ? 'border-emerald-500/20' : 'border-red-500/25',
         ].join(' ')}>
           {isOperational
             ? <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
             : <ShieldAlert className="w-4 h-4 text-red-400 flex-shrink-0" />}
-          <span className={['font-semibold', isOperational ? 'text-emerald-400' : 'text-red-400'].join(' ')}>
+          <span className={['font-mono text-[11px] tracking-[0.1em] uppercase font-semibold', isOperational ? 'text-emerald-400' : 'text-red-400'].join(' ')}>
             {isOperational ? 'Système opérationnel' : 'Attention requise'}
           </span>
           <span className="text-zinc-700 hidden sm:inline">·</span>
@@ -258,35 +252,30 @@ export function Dashboard() {
               </span>
             )}
           </div>
-          <div className="ml-auto flex items-center gap-1.5 text-zinc-700">
-            <Activity className="w-3 h-3" />
-            <span className="hidden sm:inline text-[11px]">Temps réel</span>
-          </div>
         </div>
       )}
 
-      {/* KPI row */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-        <Metric
+      {/* ── KPI ── */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-px bg-white/[0.07] border border-white/[0.07] rounded-lg overflow-hidden">
+        <Kpi
           label="Présents aujourd'hui"
           value={stats?.presentCount ?? 0}
           loading={isLoading}
-          accent="blue"
         />
-        <Metric
+        <Kpi
           label="Incidents ouverts"
           value={stats?.openIncidents ?? 0}
           loading={isLoading}
           accent={stats?.openIncidents ? 'red' : 'green'}
           sub={stats?.criticalIncidents ? `dont ${stats.criticalIncidents} critique(s)` : undefined}
         />
-        <Metric
+        <Kpi
           label="Installations validées"
           value={isLoading ? '—' : `${validatedCount}/${totalInstallations}`}
           loading={isLoading}
           accent={stats?.installations.some((i) => i.status === 'issue_detected') ? 'yellow' : 'green'}
         />
-        <Metric
+        <Kpi
           label="Équipements en panne"
           value={stats?.faultyEquipment ?? 0}
           loading={isLoading}
@@ -294,23 +283,20 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Per-site status table */}
+      {/* ── Statut par site ── */}
       {siteStatuses && (
-        <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05] bg-white/[0.01]">
+        <div className={PANEL}>
+          <div className={PANEL_HD}>
             <span className="text-[13px] font-semibold text-zinc-200">Statut opérationnel par site</span>
-            <span className="flex items-center gap-1 text-[11px] text-zinc-700">
-              <Activity className="w-3 h-3" />
-              Temps réel
-            </span>
+            <span className="font-mono text-[10px] tracking-[0.14em] text-zinc-600 uppercase">{SITES.length} sites</span>
           </div>
-          <div className="hidden sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_80px] gap-4 px-4 py-2 border-b border-white/[0.04] bg-white/[0.01]">
+          <div className="hidden sm:grid sm:grid-cols-[10px_1fr_80px_110px_90px_90px] gap-4 px-4 py-2 border-b border-white/[0.05]">
             <span />
-            <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Site</span>
-            <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Agents</span>
-            <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Installation</span>
-            <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Incidents</span>
-            <span className="text-[11px] font-semibold text-zinc-600 uppercase tracking-[0.08em]">Pannes</span>
+            <span className={TH}>Site</span>
+            <span className={TH}>Agents</span>
+            <span className={TH}>Installation</span>
+            <span className={TH}>Incidents</span>
+            <span className={TH}>Pannes</span>
           </div>
           <div className="divide-y divide-white/[0.04]">
             {siteStatuses.map((s) => {
@@ -320,17 +306,17 @@ export function Dashboard() {
               return (
                 <div
                   key={s.site}
-                  className="flex sm:grid sm:grid-cols-[10px_1fr_70px_100px_90px_80px] items-center gap-4 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"
+                  className="flex sm:grid sm:grid-cols-[10px_1fr_80px_110px_90px_90px] items-center gap-4 px-4 py-2.5 hover:bg-white/[0.02] transition-colors"
                 >
                   <div className="flex-shrink-0 flex items-center">
                     <div className={['w-1.5 h-1.5 rounded-full', dot].join(' ')} />
                   </div>
                   <span className="text-[13px] font-medium text-zinc-300">{s.site}</span>
                   <span className={[
-                    'hidden sm:block text-[12px] tabular-nums font-medium',
+                    'hidden sm:block font-mono text-[12px] tabular-nums',
                     s.presentCount > 0 ? 'text-emerald-400' : 'text-zinc-700',
                   ].join(' ')}>
-                    {s.presentCount > 0 ? `${s.presentCount} agent${s.presentCount > 1 ? 's' : ''}` : '—'}
+                    {s.presentCount > 0 ? s.presentCount : '—'}
                   </span>
                   <span className="hidden sm:flex items-center">
                     {!s.hasInstallation ? (
@@ -348,16 +334,16 @@ export function Dashboard() {
                     )}
                   </span>
                   <span className={[
-                    'hidden sm:block text-[12px] tabular-nums font-medium',
+                    'hidden sm:block font-mono text-[12px] tabular-nums',
                     s.openIncidents > 0 ? 'text-red-400' : 'text-zinc-700',
                   ].join(' ')}>
-                    {s.openIncidents > 0 ? `${s.openIncidents} ouvert${s.openIncidents > 1 ? 's' : ''}` : '—'}
+                    {s.openIncidents > 0 ? s.openIncidents : '—'}
                   </span>
                   <span className={[
-                    'hidden sm:block text-[12px] tabular-nums font-medium',
+                    'hidden sm:block font-mono text-[12px] tabular-nums',
                     s.faultyEquipment > 0 ? 'text-amber-400' : 'text-zinc-700',
                   ].join(' ')}>
-                    {s.faultyEquipment > 0 ? `${s.faultyEquipment} en panne` : '—'}
+                    {s.faultyEquipment > 0 ? s.faultyEquipment : '—'}
                   </span>
                 </div>
               );
@@ -366,22 +352,22 @@ export function Dashboard() {
         </div>
       )}
 
-      {/* Content grid */}
+      {/* ── Contenu principal ── */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Incidents table — 2/3 */}
-        <div className="xl:col-span-2 border border-white/[0.06] rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.05] bg-white/[0.01]">
+        {/* Incidents — 2/3 */}
+        <div className={['xl:col-span-2', PANEL].join(' ')}>
+          <div className={PANEL_HD}>
             <div className="flex items-center gap-2">
               <span className="text-[13px] font-semibold text-zinc-200">Incidents actifs</span>
               {!!stats?.openIncidents && (
-                <span className="text-[10px] font-bold bg-red-500/10 text-red-400 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded-full leading-none">
+                <span className="font-mono text-[10px] font-semibold bg-red-500/10 text-red-400 ring-1 ring-red-500/20 px-1.5 py-0.5 rounded">
                   {stats.openIncidents}
                 </span>
               )}
             </div>
             <Link
               to="/incidents"
-              className="flex items-center gap-1 text-[12px] text-zinc-600 hover:text-blue-400 transition-colors"
+              className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-600 hover:text-blue-400 transition-colors"
             >
               Voir tout <ArrowUpRight className="w-3 h-3" />
             </Link>
@@ -405,14 +391,14 @@ export function Dashboard() {
 
                 return (
                   <div key={incident.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
-                    <div className={['w-2 h-2 rounded-full flex-shrink-0', dot].join(' ')} />
+                    <div className={['w-1.5 h-1.5 rounded-full flex-shrink-0', dot].join(' ')} />
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-medium text-zinc-200 truncate">{incident.title}</p>
                       <p className="text-[11px] text-zinc-600 mt-0.5">{incident.site}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <Badge color={statusCfg.color}>{statusCfg.label}</Badge>
-                      <span className="text-[11px] text-zinc-700 font-mono tabular-nums hidden sm:inline">
+                      <span className="font-mono text-[11px] text-zinc-600 tabular-nums hidden sm:inline">
                         {elapsedStr}
                       </span>
                     </div>
@@ -423,15 +409,15 @@ export function Dashboard() {
           )}
         </div>
 
-        {/* Right column — 1/3 */}
+        {/* Colonne droite — 1/3 */}
         <div className="space-y-4">
-          {/* Attendance */}
-          <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.05] bg-white/[0.01]">
+          {/* Présences */}
+          <div className={PANEL}>
+            <div className={PANEL_HD}>
               <span className="text-[13px] font-semibold text-zinc-200">Présences</span>
               <Link
                 to="/attendance"
-                className="flex items-center gap-1 text-[12px] text-zinc-600 hover:text-blue-400 transition-colors"
+                className="flex items-center gap-1 font-mono text-[10px] tracking-[0.1em] uppercase text-zinc-600 hover:text-blue-400 transition-colors"
               >
                 Voir tout <ArrowUpRight className="w-3 h-3" />
               </Link>
@@ -450,7 +436,7 @@ export function Dashboard() {
 
                   return (
                     <div key={record.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.02] transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400 flex-shrink-0">
+                      <div className="w-6 h-6 rounded bg-white/[0.05] border border-white/[0.06] flex items-center justify-center font-mono text-[10px] font-semibold text-zinc-500 flex-shrink-0">
                         {name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -458,7 +444,7 @@ export function Dashboard() {
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
                         <Badge color={cfg.color} dot>{cfg.label}</Badge>
-                        <span className="text-[10px] text-zinc-700 font-mono">{time}</span>
+                        <span className="font-mono text-[10px] text-zinc-600 tabular-nums">{time}</span>
                       </div>
                     </div>
                   );
@@ -467,17 +453,17 @@ export function Dashboard() {
             )}
           </div>
 
-          {/* Quick nav */}
-          <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-            <div className="px-4 py-3.5 border-b border-white/[0.05] bg-white/[0.01]">
+          {/* Actions rapides */}
+          <div className={PANEL}>
+            <div className={PANEL_HD}>
               <span className="text-[13px] font-semibold text-zinc-200">Actions rapides</span>
             </div>
             <div className="divide-y divide-white/[0.04]">
               {[
-                { to: '/attendance', label: 'Pointer ma présence', icon: Users },
-                { to: '/installations', label: 'Valider une installation', icon: MonitorCheck },
-                { to: '/incidents', label: 'Signaler un incident', icon: AlertTriangle },
-                { to: '/equipment', label: 'Gérer les équipements', icon: Package },
+                { to: '/attendance',    label: 'Pointer ma présence',       icon: Users        },
+                { to: '/installations', label: 'Valider une installation',  icon: MonitorCheck },
+                { to: '/incidents',     label: 'Signaler un incident',      icon: AlertTriangle },
+                { to: '/equipment',     label: 'Gérer les équipements',     icon: Package      },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
@@ -486,7 +472,7 @@ export function Dashboard() {
                     to={item.to}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors group"
                   >
-                    <Icon className="w-3.5 h-3.5 text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" strokeWidth={1.75} />
                     <span className="text-[13px] text-zinc-400 group-hover:text-zinc-200 transition-colors">
                       {item.label}
                     </span>
