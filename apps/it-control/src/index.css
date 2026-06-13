@@ -94,3 +94,16 @@ select,
 textarea {
   color-scheme: light;
 }
+
+/* ── Mobile : inputs ≥16px pour empêcher le zoom automatique iOS ──
+   Si la police d'un champ est <16px, iOS Safari zoome la page au focus
+   et le bas des modals (boutons Enregistrer/Publier) sort de l'écran. */
+@media (max-width: 1023px) {
+  .input-base,
+  .select-base,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

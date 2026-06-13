@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@ats/supabase/client';
 import { Button, Badge } from '@ats/ui';
 import { useAuth } from '../hooks/useAuth';
+import { verifyOnSite, formatGeoNote, SITE_ZONES } from '../lib/geofence';
 import { UserCheck, Clock, MapPin, CheckCircle2, CalendarOff, UserX } from 'lucide-react';
 
 function useTodayAttendance() {
@@ -92,6 +93,8 @@ export function AttendancePage() {
 
   const checkInMutation = useMutation({
     mutationFn: async () => {
+      // ── Vérification GPS : l'agent doit être sur son site de travail ──
+      const geo = await verifyOnSite(profile!.site);
       // Auto-détection du retard : après 9h30
       const now = new Date();
       const late = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() >= 30);
@@ -99,7 +102,7 @@ export function AttendancePage() {
         user_id: user!.id,
         site: profile!.site,
         status: late ? 'late' : 'present',
-        notes: notes || null,
+        notes: [notes, formatGeoNote(geo)].filter(Boolean).join(' — ') || null,
       });
       if (error) throw error;
     },
@@ -215,14 +218,25 @@ export function AttendancePage() {
                     Après 09h30 — sera marqué <strong>En retard</strong> automatiquement
                   </p>
                 )}
+                <p className="text-[11px] text-zinc-500 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                  Votre position GPS sera vérifiée — le pointage n'est possible que sur site
+                  {SITE_ZONES[profile?.site ?? ''] && <> ({SITE_ZONES[profile!.site].label})</>}
+                </p>
                 <Button
                   onClick={() => checkInMutation.mutate()}
                   loading={checkInMutation.isPending}
                   className="w-full justify-center"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
-                  Je suis présent
+                  {checkInMutation.isPending ? 'Vérification de votre position…' : 'Je suis présent'}
                 </Button>
+                {checkInMutation.isError && (
+                  <p className="text-[12px] text-red-600 font-medium flex items-start gap-1.5 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                    {(checkInMutation.error as Error).message}
+                  </p>
+                )}
               </div>
             </div>
           )}
